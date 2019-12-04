@@ -41,9 +41,9 @@ public class GameController extends Controller implements Runnable {
     public GameController(GameView view) {
         super(view);
         
-        this.keyboard = view.keyboard;
-        this.base = view.base;
-        this.viruses = view.viruses;
+        this.keyboard = view.getKeyboard();
+        this.base = view.getBase();
+        this.viruses = view.getViruses();
         
         this.gameLoop = new Thread(this);
         

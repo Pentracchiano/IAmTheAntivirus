@@ -5,7 +5,6 @@
  */
 package views.game;
 
-import java.awt.event.ComponentAdapter;
 import javax.swing.JPanel;
 
 /**
@@ -15,8 +14,7 @@ import javax.swing.JPanel;
 public abstract class View extends JPanel{
 
     
-    public void update() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+    public abstract void update(); 
+        
+        
 }
