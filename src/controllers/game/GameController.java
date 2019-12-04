@@ -188,16 +188,18 @@ public class GameController extends Controller implements Runnable {
             public void keyPressed(KeyEvent e) {
                 int keyCode = e.getKeyCode();
                 
-                // delegate to keyboard or the controller manage the logic (I obtain the key from the keyboard)
-                // throw new NotImplementedException();
+                keyboard.press((char) keyCode);
+                
+                
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 int keyCode = e.getKeyCode();
                 
-                // delegate to keyboard or the controller manage the logic (I obtain the key from the keyboard)
-                // throw new NotImplementedException();
+                keyboard.release((char) keyCode);
+                
+                
             }
         });
     }

@@ -5,7 +5,6 @@
  */
 package views.game;
 
-import java.awt.event.ComponentAdapter;
 import javax.swing.JPanel;
 
 /**
