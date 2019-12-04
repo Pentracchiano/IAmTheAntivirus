@@ -82,7 +82,7 @@ public class Keyboard extends Sprite {
         key.release();
     }
 
-    public class Key extends Sprite {
+    private class Key extends Sprite {
 
         private char id;
         private State state;
