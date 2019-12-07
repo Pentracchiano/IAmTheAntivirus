@@ -77,6 +77,10 @@ public class Keyboard extends Sprite {
         key.press();
     }
 
+    public Key getKey(char keyCode) {
+        return keyboard.get(keyCode);
+    }
+
     public void release(char id) {
         Key key = keyboard.get(id);
         key.release();

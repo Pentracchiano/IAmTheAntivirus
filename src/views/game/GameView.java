@@ -20,9 +20,8 @@ import models.Base;
 import models.Keyboard;
 import models.Virus;
 
+public class GameView extends View {
 
-public class GameView extends View{
- 
     private Keyboard keyboard;
     private Base base;
     private ArrayList<Virus> viruses;
@@ -35,55 +34,58 @@ public class GameView extends View{
         initView();
     }
 
-    private void initView() throws IOException{
+    private void initView() throws IOException {
 
         viruses = new ArrayList<>();
         base = new Base(0, 0, 10);
-        setBackground(Color.GRAY);        
-        backgroundImage = ImageIO.read(new File("src/resources/background/background.png"));               
-	setFocusable(true);
-        setPreferredSize(new Dimension(B_WIDTH,B_HEIGHT));
-        keyboard = new Keyboard(160,300);
+        setBackground(Color.GRAY);
+        backgroundImage = ImageIO.read(new File("src/resources/background/background.png"));
+        setFocusable(true);
+        setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
+        keyboard = new Keyboard(160, 300);
     }
-    
+
     @Override
-    public void update(){
-       this.repaint();
+    public void update() {
+        this.repaint();
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(backgroundImage,0,0,this);
-        
-        drawKeyboard(g);
-        drawViruses(g);
-        drawBase(g);
-        
+        g.drawImage(backgroundImage, 0, 0, this);
+
+            drawKeyboard(g);
+        synchronized (viruses) {
+            drawViruses(g);
+        }
+
+        synchronized (base) {
+            drawBase(g);
+        }
         Toolkit.getDefaultToolkit().sync();
     }
-    
-    private void drawViruses(Graphics g){
-        for(Virus vir : viruses){
+
+    private void drawViruses(Graphics g) {
+        for (Virus vir : viruses) {
             g.drawImage(vir.getImage(), vir.getX(), vir.getY(), this);
         }
     }
-    
+
     private void drawKeyboard(Graphics g) {
-        
-        
-        g.drawImage(keyboard.getImage(), keyboard.getX(),keyboard.getY(), this);
-        
+
+        g.drawImage(keyboard.getImage(), keyboard.getX(), keyboard.getY(), this);
+
         Collection<Key> coll = keyboard.getKeys();
-        
-        for(Key key:coll){
-            g.drawImage(key.getImage(),key.getX(),key.getY(),this);
+
+        for (Key key : coll) {
+            g.drawImage(key.getImage(), key.getX(), key.getY(), this);
         };
-        
+
     }
-    
-    private void drawBase(Graphics g){
-        g.drawImage(base.getImage(), base.getX(),base.getY(), this);
+
+    private void drawBase(Graphics g) {
+        g.drawImage(base.getImage(), base.getX(), base.getY(), this);
     }
 
     public Keyboard getKeyboard() {
@@ -97,19 +99,15 @@ public class GameView extends View{
     public ArrayList<Virus> getViruses() {
         return viruses;
     }
-    
+
     @Override
     public int getWidth() {
         return backgroundImage.getWidth();
     }
-    
+
     @Override
     public int getHeight() {
         return backgroundImage.getHeight();
     }
-    
-
-   
-
 
 }

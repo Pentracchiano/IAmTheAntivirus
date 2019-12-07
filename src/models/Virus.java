@@ -12,30 +12,31 @@ import java.awt.Image;
  * @author ccarratu
  */
 public abstract class Virus extends Enemy implements Movable, Damageable {
+
     private int hp;
     private int speed;
 
     public Virus(int x, int y, Image image, int attack, int hp, int speed) {
         super(x, y, image, attack);
-        
+
         initVirus(hp, speed);
     }
-    
+
     public Virus(int x, int y, String imagePath, int attack, int hp, int speed) {
         super(x, y, imagePath, attack);
-        
+
         initVirus(hp, speed);
     }
-    
+
     private void initVirus(int hp, int speed) {
         this.hp = hp;
         this.speed = speed;
     }
-    
+
     public int getHp() {
         return hp;
     }
-    
+
     public int getSpeed() {
         return speed;
     }
@@ -48,16 +49,20 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
         this.speed = speed;
     }
 
+    public boolean isAlive() {
+        return hp > 0;
+    }
+
     @Override
     public void move() {
         // at the moment, any virus simply advance towards the base following a line
         setY(getY() - speed);
-        
-        if(getY() < 0) {
+
+        if (getY() < 0) {
             setY(0);
         }
     }
-    
+
     @Override
     public void damage(int damage) {
         // maybe it's better to set hp = 0 if hp < 0
@@ -69,6 +74,4 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
         return super.toString() + ", hp=" + hp + ", speed=" + speed;
     }
 
-    
-    
 }
