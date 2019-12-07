@@ -1,8 +1,6 @@
 package controllers.game;
 
 import java.awt.Rectangle;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
@@ -49,11 +47,8 @@ public class GameController extends Controller implements Runnable {
         
         this.gameLoop = new Thread(this);
         
-        initListeners();
-        
+        this.initListeners();
         this.inGame = false;
-        //this.inGame = true;
-        //gameLoop.start();
     }
 
     @Override
@@ -108,7 +103,7 @@ public class GameController extends Controller implements Runnable {
         Virus virus = null;
         
         Wave wave = new Wave();
-                
+
         for(int i = 0; i < 20; i++) {
             int x = r.nextInt(view.getWidth() - 50);
             
