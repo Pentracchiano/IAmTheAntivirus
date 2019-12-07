@@ -5,17 +5,21 @@
  */
 package models;
 
-import utilities.ImageUtilities;
 /**
  *
  * @author Gerardo
  */
 public class Base extends Sprite implements Damageable{
     private int health;
-    private static final String IMAGE_PATH="src/images/base.png";
+    private static final String DEFAULT_IMAGE_PATH = "src/resources/base.png";
 
     public Base(int x,int y, int health) {
-        super(x,y, ImageUtilities.loadImageFromPath(IMAGE_PATH));
+        super(x,y, DEFAULT_IMAGE_PATH);
+        
+        initBase(health);
+    }
+    
+    private void initBase(int health) {
         this.health = health;
     }
 
@@ -29,13 +33,22 @@ public class Base extends Sprite implements Damageable{
     
     @Override
     public void damage(int dmg){
-        this.health-=dmg;
-        if(this.health<0)
-            this.health=0;
+        this.health -= dmg;
+        
+        if(this.health < 0) {
+            this.health = 0;
+        }
     }
     
     public boolean isInfected(){
-        return this.health==0;
+        return this.health == 0;
     }
+
+    @Override
+    public String toString() {
+        return "Base: " + super.toString() + ", health";
+    }
+    
+    
     
 }

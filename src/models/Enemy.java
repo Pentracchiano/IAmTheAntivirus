@@ -13,10 +13,21 @@ import java.awt.Image;
  * @author ccarratu
  */
 public abstract class Enemy extends Sprite {
-    protected int attack;
+    private int attack;
     
     public Enemy(int x, int y, Image image, int attack) {
         super(x, y, image);
+        
+        initEnemy(attack);
+    }
+    
+    public Enemy(int x, int y, String imagePath, int attack) {
+        super(x, y, imagePath);
+        
+        initEnemy(attack);
+    }
+    
+    private void initEnemy(int attack) {
         this.attack = attack;
     }
 
@@ -30,7 +41,9 @@ public abstract class Enemy extends Sprite {
 
     @Override
     public String toString() {
-        return "Enemy{" + "attack=" + attack + '}';
+        return super.toString() + ", attack=" + attack;
     }
+
+    
     
 }

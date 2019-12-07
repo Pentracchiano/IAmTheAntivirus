@@ -12,8 +12,6 @@ import javax.swing.JPanel;
  * @author LordCatello
  */
 public abstract class View extends JPanel{
-
-    
     public abstract void update(); 
         
         

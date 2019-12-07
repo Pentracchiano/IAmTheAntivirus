@@ -47,7 +47,9 @@ public class GameController extends Controller implements Runnable {
         
         this.gameLoop = new Thread(this);
         
-        this.inGame = false;
+        // this.inGame = false;
+        this.inGame = true;
+        gameLoop.start();
     }
 
     @Override

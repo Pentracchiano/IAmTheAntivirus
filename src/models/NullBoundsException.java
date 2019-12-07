@@ -10,7 +10,6 @@ package models;
  * @author ccarratu
  */
 public class NullBoundsException extends RuntimeException {
-
     public NullBoundsException() {
         
     }

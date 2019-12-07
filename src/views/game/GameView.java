@@ -38,7 +38,7 @@ public class GameView extends View{
     private void initView() throws IOException{
 
         viruses = new ArrayList<>();
-        base = new Base(100, 100, 10);
+        base = new Base(0, 0, 10);
         setBackground(Color.GRAY);        
         backgroundImage = ImageIO.read(new File("src/resources/background/background.png"));               
 	setFocusable(true);
@@ -98,9 +98,15 @@ public class GameView extends View{
         return viruses;
     }
     
+    @Override
+    public int getWidth() {
+        return backgroundImage.getWidth();
+    }
     
-    
-    
+    @Override
+    public int getHeight() {
+        return backgroundImage.getHeight();
+    }
     
 
    

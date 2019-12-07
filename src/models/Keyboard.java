@@ -20,7 +20,7 @@ public class Keyboard extends Sprite {
     private Map<Character, Key> keyboard;
 
     public Keyboard(int x, int y) {
-        super(x, y, ImageUtilities.loadImageFromPath(KEYBOARD_IMAGE_PATH));
+        super(x, y, KEYBOARD_IMAGE_PATH);
         initKeyboard();
     }
 
@@ -33,8 +33,8 @@ public class Keyboard extends Sprite {
 
         int spaceAmongKeys = 5;
         int border = 15;
-        int xKeyboard = this.x;
-        int yKeyboard = this.y;
+        int xKeyboard = getX();
+        int yKeyboard = getY();
         int xKey = xKeyboard + border;
         int yKey = yKeyboard + border;
         char idKey;
@@ -48,8 +48,8 @@ public class Keyboard extends Sprite {
             key = new Key(xKey, yKey, idKey); //creo sprite tasto
             keyboard.put(idKey, key); //inserisco nella tabella
 
-            widthKey = key.image.getWidth(null);
-            heightKey = key.image.getHeight(null);
+            widthKey = key.getImage().getWidth(null);
+            heightKey = key.getImage().getHeight(null);
 
             if (idKey == '0' || idKey == 'P' || idKey == 'L') {
                 //vado a capo
@@ -91,9 +91,8 @@ public class Keyboard extends Sprite {
         private Map<State, Image> keyImages;
 
         private Key(int x, int y, char id) {
-            super(x, y, null);
+            super(x, y, PARENT_IMAGE_PATH + "released/" + id + ".png");
             this.initKey(id);
-            this.image = this.keyImages.get(State.RELEASED);
         }
 
         private void initKey(char id) {
@@ -128,12 +127,12 @@ public class Keyboard extends Sprite {
 
         private void press() {
             this.state = State.PRESSED;
-            this.image = keyImages.get(state);
+            setImage(keyImages.get(state));
         }
 
         private void release() {
             this.state = State.RELEASED;
-            this.image = keyImages.get(state);
+            setImage(keyImages.get(state));
         }
     }
 }
