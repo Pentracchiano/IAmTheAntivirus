@@ -4,50 +4,44 @@
  * and open the template in the editor.
  */
 package controllers;
+
 import controllers.game.GameController;
+import java.awt.EventQueue;
+import javax.swing.JFrame;
 import views.game.GameView;
 
 /**
  *
  * @author ccarratu
  */
-import java.awt.EventQueue;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
-
-public class IAmTheAntivirus extends JFrame {
-    private GameController gameController;
-
-    public IAmTheAntivirus(){
-        initGame();
-    }
+public class IAmTheAntivirus {
+    private final JFrame frame;
+    private final GameView gameView;
+    private final GameController gameController;
     
-    private void initGame(){
-        
-        setResizable(false);
-        setTitle("IAmTheAntivirus");
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        GameView gameView = null;
-        try {
-            gameView = new GameView();
-        } catch (IOException ex) {
-            Logger.getLogger(IAmTheAntivirus.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public IAmTheAntivirus(){
+        frame = new JFrame();
+        gameView = new GameView();
         gameController = new GameController(gameView);
         
-        this.add(gameView);
+        initFrame();
+    }
+    
+    private void initFrame(){
+        frame.setResizable(false);
+        frame.setTitle("IAmTheAntivirus");
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        pack();
+        frame.add(gameView);
+        
+        frame.pack();
     }
     
     public static void main(String[] args){
         EventQueue.invokeLater(() -> {
-            IAmTheAntivirus ex = new IAmTheAntivirus();
-            ex.setVisible(true);
+            IAmTheAntivirus application = new IAmTheAntivirus();
+            application.frame.setVisible(true);
         });
     }
 

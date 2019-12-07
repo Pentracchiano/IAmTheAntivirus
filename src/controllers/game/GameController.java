@@ -8,6 +8,8 @@ import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import models.*;
 import views.game.GameView;
 
@@ -31,7 +33,7 @@ public class GameController extends Controller implements Runnable {
     
     private final Thread gameLoop;
     
-    private final int DELAY_MS = 10; // in milliseconds
+    private final int DELAY_MS = 20; // in milliseconds
 
     /*inGame is a boolean that we use to indicate if we have to stop the game evolution
       thread or not, so it indicates if the match is going on or it is over.
@@ -47,9 +49,11 @@ public class GameController extends Controller implements Runnable {
         
         this.gameLoop = new Thread(this);
         
-        // this.inGame = false;
-        this.inGame = true;
-        gameLoop.start();
+        initListeners();
+        
+        this.inGame = false;
+        //this.inGame = true;
+        //gameLoop.start();
     }
 
     @Override
@@ -104,10 +108,9 @@ public class GameController extends Controller implements Runnable {
         Virus virus = null;
         
         Wave wave = new Wave();
-        
-        int x = r.nextInt(view.getWidth() - 50);
                 
         for(int i = 0; i < 20; i++) {
+            int x = r.nextInt(view.getWidth() - 50);
             
             virusType = r.nextInt(2);
             if (virusType == 0) {
@@ -140,10 +143,12 @@ public class GameController extends Controller implements Runnable {
 
     public void checkBaseCollision() {
         Rectangle baseBounds = base.getBounds();
-        Virus virus = null;
-
-        for (Iterator<Virus> it = viruses.iterator(); it.hasNext(); virus = it.next()) {
-
+        
+        Iterator<Virus> it = viruses.iterator();
+        
+        while(it.hasNext()) {
+            Virus virus = it.next();
+            
             Rectangle virusBounds = virus.getBounds();
 
             if (baseBounds.intersects(virusBounds)) {
@@ -167,23 +172,29 @@ public class GameController extends Controller implements Runnable {
         
     }
 
-    private void initListeners() {
-        /**
-         * A ComponentAdapter is passed to the view, in order to register
-         * callbacks for the componentShown and componentHidden events that are
-         * called when the view is presented or hidden. We use them to start and
-         * stop the thread that controls the game evolution.
-         */
-        view.addComponentListener(new ComponentAdapter() {
-            public void componentShown(ComponentEvent e) {
-                GameController.this.inGame = true;
+    private void initListeners() { 
+        view.addAncestorListener(new AncestorListener() {
+            // unfortunately does not exist an AncestorListenerAdapter
+            // so I have to implement all the methods
+            // even if I need only ancestorAdded and acestorRemoved
+            
+            // this method is called when the view is added to the frame
+            public void ancestorAdded(AncestorEvent e) {
+                inGame = true;
                 gameLoop.start();
             }
-
-            public void componentHidden(ComponentEvent e) {
-                GameController.this.inGame = false;
+            
+            // this event is called when the view is removed by the frame
+            public void ancestorRemoved(AncestorEvent e) {
+                inGame = false;
             }
+
+            public void ancestorMoved(AncestorEvent e) {
+                
+            }
+
         });
+        
 
         view.addKeyListener(new KeyAdapter() {
             @Override
@@ -191,8 +202,6 @@ public class GameController extends Controller implements Runnable {
                 int keyCode = e.getKeyCode();
                 
                 keyboard.press((char) keyCode);
-                
-                
             }
 
             @Override
@@ -200,8 +209,6 @@ public class GameController extends Controller implements Runnable {
                 int keyCode = e.getKeyCode();
                 
                 keyboard.release((char) keyCode);
-                
-                
             }
         });
     }
