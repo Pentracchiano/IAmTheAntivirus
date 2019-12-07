@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import models.Base;
 import models.Keyboard;
@@ -29,20 +31,26 @@ public class GameView extends View {
     private final int B_HEIGHT = 747;
     private BufferedImage backgroundImage;
 
-    public GameView() throws IOException {
+    public GameView() {
 
         initView();
     }
 
-    private void initView() throws IOException {
+
+    private void initView() {
 
         viruses = new ArrayList<>();
         base = new Base(0, 0, 10);
-        setBackground(Color.GRAY);
-        backgroundImage = ImageIO.read(new File("src/resources/background/background.png"));
-        setFocusable(true);
-        setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
-        keyboard = new Keyboard(160, 300);
+        setBackground(Color.GRAY);        
+        try {               
+            backgroundImage = ImageIO.read(new File("src/resources/background/background.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+	setFocusable(true);
+        setPreferredSize(new Dimension(B_WIDTH,B_HEIGHT));
+        keyboard = new Keyboard(160,300);
+
     }
 
     @Override

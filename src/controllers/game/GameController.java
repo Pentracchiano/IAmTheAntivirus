@@ -1,13 +1,13 @@
 package controllers.game;
 
 import java.awt.Rectangle;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import models.*;
 import models.Keyboard.Key;
 import views.game.GameView;
@@ -46,13 +46,12 @@ public class GameController extends Controller implements Runnable {
         this.base = view.getBase();
         this.viruses = view.getViruses();
 
-        this.initListeners();
-
+        
         this.gameLoop = new Thread(this);
+        
+        this.initListeners();
+        this.inGame = false;
 
-        // this.inGame = false;
-        this.inGame = true;
-        gameLoop.start();
     }
 
     @Override
@@ -110,9 +109,11 @@ public class GameController extends Controller implements Runnable {
 
         Wave wave = new Wave();
 
-        for (int i = 0; i < 20; i++) {
+
+        for(int i = 0; i < 20; i++) {
 
             int x = r.nextInt(view.getWidth() - 50);
+            
             virusType = r.nextInt(2);
             if (virusType == 0) {
                 virus = new Worm(x, view.getHeight());
@@ -156,12 +157,13 @@ public class GameController extends Controller implements Runnable {
 
     public void checkBaseCollision() {
         Rectangle baseBounds = base.getBounds();
-        Virus virus = null;
-
+        
         Iterator<Virus> it = viruses.iterator();
-        while (it.hasNext()) {
 
-            virus = it.next();
+        
+        while(it.hasNext()) {
+            Virus virus = it.next();
+            
 
             Rectangle virusBounds = virus.getBounds();
 
@@ -188,6 +190,7 @@ public class GameController extends Controller implements Runnable {
 
     }
 
+
     private void checkHittenViruses(KeyEvent e) {
         char keyCode = (char) e.getKeyCode();
         Key pressedKey = keyboard.getKey(keyCode);
@@ -204,23 +207,32 @@ public class GameController extends Controller implements Runnable {
     
     
 
-    private void initListeners() {
-        /**
-         * A ComponentAdapter is passed to the view, in order to register
-         * callbacks for the componentShown and componentHidden events that are
-         * called when the view is presented or hidden. We use them to start and
-         * stop the thread that controls the game evolution.
-         */
-        view.addComponentListener(new ComponentAdapter() {
-            public void componentShown(ComponentEvent e) {
-                GameController.this.inGame = true;
+    private void initListeners() { 
+        view.addAncestorListener(new AncestorListener() {
+            // unfortunately does not exist an AncestorListenerAdapter
+            // so I have to implement all the methods
+            // even if I need only ancestorAdded and acestorRemoved
+            
+            // this method is called when the view is added to the frame
+            @Override
+            public void ancestorAdded(AncestorEvent e) {
+                inGame = true;
                 gameLoop.start();
             }
-
-            public void componentHidden(ComponentEvent e) {
-                GameController.this.inGame = false;
+            
+            // this event is called when the view is removed by the frame
+            @Override
+            public void ancestorRemoved(AncestorEvent e) {
+                inGame = false;
             }
+            
+            @Override
+            public void ancestorMoved(AncestorEvent e) {
+                
+            }
+
         });
+        
 
         view.addKeyListener(new KeyAdapter() {
             @Override
@@ -235,7 +247,6 @@ public class GameController extends Controller implements Runnable {
                 int keyCode = e.getKeyCode();
 
                 keyboard.release((char) keyCode);
-
             }
         });
     }
