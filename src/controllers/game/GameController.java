@@ -45,7 +45,10 @@ public class GameController extends Controller implements Runnable {
         this.base = view.getBase();
         this.viruses = view.getViruses();
         
+        this.initListeners();
+        
         this.gameLoop = new Thread(this);
+        
         
         // this.inGame = false;
         this.inGame = true;
@@ -104,11 +107,10 @@ public class GameController extends Controller implements Runnable {
         Virus virus = null;
         
         Wave wave = new Wave();
-        
-        int x = r.nextInt(view.getWidth() - 50);
-                
+    
         for(int i = 0; i < 20; i++) {
             
+            int x = r.nextInt(view.getWidth() - 50);
             virusType = r.nextInt(2);
             if (virusType == 0) {
                 virus = new Worm(x, view.getHeight());
@@ -142,7 +144,10 @@ public class GameController extends Controller implements Runnable {
         Rectangle baseBounds = base.getBounds();
         Virus virus = null;
 
-        for (Iterator<Virus> it = viruses.iterator(); it.hasNext(); virus = it.next()) {
+        Iterator<Virus> it = viruses.iterator();
+        while (it.hasNext()){
+            
+            virus = it.next();
 
             Rectangle virusBounds = virus.getBounds();
 
