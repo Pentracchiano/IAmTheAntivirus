@@ -1,6 +1,6 @@
 package controllers.game;
 
-import views.game.View;
+import views.View;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

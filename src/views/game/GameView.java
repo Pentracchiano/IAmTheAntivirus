@@ -5,6 +5,7 @@
  */
 package views.game;
 
+import views.View;
 import controllers.game.GameStatus;
 import models.Keyboard.Key;
 import java.awt.Color;
@@ -67,7 +68,7 @@ public class GameView extends View {
         setPreferredSize(new Dimension(B_WIDTH,B_HEIGHT));
         keyboard = new Keyboard(160,300);
         
-        this.gameStatus = GameStatus.getIstance();
+        this.gameStatus = GameStatus.getInstance();
         
         this.heartImage = ImageUtilities.loadImageFromPath(HEART_IMAGE_PATH);
         this.healthBarImage = ImageUtilities.loadImageFromPath(HEALTH_BAR_IMAGE_PATH);

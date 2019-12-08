@@ -11,7 +11,7 @@ package controllers.game;
  */
 // this is a singleton
 public class GameStatus {
-    private static GameStatus istance = null;
+    private static GameStatus instance = null;
     
     private boolean inGame;
     private boolean inWave;
@@ -34,11 +34,11 @@ public class GameStatus {
         this.remainingWaveEnemies = remainingWaveEnemies;
     }
     
-    public synchronized static GameStatus getIstance() {
-        if(GameStatus.istance == null) {
-            istance = new GameStatus(false, false, 0, 0, 0);        
+    public synchronized static GameStatus getInstance() {
+        if(GameStatus.instance == null) {
+            instance = new GameStatus(false, false, 0, 0, 0);        
         }
-        return istance;
+        return instance;
     }
 
     public synchronized boolean isInGame() {

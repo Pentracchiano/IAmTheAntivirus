@@ -48,10 +48,9 @@ public class IAmTheAntivirus {
     public static IAmTheAntivirus getGameInstance() {
         if (IAmTheAntivirus.gameApplication == null) {
             IAmTheAntivirus.gameApplication = new IAmTheAntivirus();
-            return IAmTheAntivirus.gameApplication;
-        } else {
-            return IAmTheAntivirus.gameApplication;
         }
+        
+        return IAmTheAntivirus.gameApplication;
     }
 
     /**
