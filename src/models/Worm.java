@@ -12,7 +12,7 @@ import utilities.ImageUtilities;
  * @author ccarratu
  */
 public class Worm extends Virus {
-    private static final String DEFAULT_IMAGE_PATH = "src/resources/worm_30.png";
+    private static final String DEFAULT_IMAGE_PATH = "src/resources/worm_50.png";
     
     public Worm(int x, int y) {
         super(x, y, DEFAULT_IMAGE_PATH, 5, 20, 1);

@@ -30,12 +30,15 @@ public class IAmTheAntivirus {
     private void initFrame(){
         frame.setResizable(false);
         frame.setTitle("IAmTheAntivirus");
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         frame.add(gameView);
-        
+        // this method has to be called after add() and before setLocationRelativeTo()
         frame.pack();
+        frame.setLocationRelativeTo(null);
+        
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        //frame.add(gameView);
     }
     
     public static void main(String[] args){
