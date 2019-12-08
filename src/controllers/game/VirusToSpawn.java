@@ -13,24 +13,24 @@ import models.Virus;
  */
 public class VirusToSpawn {
     private final Virus virus;
-    private final int delay;
+    private final int timeToSpawn;
 
     public VirusToSpawn(Virus virus, int delay) {
         this.virus = virus;
-        this.delay = delay;
+        this.timeToSpawn = delay;
     }
 
     public Virus getVirus() {
         return virus;
     }
 
-    public int getDelay() {
-        return delay;
+    public int getTimeToSpawn() {
+        return timeToSpawn;
     }
 
     @Override
     public String toString() {
-        return "VirusToSpawn{" + "virus=" + virus + ", delay=" + delay + '}';
+        return "VirusToSpawn{" + "virus=" + virus + ", delay=" + timeToSpawn + '}';
     }
     
 }
