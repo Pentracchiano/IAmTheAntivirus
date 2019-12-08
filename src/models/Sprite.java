@@ -45,6 +45,14 @@ public abstract class Sprite {
         return y;
     }
     
+    public int getWidth() {
+        return this.image.getWidth(null);
+    }
+    
+    public int getHeight() {
+        return this.image.getHeight(null);
+    }
+    
     public void setX(int x) {
         this.x = x;
     }
