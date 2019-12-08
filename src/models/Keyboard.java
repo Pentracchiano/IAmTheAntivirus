@@ -72,18 +72,29 @@ public class Keyboard extends Sprite {
     }
     //fine attenzione
 
-    public void press(char id) {
+    public void press(char id) throws KeyNotFoundException{      
+        if(!keyboard.containsKey(id))
+            throw new KeyNotFoundException();
+        
         Key key = keyboard.get(id);
         key.press();
+        
     }
 
-    public Key getKey(char keyCode) {
+    public Key getKey(char keyCode) throws KeyNotFoundException{
+        if(!keyboard.containsKey(keyCode))
+            throw new KeyNotFoundException();
         return keyboard.get(keyCode);
     }
 
-    public void release(char id) {
+    public void release(char id) throws KeyNotFoundException{
+        
+        if(!keyboard.containsKey(id))
+            throw new KeyNotFoundException();
+            
         Key key = keyboard.get(id);
         key.release();
+        
     }
 
     public class Key extends Sprite {

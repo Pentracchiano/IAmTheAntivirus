@@ -193,7 +193,12 @@ public class GameController extends Controller implements Runnable {
 
     private void checkHittenViruses(KeyEvent e) {
         char keyCode = (char) e.getKeyCode();
-        Key pressedKey = keyboard.getKey(keyCode);
+        Key pressedKey = null;
+        try{
+            pressedKey = keyboard.getKey(keyCode);
+        }catch(KeyNotFoundException knfe){
+            return;
+        }
 
         synchronized (viruses) {
             for(Virus v : viruses){
@@ -238,15 +243,22 @@ public class GameController extends Controller implements Runnable {
             @Override
             public void keyPressed(KeyEvent e) {
                 int keyCode = e.getKeyCode();
-                keyboard.press((char) keyCode);
+                try{
+                    keyboard.press((char) keyCode);
+                }catch(KeyNotFoundException knfe){
+                    return;
+                }
                 checkHittenViruses(e);
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 int keyCode = e.getKeyCode();
-
-                keyboard.release((char) keyCode);
+                try{
+                    keyboard.release((char) keyCode);
+                }catch(KeyNotFoundException knfe){
+                    return;
+                }
             }
         });
     }

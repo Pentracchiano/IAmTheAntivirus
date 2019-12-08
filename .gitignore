@@ -3,3 +3,5 @@ manifest.mf
 build.xml
 /nbproject
 /dist/
+/JavaApplication85/nbproject/private/
+/Project/nbproject/private/
