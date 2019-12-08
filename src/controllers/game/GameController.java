@@ -37,7 +37,7 @@ public class GameController extends Controller implements Runnable {
     /*inGame is a boolean that we use to indicate if we have to stop the game evolution
       thread or not, so it indicates if the match is going on or it is over.
      */
-    private boolean inGame;
+    private final GameStatus gameStatus;
 
     public GameController(GameView view) {
         super(view);
@@ -45,13 +45,11 @@ public class GameController extends Controller implements Runnable {
         this.keyboard = view.getKeyboard();
         this.base = view.getBase();
         this.viruses = view.getViruses();
+        this.gameStatus = GameStatus.getIstance();
 
-        
         this.gameLoop = new Thread(this);
         
         this.initListeners();
-        this.inGame = false;
-
     }
 
     @Override
@@ -61,13 +59,14 @@ public class GameController extends Controller implements Runnable {
 
         Wave wave = buildWave();
 
-        int totalViruses = wave.getSize();
+        gameStatus.setTotalWaveEnemies(wave.getSize());
+        gameStatus.setRemainingWaveEnemies(wave.getSize());
 
-        while (inGame) {
+        while (gameStatus.isInGame()) {
             beforeTime = System.currentTimeMillis();
 
             if (wave.getSize() == 0 && viruses.isEmpty()) {
-                inGame = false;
+                gameStatus.setInGame(false);
             }
 
             // spawn and move
@@ -111,17 +110,18 @@ public class GameController extends Controller implements Runnable {
 
 
         for(int i = 0; i < 20; i++) {
-
-            int x = r.nextInt(view.getWidth() - 50);
             
             virusType = r.nextInt(2);
             if (virusType == 0) {
-                virus = new Worm(x, view.getHeight());
+                virus = new Worm(0, view.getHeight());
             } else if (virusType == 1) {
-                virus = new Trojan(x, view.getHeight());
+                virus = new Trojan(0, view.getHeight());
             }
+            
+            int x = r.nextInt(keyboard.getWidth() - virus.getWidth()) + keyboard.getX();
+            virus.setX(x);
 
-            delay = r.nextInt(10) + i * 10;
+            delay = r.nextInt(10) + i * 20;
 
             wave.addElement(new VirusToSpawn(virus, delay));
         }
@@ -133,7 +133,7 @@ public class GameController extends Controller implements Runnable {
         if (wave.getSize() > 0) {
             VirusToSpawn vts = wave.getCurrentElement();
 
-            if (vts.getDelay() <= timeCount) {
+            if (vts.getTimeToSpawn() <= timeCount) {
                 viruses.add(wave.removeCurrentElement().getVirus());
             }
         }
@@ -145,6 +145,7 @@ public class GameController extends Controller implements Runnable {
            
            if(!v.isAlive()){
                it.remove();
+               gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
            } else {
                v.move();
            }
@@ -179,13 +180,13 @@ public class GameController extends Controller implements Runnable {
                     base.damage(virus.getAttack());
                 }
                 it.remove();
+                gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
 
             }
         }
 
         if (base.isInfected()) {
-            System.out.println("Sto morendo");
-            inGame = false;
+            gameStatus.setInGame(false);
         }
 
     }
@@ -216,14 +217,14 @@ public class GameController extends Controller implements Runnable {
             // this method is called when the view is added to the frame
             @Override
             public void ancestorAdded(AncestorEvent e) {
-                inGame = true;
+                gameStatus.setInGame(true);
                 gameLoop.start();
             }
             
             // this event is called when the view is removed by the frame
             @Override
             public void ancestorRemoved(AncestorEvent e) {
-                inGame = false;
+                gameStatus.setInGame(false);
             }
             
             @Override

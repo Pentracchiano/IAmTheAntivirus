@@ -10,7 +10,7 @@ package models;
  * @author ccarratu
  */
 public class Trojan extends Virus {
-    private static final String DEFAULT_IMAGE_PATH = "src/resources/trojan_30.png";
+    private static final String DEFAULT_IMAGE_PATH = "src/resources/trojan_50.png";
     
     public Trojan(int x, int y) {
         super(x, y, DEFAULT_IMAGE_PATH, 5, 10, 2);
