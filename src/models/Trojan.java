@@ -13,7 +13,7 @@ public class Trojan extends Virus {
     private static final String DEFAULT_IMAGE_PATH = "src/resources/trojan_50.png";
     
     public Trojan(int x, int y) {
-        super(x, y, DEFAULT_IMAGE_PATH, 5, 10, 2);
+        super(x, y, DEFAULT_IMAGE_PATH, 5, 25, 2);
     }
 
     @Override

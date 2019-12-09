@@ -110,9 +110,34 @@ public class GameView extends View {
     }
 
     private void drawViruses(Graphics g) {
-        for (Virus vir : viruses) {
+        // draw viruses
+        viruses.forEach((vir) -> {
             g.drawImage(vir.getImage(), vir.getX(), vir.getY(), this);
+        });
+        
+        // draw health bar
+        viruses.forEach((vir) -> {
+            if(vir.getCurrentHealth() < vir.getTotalHealth()) {
+                double healthRatio = (double) vir.getCurrentHealth() / (double) vir.getTotalHealth();
+                
+                g.setColor(getColorHealthBar(healthRatio));
+                
+                int width = (int) ( vir.getWidth() * healthRatio);
+                
+                g.fillRect(vir.getX(), vir.getY() - 7, width, 5);
+            }
+        });
+    }
+    
+    private Color getColorHealthBar(double healthRatio) {
+        if(healthRatio >= 0.66) {
+            return new Color(97, 231, 79);
+        } else if(healthRatio >= 0.33) {
+            return Color.ORANGE;
+        } else {
+            return Color.RED;
         }
+        
     }
 
     private void drawKeyboard(Graphics g) {

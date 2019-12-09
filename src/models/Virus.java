@@ -13,36 +13,46 @@ import java.awt.Image;
  */
 public abstract class Virus extends Enemy implements Movable, Damageable {
 
-    private int hp;
+    private int totalHealth;
+    private int currentHealth;
     private int speed;
 
-    public Virus(int x, int y, Image image, int attack, int hp, int speed) {
+    public Virus(int x, int y, Image image, int attack, int totalHealth, int speed) {
         super(x, y, image, attack);
 
-        initVirus(hp, speed);
+        initVirus(totalHealth, speed);
     }
 
-    public Virus(int x, int y, String imagePath, int attack, int hp, int speed) {
+    public Virus(int x, int y, String imagePath, int attack, int totalHealth, int speed) {
         super(x, y, imagePath, attack);
 
-        initVirus(hp, speed);
+        initVirus(totalHealth, speed);
     }
 
-    private void initVirus(int hp, int speed) {
-        this.hp = hp;
+    private void initVirus(int totalHealth, int speed) {
+        this.totalHealth = totalHealth;
+        this.currentHealth = totalHealth;
         this.speed = speed;
     }
+    
+    public int getTotalHealth() {
+        return totalHealth;
+    }
 
-    public int getHp() {
-        return hp;
+    public int getCurrentHealth() {
+        return currentHealth;
     }
 
     public int getSpeed() {
         return speed;
     }
+    
+    public void setTotalHealth(int totalHealth) {
+        this.totalHealth = totalHealth;        
+    }
 
-    public void setHp(int hp) {
-        this.hp = hp;
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
     }
 
     public void setSpeed(int speed) {
@@ -50,7 +60,7 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
     }
 
     public boolean isAlive() {
-        return hp > 0;
+        return currentHealth > 0;
     }
 
     @Override
@@ -65,13 +75,13 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
 
     @Override
     public void damage(int damage) {
-        // maybe it's better to set hp = 0 if hp < 0
-        this.hp -= damage;
+        // maybe it's better to set currentHealth = 0 if currentHealth < 0
+        this.currentHealth -= damage;
     }
 
     @Override
     public String toString() {
-        return super.toString() + ", hp=" + hp + ", speed=" + speed;
+        return super.toString() + ", totalHealth=" + totalHealth + ", currentHealth=" + currentHealth + ", speed=" + speed;
     }
 
 }
