@@ -41,7 +41,7 @@ public class GameView extends View {
     private static final String HEART_IMAGE_PATH = "src/resources/heart_50_red.png";
     private static final String HEALTH_BAR_IMAGE_PATH = "src/resources/health_bar_green_150_30.png";
     private static final String HEALTH_BORDERS_IMAGE_PATH = "src/resources/health_bar_borders_green_150_30.png";
-    private static final String ENEMY_IMAGE_PATH = "src/resources/enemy_50.png";
+    private static final String ENEMY_IMAGE_PATH = "src/resources/enemy_40.png";
     
     private Image heartImage;
     private Image healthBarImage;
@@ -102,11 +102,26 @@ public class GameView extends View {
     }
     
     private void drawGameStatus(Graphics g) {
-        g.drawImage(enemyImage, base.getX() + 200 + 250, base.getY() + 10, this);
+        int x;
+        int y;
         
-        g.setColor(new Color(97, 231, 79));
-        g.setFont(new Font(Font.DIALOG, Font.PLAIN, 30));
-        g.drawString(gameStatus.getRemainingWaveEnemies() + "/" + gameStatus.getTotalWaveEnemies(), base.getX() + 200 + 250 + enemyImage.getWidth(this) + 10, base.getY() + 40);
+        // draw wave indicator
+        x = base.getX() + 560;
+        y = base.getY() + 40;
+        drawFormattedString(g, "Wave " + gameStatus.getCurrentWave(), x, y, new Color(97, 231, 79), new Font(Font.MONOSPACED, Font.BOLD, 30));
+        
+        // draw enemies indicator
+        x += 150;
+        g.drawImage(enemyImage, x, base.getY() + 15, this);
+        
+        x += enemyImage.getWidth(this) + 10;
+        drawFormattedString(g, gameStatus.getRemainingWaveEnemies() + "/" + gameStatus.getTotalWaveEnemies(), x, y, new Color(97, 231, 79), new Font(Font.MONOSPACED, Font.BOLD, 30));
+    }
+    
+    private void drawFormattedString(Graphics g, String string, int x, int y, Color color, Font font) {
+        g.setColor(color);
+        g.setFont(font);
+        g.drawString(string, x, y);
     }
 
     private void drawViruses(Graphics g) {

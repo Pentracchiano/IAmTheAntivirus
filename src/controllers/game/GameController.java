@@ -61,6 +61,7 @@ public class GameController extends Controller implements Runnable {
 
         gameStatus.setTotalWaveEnemies(wave.getSize());
         gameStatus.setRemainingWaveEnemies(wave.getSize());
+        gameStatus.setCurrentWave(1);
 
         while (gameStatus.isInGame()) {
             beforeTime = System.currentTimeMillis();
