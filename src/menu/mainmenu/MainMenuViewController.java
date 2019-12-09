@@ -6,11 +6,20 @@
 package menu.mainmenu;
 
 import controllers.IAmTheAntivirus;
+import java.awt.AWTKeyStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JButton;
+import javax.swing.KeyStroke;
 import menu.AbstractMenuViewController;
+import menu.RetroButton;
 import utilities.ImageUtilities;
 
 /**
@@ -40,6 +49,7 @@ public class MainMenuViewController extends AbstractMenuViewController {
         this.backgroundImage = ImageUtilities.loadImageFromPath(BACKGROUND_IMAGE_MENU_PATH);
         initComponents();
         initRetroButtons();
+        changeFocusTraversalKeys();
         
         // needed to place the label relatively to the image and the mainmenu preferredsize
         this.titleLabel.setBounds((this.getPreferredSize().width - this.titleLabel.getPreferredSize().width) / 2,
@@ -49,10 +59,40 @@ public class MainMenuViewController extends AbstractMenuViewController {
         
         
     }
+  
+    private void changeFocusTraversalKeys() {
+        Set<KeyStroke> forwardKeys = new HashSet<>();
+        forwardKeys.add(KeyStroke.getKeyStroke("DOWN"));
+        forwardKeys.add(KeyStroke.getKeyStroke("TAB"));
+        
+        Set<KeyStroke> backwardKeys = new HashSet<>();
+        backwardKeys.add(KeyStroke.getKeyStroke("UP"));
+        
+        this.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, forwardKeys);
+        this.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, backwardKeys);
+    }
     
     private void initRetroButtons(){
         this.setButtonBounds(playGameButton,0);
         this.setButtonBounds(exitGameButton,exitGameButton.getPreferredSize().height+30);
+        
+        final FocusListener buttonFocusHandler = new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                RetroButton target = (RetroButton) e.getSource();
+                target.toggleColors();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                RetroButton target = (RetroButton) e.getSource();
+                target.toggleColors();}
+        };
+        
+        playGameButton.addFocusListener(buttonFocusHandler);
+        exitGameButton.addFocusListener(buttonFocusHandler);
+        
+        playGameButton.requestFocusInWindow();
     }
     
     // needed to place the label relatively to the image and the mainmenu preferredsize
@@ -79,7 +119,7 @@ public class MainMenuViewController extends AbstractMenuViewController {
         g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), null);
         //g.fillRect((int)(0.4956*this.getWidth()), (int)(0.2899*this.getHeight()), (int)(0.3179*this.getWidth()), (int)(0.4406*this.getHeight()));
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
