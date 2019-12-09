@@ -149,28 +149,25 @@ public class GameController extends Controller implements Runnable {
                gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
            } else {
                v.move();
-           }
-           
-            
+           }   
         }
-
-     
+    }
+    
+    // I cannot pass directly the sprite to this funciont because some times I have to synchronize in order to access the sprites
+    private boolean checkCollision(Rectangle hitbox1, Rectangle hitbox2) {
+        return hitbox1.intersects(hitbox2);
     }
 
-    public void checkBaseCollision() {
+    private void checkBaseCollision() {
         Rectangle baseBounds = base.getBounds();
-        
         Iterator<Virus> it = viruses.iterator();
 
-        
         while(it.hasNext()) {
             Virus virus = it.next();
             
-
             Rectangle virusBounds = virus.getBounds();
 
-            if (baseBounds.intersects(virusBounds)) {
-
+            if (checkCollision(baseBounds, virusBounds)) {
                 /*
                 We must define how to represent the condition of the virus that must 
                 disappear from the screen. 
@@ -180,35 +177,25 @@ public class GameController extends Controller implements Runnable {
                 synchronized (base) {
                     base.damage(virus.getAttack());
                 }
+                
                 it.remove();
                 gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
-
             }
         }
 
         if (base.isInfected()) {
             gameStatus.setInGame(false);
         }
-
     }
 
 
-    private void checkHittenViruses(KeyEvent e) {
-        char keyCode = (char) e.getKeyCode();
-        Key pressedKey = null;
-        try{
-            pressedKey = keyboard.getKey(keyCode);
-        }catch(KeyNotFoundException knfe){
-            return;
-        }
-
+    private void checKeyCollision(Key key) {
         synchronized (viruses) {
-            for(Virus v : viruses){
-            if (pressedKey.getBounds().intersects(v.getBounds())){
-                
-                v.damage(pressedKey.getAttack());    
+            for(Virus v: viruses) {
+                if( checkCollision(key.getBounds(), v.getBounds()) ) {
+                    v.damage(key.getAttack());
+                }
             }
-           }
         }
     }
     
@@ -245,21 +232,21 @@ public class GameController extends Controller implements Runnable {
             @Override
             public void keyPressed(KeyEvent e) {
                 int keyCode = e.getKeyCode();
-                try{
+                try {
                     keyboard.press((char) keyCode);
-                }catch(KeyNotFoundException knfe){
-                    return;
+                    checKeyCollision(keyboard.getKey((char) keyCode));
+                } catch(KeyNotFoundException knfe){
+                    
                 }
-                checkHittenViruses(e);
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 int keyCode = e.getKeyCode();
-                try{
-                keyboard.release((char) keyCode);
-                }catch(KeyNotFoundException knfe){
-                    return;
+                try {
+                    keyboard.release((char) keyCode);
+                } catch(KeyNotFoundException knfe){
+                    
                 }
             }
         });
