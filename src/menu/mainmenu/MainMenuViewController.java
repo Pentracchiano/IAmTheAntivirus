@@ -4,19 +4,80 @@
  * and open the template in the editor.
  */
 package menu.mainmenu;
+
 import controllers.IAmTheAntivirus;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.JButton;
 import menu.AbstractMenuViewController;
+import utilities.ImageUtilities;
+
 /**
  *
  * @author Emanuele
  */
 public class MainMenuViewController extends AbstractMenuViewController {
+    
+    private static final double IMAGE_SCREEN_TOP_LEFT_X_SCREEN_RATIO = 0.4956;
+    private static final double IMAGE_SCREEN_TOP_LEFT_Y_SCREEN_RATIO = 0.2899;
+    private static final double IMAGE_SCREEN_WIDTH_SCREEN_RATIO = 0.31789;
+    
+    private static final double IMAGE_SCREEN_TOP_TITLE_MARGIN_RATIO = 0.05;
+    
+    private static final String BACKGROUND_IMAGE_MENU_PATH = "src/resources/background/backgroundMenu.jpg";
+    private final Image backgroundImage;
 
     /**
      * Creates new form MainMenuViewController
+     *
+     * @param preferredSize
      */
-    public MainMenuViewController() {
+    public MainMenuViewController(Dimension preferredSize) {
+        super(preferredSize);
+        //this.setBackground(Color.black);
+
+        this.backgroundImage = ImageUtilities.loadImageFromPath(BACKGROUND_IMAGE_MENU_PATH);
         initComponents();
+        initRetroButtons();
+        
+        // needed to place the label relatively to the image and the mainmenu preferredsize
+        this.titleLabel.setBounds((this.getPreferredSize().width - this.titleLabel.getPreferredSize().width) / 2,
+                (int) (IMAGE_SCREEN_TOP_TITLE_MARGIN_RATIO * this.getPreferredSize().height),
+                this.titleLabel.getPreferredSize().width,
+                this.titleLabel.getPreferredSize().height);
+        
+        
+    }
+    
+    private void initRetroButtons(){
+        this.setButtonBounds(playGameButton,0);
+        this.setButtonBounds(exitGameButton,exitGameButton.getPreferredSize().height+30);
+    }
+    
+    // needed to place the label relatively to the image and the mainmenu preferredsize
+    private void setButtonBounds( JButton button, int padding ){
+                
+        int buttonWidth = button.getPreferredSize().width;
+        int buttonHeight = button.getPreferredSize().height;
+        
+        int x0 = (int)(IMAGE_SCREEN_TOP_LEFT_X_SCREEN_RATIO * this.getPreferredSize().width);
+        int y0 = (int)(IMAGE_SCREEN_TOP_LEFT_Y_SCREEN_RATIO * this.getPreferredSize().height);
+        
+        int leftMargin = (int)((IMAGE_SCREEN_WIDTH_SCREEN_RATIO * this.getPreferredSize().width - buttonWidth) / 2);
+        int x = x0 + leftMargin;
+        
+        int topMargin = buttonHeight;
+        int y = y0 + topMargin + padding;
+        
+        button.setBounds(x, y, buttonWidth, buttonHeight);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), null);
+        //g.fillRect((int)(0.4956*this.getWidth()), (int)(0.2899*this.getHeight()), (int)(0.3179*this.getWidth()), (int)(0.4406*this.getHeight()));
     }
 
     /**
@@ -28,61 +89,58 @@ public class MainMenuViewController extends AbstractMenuViewController {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        startGameButton = new javax.swing.JButton();
-        exitGameButton = new javax.swing.JButton();
+        exitGameButton = new menu.RetroButton();
+        titleLabel = new javax.swing.JLabel();
+        playGameButton = new menu.RetroButton();
 
-        startGameButton.setText("Start game!");
-        startGameButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startGameButtonActionPerformed(evt);
-            }
-        });
+        setOpaque(false);
+        setLayout(null);
 
-        exitGameButton.setText("Exit");
+        exitGameButton.setBackground(new java.awt.Color(4, 55, 98));
+        exitGameButton.setText("exit");
+        exitGameButton.setPreferredSize(new java.awt.Dimension(205, 56));
         exitGameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exitGameButtonActionPerformed(evt);
             }
         });
+        add(exitGameButton);
+        exitGameButton.setBounds(250, 310, 250, 56);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(150, 150, 150)
-                        .addComponent(startGameButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(172, 172, 172)
-                        .addComponent(exitGameButton)))
-                .addContainerGap(50, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(56, 56, 56)
-                .addComponent(startGameButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
-                .addComponent(exitGameButton)
-                .addGap(74, 74, 74))
-        );
+        titleLabel.setBackground(java.awt.Color.black);
+        titleLabel.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 80));
+        titleLabel.setForeground(java.awt.Color.green);
+        titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        titleLabel.setText("I Am The Antivirus");
+        add(titleLabel);
+        titleLabel.setBounds(200, 30, 910, 103);
+
+        playGameButton.setBackground(new java.awt.Color(4, 55, 98));
+        playGameButton.setText("play");
+        playGameButton.setPreferredSize(new java.awt.Dimension(205, 56));
+        playGameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                playGameButtonActionPerformed(evt);
+            }
+        });
+        add(playGameButton);
+        playGameButton.setBounds(250, 250, 250, 56);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void startGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startGameButtonActionPerformed
-        IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
-        gameApplication.startGame();
-    }//GEN-LAST:event_startGameButtonActionPerformed
 
     private void exitGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitGameButtonActionPerformed
         IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
         gameApplication.closeGame();
     }//GEN-LAST:event_exitGameButtonActionPerformed
 
+    private void playGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playGameButtonActionPerformed
+        IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
+        gameApplication.startGame();
+    }//GEN-LAST:event_playGameButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton exitGameButton;
-    private javax.swing.JButton startGameButton;
+    private menu.RetroButton exitGameButton;
+    private menu.RetroButton playGameButton;
+    private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 }

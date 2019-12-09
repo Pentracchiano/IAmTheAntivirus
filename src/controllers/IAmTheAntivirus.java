@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import views.game.GameView;
 import menu.AbstractMenuViewController;
 import menu.mainmenu.MainMenuViewController;
+import utilities.FontUtilities;
 
 /**
  * Singleton class which has the global game status and screens to display at a
@@ -25,14 +26,19 @@ public class IAmTheAntivirus {
     private final GameView gameView;
     private final GameController gameController;
     private final AbstractMenuViewController currentMenu;
-
+    
     private static IAmTheAntivirus gameApplication;
+    
+    private static final String FONT_MENU_PATH = "src/resources/fonts/Minecraft.ttf";
 
     private IAmTheAntivirus() {
+        FontUtilities.registerFont(FONT_MENU_PATH);
+       
         frame = new JFrame();
         gameView = new GameView();
         gameController = new GameController(gameView);
-        currentMenu = new MainMenuViewController();
+        currentMenu = new MainMenuViewController(gameView.getPanelDimension());
+        
         
         initFrame();
         
@@ -98,8 +104,6 @@ public class IAmTheAntivirus {
         frame.setLocationRelativeTo(null);
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        //frame.add(gameView);
     }
 
     public static void main(String[] args) {

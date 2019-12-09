@@ -5,6 +5,8 @@
  */
 package menu;
 
+import java.awt.Dimension;
+
 /**
  *
  * @author david
@@ -13,9 +15,11 @@ public abstract class AbstractMenuViewController extends javax.swing.JPanel {
 
     /**
      * Creates new form AbstractMenuViewController
+     * @param preferredSize
      */
-    public AbstractMenuViewController() {
+    public AbstractMenuViewController(Dimension preferredSize) {
         initComponents();
+        this.setPreferredSize(preferredSize);
     }
 
     /**

@@ -18,7 +18,7 @@ import javax.swing.JButton;
 public class RetroButton extends JButton {
     
     private static final Color DEFAULT_BG_COLOR = Color.black;
-    private static final Color DEFAULT_FG_COLOR = Color.white;
+    private static final Color DEFAULT_FG_COLOR = Color.green;
     
     public RetroButton(){
         super();

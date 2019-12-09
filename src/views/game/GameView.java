@@ -34,6 +34,7 @@ public class GameView extends View {
     private ArrayList<Virus> viruses;
     private final int B_WIDTH = 1300;
     private final int B_HEIGHT = 747;
+    private final Dimension dimension = new Dimension(B_WIDTH,B_HEIGHT);
     private BufferedImage backgroundImage;
     
     private GameStatus gameStatus;
@@ -65,7 +66,7 @@ public class GameView extends View {
             Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
         }
 	setFocusable(true);
-        setPreferredSize(new Dimension(B_WIDTH,B_HEIGHT));
+        setPreferredSize(dimension);
         keyboard = new Keyboard(160,300);
         
         this.gameStatus = GameStatus.getInstance();
@@ -200,6 +201,10 @@ public class GameView extends View {
     @Override
     public int getHeight() {
         return backgroundImage.getHeight();
+    }
+    
+    public Dimension getPanelDimension() {
+        return dimension;
     }
     
     public GameStatus getGameStatus() {
