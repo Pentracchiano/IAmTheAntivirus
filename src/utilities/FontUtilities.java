@@ -17,13 +17,16 @@ import java.io.IOException;
  */
 public class FontUtilities {
     
-    public static void registerFont(String fontPath){
+    public static Font registerFont(String fontPath){
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File(fontPath)));
+            Font minecraft = Font.createFont(Font.TRUETYPE_FONT, new File(fontPath));
+            ge.registerFont(minecraft);
+            return minecraft;
         } catch (IOException|FontFormatException e) {
             System.out.println("Failed to register font.");
         }
+        return null;
     }
     
 }

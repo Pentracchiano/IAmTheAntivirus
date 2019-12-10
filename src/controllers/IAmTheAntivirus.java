@@ -6,11 +6,14 @@
 package controllers;
 
 import controllers.game.GameController;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import views.game.GameView;
 import menu.AbstractMenuViewController;
+import menu.gameovermenu.GameOverViewController;
 import menu.mainmenu.MainMenuViewController;
 
 /**
@@ -22,17 +25,20 @@ import menu.mainmenu.MainMenuViewController;
 public class IAmTheAntivirus {
 
     private final JFrame frame;
-    private final GameView gameView;
-    private final GameController gameController;
-    private final AbstractMenuViewController currentMenu;
+    private GameView gameView;
+    private GameController gameController;
+    //HO MODIFICATO currentMenu da final a non final
+    private AbstractMenuViewController currentMenu;
+    
 
     private static IAmTheAntivirus gameApplication;
 
     private IAmTheAntivirus() {
         frame = new JFrame();
-        gameView = new GameView();
-        gameController = new GameController(gameView);
+
         currentMenu = new MainMenuViewController();
+        
+        
         
         initFrame();
         
@@ -66,15 +72,49 @@ public class IAmTheAntivirus {
     public void startGame() {
         EventQueue.invokeLater(() -> {
             frame.remove(currentMenu);
-            
+            gameView = new GameView();
+            gameController = new GameController(gameView);
             frame.add(gameView);
             
             frame.pack();
             frame.setLocationRelativeTo(null);
             
-            gameView.requestFocusInWindow(); // needed in order to capture events of the keyboard: DO NOT CHANGE TO REQUESTFOCUS because it's platform dependent
+            gameView.requestFocusInWindow();
         });
+    }
+    
+    public void displayMainMenu(){
+        EventQueue.invokeLater(() -> {
+            frame.remove(currentMenu);
+            currentMenu = new MainMenuViewController();
+            frame.add(currentMenu);
+    
 
+            
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            
+            gameView.requestFocusInWindow();
+        });
+    }
+    
+    
+    
+
+    
+    public void displayGameOverMenu(){
+        EventQueue.invokeLater(() -> {
+            frame.remove(gameView);
+            currentMenu = new GameOverViewController();
+            frame.add(currentMenu);
+    
+
+            
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            
+            gameView.requestFocusInWindow();
+        });
     }
     
     /**
