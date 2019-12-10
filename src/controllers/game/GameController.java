@@ -1,5 +1,6 @@
 package controllers.game;
 
+import controllers.IAmTheAntivirus;
 import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -68,6 +69,7 @@ public class GameController extends Controller implements Runnable {
 
             if (wave.getSize() == 0 && viruses.isEmpty()) {
                 gameStatus.setInGame(false);
+                this.gameEnded();
             }
 
             // spawn and move
@@ -185,6 +187,7 @@ public class GameController extends Controller implements Runnable {
 
         if (base.isInfected()) {
             gameStatus.setInGame(false);
+            this.gameEnded();
         }
     }
 
@@ -218,6 +221,9 @@ public class GameController extends Controller implements Runnable {
             @Override
             public void ancestorRemoved(AncestorEvent e) {
                 gameStatus.setInGame(false);
+               
+                
+                
             }
             
             @Override
@@ -250,6 +256,10 @@ public class GameController extends Controller implements Runnable {
                 }
             }
         });
+    }
+    
+    private void gameEnded(){
+        IAmTheAntivirus.getGameInstance().displayGameOverMenu();
     }
 
 }
