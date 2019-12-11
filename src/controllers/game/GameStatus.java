@@ -15,7 +15,7 @@ public class GameStatus {
     
     private boolean inGame;
     private boolean inWave;
-    
+    private boolean inWaveTransition;
     // the number of the current wave
     private int currentWave;
     
@@ -24,7 +24,7 @@ public class GameStatus {
     // totalWaveEnemies - totalDeadEnemies
     private int remainingWaveEnemies;
     
-    private GameStatus(boolean inGame, boolean inWave, int currentWave, int totalWaveEnemies, int remainingWaveEnemies) {
+    private GameStatus(boolean inGame, boolean inWave, int currentWave, int totalWaveEnemies, int remainingWaveEnemies, boolean waveTransition) {
         this.inGame = inGame;
         this.inWave = inWave;
         
@@ -36,7 +36,7 @@ public class GameStatus {
     
     public synchronized static GameStatus getInstance() {
         if(GameStatus.instance == null) {
-            instance = new GameStatus(false, false, 0, 0, 0);        
+            instance = new GameStatus(false, false, 0, 0, 0, false);        
         }
         return instance;
     }
@@ -80,4 +80,13 @@ public class GameStatus {
     public synchronized void setRemainingWaveEnemies(int remainingWaveEnemies) {
         this.remainingWaveEnemies = remainingWaveEnemies;
     }
+
+    public boolean isInWaveTransition() {
+        return inWaveTransition;
+    }
+
+    public void setInWaveTransition(boolean waveTransition) {
+        this.inWaveTransition = waveTransition;
+    }
+    
 }
