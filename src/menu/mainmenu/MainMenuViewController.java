@@ -6,7 +6,6 @@
 package menu.mainmenu;
 
 import controllers.IAmTheAntivirus;
-import java.awt.AWTKeyStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
