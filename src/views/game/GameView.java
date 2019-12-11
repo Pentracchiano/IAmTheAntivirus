@@ -57,7 +57,7 @@ public class GameView extends View {
     private void initView() {
 
         viruses = new ArrayList<>();
-        base = new Base(0, 0, 150);
+        base = new Base(0, 0, 20);
         setBackground(Color.GRAY);
         try {
             backgroundImage = ImageIO.read(new File("src/resources/background/background.png"));
