@@ -34,6 +34,7 @@ public class RetroButton extends JButton {
         this.setBackground(DEFAULT_BG_COLOR);
         this.setForeground(DEFAULT_FG_COLOR);
         this.setFont(new Font("Minecraft", Font.BOLD, 40));
+        
     }
     
     @Override

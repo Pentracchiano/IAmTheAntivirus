@@ -144,6 +144,11 @@ public class MainMenuViewController extends AbstractMenuViewController {
                 exitGameButtonActionPerformed(evt);
             }
         });
+        exitGameButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                exitGameButtonKeyPressed(evt);
+            }
+        });
         add(exitGameButton);
         exitGameButton.setBounds(250, 310, 250, 56);
 
@@ -163,6 +168,11 @@ public class MainMenuViewController extends AbstractMenuViewController {
                 playGameButtonActionPerformed(evt);
             }
         });
+        playGameButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                playGameButtonKeyPressed(evt);
+            }
+        });
         add(playGameButton);
         playGameButton.setBounds(250, 250, 250, 56);
     }// </editor-fold>//GEN-END:initComponents
@@ -176,6 +186,20 @@ public class MainMenuViewController extends AbstractMenuViewController {
         IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
         gameApplication.startGame();
     }//GEN-LAST:event_playGameButtonActionPerformed
+
+    private void playGameButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_playGameButtonKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
+            gameApplication.startGame();
+        }
+    }//GEN-LAST:event_playGameButtonKeyPressed
+
+    private void exitGameButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_exitGameButtonKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
+            gameApplication.closeGame();
+        }
+    }//GEN-LAST:event_exitGameButtonKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

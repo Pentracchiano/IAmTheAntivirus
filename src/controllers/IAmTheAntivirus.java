@@ -6,11 +6,15 @@
 package controllers;
 
 import controllers.game.GameController;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import views.game.GameView;
 import menu.AbstractMenuViewController;
+import menu.gameovermenu.GameOverViewController;
 import menu.mainmenu.MainMenuViewController;
 import utilities.FontUtilities;
 
@@ -23,22 +27,18 @@ import utilities.FontUtilities;
 public class IAmTheAntivirus {
 
     private final JFrame frame;
-    private final GameView gameView;
-    private final GameController gameController;
-    private final AbstractMenuViewController currentMenu;
-    
+    private GameView gameView;
+    private GameController gameController;
+    //HO MODIFICATO currentMenu da final a non final
+    private AbstractMenuViewController currentMenu;
     private static IAmTheAntivirus gameApplication;
-    
     private static final String FONT_MENU_PATH = "src/resources/fonts/Minecraft.ttf";
+    private final Dimension panelDimension = new GameView().getPanelDimension();
 
     private IAmTheAntivirus() {
         FontUtilities.registerFont(FONT_MENU_PATH);
        
         frame = new JFrame();
-        gameView = new GameView();
-        gameController = new GameController(gameView);
-        currentMenu = new MainMenuViewController(gameView.getPanelDimension());
-        
         
         initFrame();
         
@@ -72,15 +72,37 @@ public class IAmTheAntivirus {
     public void startGame() {
         EventQueue.invokeLater(() -> {
             frame.remove(currentMenu);
-            
+            gameView = new GameView();
+            gameController = new GameController(gameView);
             frame.add(gameView);
-            
             frame.pack();
             frame.setLocationRelativeTo(null);
-            
-            gameView.requestFocusInWindow(); // needed in order to capture events of the keyboard: DO NOT CHANGE TO REQUESTFOCUS because it's platform dependent
+            gameView.requestFocusInWindow();
         });
+    }
+    
+    public void displayMainMenu(){
+        EventQueue.invokeLater(() -> {
+            if(currentMenu!=null)
+                frame.remove(currentMenu);
+            currentMenu = new MainMenuViewController(panelDimension);
+            frame.add(currentMenu);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            currentMenu.requestFocusInWindow();
+        });
+    }
 
+    public void displayGameOverMenu(){
+        EventQueue.invokeLater(() -> {
+  
+            frame.remove(gameView);
+            currentMenu = new GameOverViewController(panelDimension);
+            frame.add(currentMenu);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            currentMenu.requestFocusInWindow();
+        });
     }
     
     /**
@@ -98,12 +120,10 @@ public class IAmTheAntivirus {
         frame.setResizable(false);
         frame.setTitle("IAmTheAntivirus");
         // this method has to be called after add() and before setLocationRelativeTo()
-        frame.add(currentMenu);
-
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        displayMainMenu();
+        
+        
     }
 
     public static void main(String[] args) {
