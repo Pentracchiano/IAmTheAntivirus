@@ -11,10 +11,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.KeyStroke;
 import menu.AbstractMenuViewController;
+import menu.RetroButton;
 import utilities.FontUtilities;
 
 /**
@@ -46,8 +49,34 @@ public class GameOverViewController extends AbstractMenuViewController {
         title.setForeground(foregroundColor);
         title.setBackground(backgroundColor);
         title.setFont(new Font("Minecraft", Font.BOLD, 60));
+        
+        
+       
+        initRetroButtons();
         changeFocusTraversalKeys();
        
+       
+    }
+    
+    private void initRetroButtons(){
+        
+        final FocusListener buttonFocusHandler = new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                RetroButton target = (RetroButton) e.getSource();
+                target.toggleColors();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                RetroButton target = (RetroButton) e.getSource();
+                target.toggleColors();}
+        };
+        
+        retryButton.addFocusListener(buttonFocusHandler);
+        backToMainMenuButton.addFocusListener(buttonFocusHandler);
+        
+  
     }
     
     private void changeFocusTraversalKeys() {
@@ -77,6 +106,11 @@ public class GameOverViewController extends AbstractMenuViewController {
         backToMainMenuButton = new menu.RetroButton();
 
         setBackground(new java.awt.Color(0, 0, 255));
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
 
         subTitle.setBackground(new java.awt.Color(0, 0, 255));
         subTitle.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
@@ -87,14 +121,6 @@ public class GameOverViewController extends AbstractMenuViewController {
         retryButton.setBackground(new java.awt.Color(0, 0, 255));
         retryButton.setForeground(new java.awt.Color(255, 255, 255));
         retryButton.setText("retry");
-        retryButton.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                retryButtonFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                retryButtonFocusLost(evt);
-            }
-        });
         retryButton.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 retryButtonKeyPressed(evt);
@@ -110,14 +136,6 @@ public class GameOverViewController extends AbstractMenuViewController {
         backToMainMenuButton.setBackground(new java.awt.Color(0, 0, 255));
         backToMainMenuButton.setForeground(new java.awt.Color(255, 255, 255));
         backToMainMenuButton.setText("go back to main menu");
-        backToMainMenuButton.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                backToMainMenuButtonFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                backToMainMenuButtonFocusLost(evt);
-            }
-        });
         backToMainMenuButton.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 backToMainMenuButtonKeyPressed(evt);
@@ -157,10 +175,6 @@ public class GameOverViewController extends AbstractMenuViewController {
 
     }//GEN-LAST:event_retryButtonActionPerformed
 
-    private void backToMainMenuButtonFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_backToMainMenuButtonFocusGained
-        backToMainMenuButton.toggleColors();
-    }//GEN-LAST:event_backToMainMenuButtonFocusGained
-
     private void backToMainMenuButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_backToMainMenuButtonKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_ENTER){
             IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
@@ -175,17 +189,9 @@ public class GameOverViewController extends AbstractMenuViewController {
         }
     }//GEN-LAST:event_retryButtonKeyPressed
 
-    private void retryButtonFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_retryButtonFocusGained
-        retryButton.toggleColors();
-    }//GEN-LAST:event_retryButtonFocusGained
-
-    private void retryButtonFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_retryButtonFocusLost
-        retryButton.toggleColors();
-    }//GEN-LAST:event_retryButtonFocusLost
-
-    private void backToMainMenuButtonFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_backToMainMenuButtonFocusLost
-        backToMainMenuButton.toggleColors();
-    }//GEN-LAST:event_backToMainMenuButtonFocusLost
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+        retryButton.requestFocusInWindow();
+    }//GEN-LAST:event_formFocusGained
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

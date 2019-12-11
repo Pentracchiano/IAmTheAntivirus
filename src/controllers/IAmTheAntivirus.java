@@ -90,6 +90,7 @@ public class IAmTheAntivirus {
             frame.pack();
             frame.setLocationRelativeTo(null);
             currentMenu.requestFocusInWindow();
+            
         });
     }
 
