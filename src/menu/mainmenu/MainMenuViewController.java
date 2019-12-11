@@ -48,6 +48,7 @@ public class MainMenuViewController extends AbstractMenuViewController {
 
         this.backgroundImage = ImageUtilities.loadImageFromPath(BACKGROUND_IMAGE_MENU_PATH);
         initComponents();
+       
         initRetroButtons();
         changeFocusTraversalKeys();
         
@@ -91,8 +92,7 @@ public class MainMenuViewController extends AbstractMenuViewController {
         
         playGameButton.addFocusListener(buttonFocusHandler);
         exitGameButton.addFocusListener(buttonFocusHandler);
-        
-        playGameButton.requestFocusInWindow();
+    
     }
     
     // needed to place the label relatively to the image and the mainmenu preferredsize
@@ -134,6 +134,11 @@ public class MainMenuViewController extends AbstractMenuViewController {
         playGameButton = new menu.RetroButton();
 
         setOpaque(false);
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
         setLayout(null);
 
         exitGameButton.setBackground(new java.awt.Color(4, 55, 98));
@@ -189,17 +194,19 @@ public class MainMenuViewController extends AbstractMenuViewController {
 
     private void playGameButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_playGameButtonKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
-            gameApplication.startGame();
+            playGameButtonActionPerformed(null);
         }
     }//GEN-LAST:event_playGameButtonKeyPressed
 
     private void exitGameButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_exitGameButtonKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
-            gameApplication.closeGame();
+            exitGameButtonActionPerformed(null);
         }
     }//GEN-LAST:event_exitGameButtonKeyPressed
+
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+        playGameButton.requestFocusInWindow();
+    }//GEN-LAST:event_formFocusGained
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
