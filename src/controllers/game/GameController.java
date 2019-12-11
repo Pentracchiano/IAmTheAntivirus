@@ -5,7 +5,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import models.*;
@@ -39,6 +40,8 @@ public class GameController extends Controller implements Runnable {
      */
     private final GameStatus gameStatus;
 
+    private final WaveManager waveManager;
+
     public GameController(GameView view) {
         super(view);
 
@@ -46,9 +49,10 @@ public class GameController extends Controller implements Runnable {
         this.base = view.getBase();
         this.viruses = view.getViruses();
         this.gameStatus = GameStatus.getInstance();
+        this.waveManager = new WaveManager();
 
         this.gameLoop = new Thread(this);
-        
+
         this.initListeners();
     }
 
@@ -57,7 +61,8 @@ public class GameController extends Controller implements Runnable {
         long beforeTime, timeDiff, sleep;
         int timeCount = 0; // counts the number of cycles
 
-        Wave wave = buildWave();
+        //Wave wave = buildWave();
+        Wave wave = waveManager.getWave(keyboard.getX(), keyboard.getWidth(), view.getHeight());
 
         gameStatus.setTotalWaveEnemies(wave.getSize());
         gameStatus.setRemainingWaveEnemies(wave.getSize());
@@ -65,10 +70,6 @@ public class GameController extends Controller implements Runnable {
 
         while (gameStatus.isInGame()) {
             beforeTime = System.currentTimeMillis();
-
-            if (wave.getSize() == 0 && viruses.isEmpty()) {
-                gameStatus.setInGame(false);
-            }
 
             // spawn and move
             synchronized (viruses) {
@@ -95,39 +96,30 @@ public class GameController extends Controller implements Runnable {
             }
 
             timeCount++;
-        }
 
-    }
-
-    // deve essere eliminato, faremo una classe wave manager
-    private Wave buildWave() {
-        Random r = new Random();
-
-        int virusType;
-        int delay;
-        Virus virus = null;
-
-        Wave wave = new Wave();
-
-
-        for(int i = 0; i < 20; i++) {
-            
-            virusType = r.nextInt(2);
-            if (virusType == 0) {
-                virus = new Worm(0, view.getHeight());
-            } else if (virusType == 1) {
-                virus = new Trojan(0, view.getHeight());
+            if (wave.getSize() == 0 && viruses.isEmpty()) {
+                /*
+                All the enemies have spawned and they've been killed/they've
+                reached the base, so the game can continue with the successive
+                wave.
+                 */
+                wave = waveManager.getWave(keyboard.getX(), keyboard.getWidth(), view.getHeight());
+                timeCount = 0;
+                gameStatus.setTotalWaveEnemies(wave.getSize());
+                gameStatus.setRemainingWaveEnemies(wave.getSize());
+                gameStatus.setCurrentWave(gameStatus.getCurrentWave() + 1);
+                gameStatus.setInWaveTransition(true);
+                for(int i=0; i<3000/DELAY_MS; i++){
+                    view.update();
+                    try {
+                        Thread.sleep(DELAY_MS);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                gameStatus.setInWaveTransition(false);
             }
-            
-            int x = r.nextInt(keyboard.getWidth() - virus.getWidth()) + keyboard.getX();
-            virus.setX(x);
-
-            delay = r.nextInt(10) + i * 20;
-
-            wave.addElement(new VirusToSpawn(virus, delay));
         }
-
-        return wave;
     }
 
     private void updateViruses(Wave wave, int timeCount) {
@@ -138,21 +130,21 @@ public class GameController extends Controller implements Runnable {
                 viruses.add(wave.removeCurrentElement().getVirus());
             }
         }
-        
+
         Iterator<Virus> it = viruses.iterator();
-        
+
         while (it.hasNext()) {
-           Virus v=it.next();
-           
-           if(!v.isAlive()){
-               it.remove();
-               gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
-           } else {
-               v.move();
-           }   
+            Virus v = it.next();
+
+            if (!v.isAlive()) {
+                it.remove();
+                gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
+            } else {
+                v.move();
+            }
         }
     }
-    
+
     // I cannot pass directly the sprite to this funciont because some times I have to synchronize in order to access the sprites
     private boolean checkCollision(Rectangle hitbox1, Rectangle hitbox2) {
         return hitbox1.intersects(hitbox2);
@@ -162,9 +154,9 @@ public class GameController extends Controller implements Runnable {
         Rectangle baseBounds = base.getBounds();
         Iterator<Virus> it = viruses.iterator();
 
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             Virus virus = it.next();
-            
+
             Rectangle virusBounds = virus.getBounds();
 
             if (checkCollision(baseBounds, virusBounds)) {
@@ -177,7 +169,7 @@ public class GameController extends Controller implements Runnable {
                 synchronized (base) {
                     base.damage(virus.getAttack());
                 }
-                
+
                 it.remove();
                 gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
             }
@@ -188,45 +180,41 @@ public class GameController extends Controller implements Runnable {
         }
     }
 
-
     private void checKeyCollision(Key key) {
         synchronized (viruses) {
-            for(Virus v: viruses) {
-                if( checkCollision(key.getBounds(), v.getBounds()) ) {
+            for (Virus v : viruses) {
+                if (checkCollision(key.getBounds(), v.getBounds())) {
                     v.damage(key.getAttack());
                 }
             }
         }
     }
-    
-    
 
-    private void initListeners() { 
+    private void initListeners() {
         view.addAncestorListener(new AncestorListener() {
             // unfortunately does not exist an AncestorListenerAdapter
             // so I have to implement all the methods
             // even if I need only ancestorAdded and acestorRemoved
-            
+
             // this method is called when the view is added to the frame
             @Override
             public void ancestorAdded(AncestorEvent e) {
                 gameStatus.setInGame(true);
                 gameLoop.start();
             }
-            
+
             // this event is called when the view is removed by the frame
             @Override
             public void ancestorRemoved(AncestorEvent e) {
                 gameStatus.setInGame(false);
             }
-            
+
             @Override
             public void ancestorMoved(AncestorEvent e) {
-                
+
             }
 
         });
-        
 
         view.addKeyListener(new KeyAdapter() {
             @Override
@@ -235,8 +223,8 @@ public class GameController extends Controller implements Runnable {
                 try {
                     keyboard.press((char) keyCode);
                     checKeyCollision(keyboard.getKey((char) keyCode));
-                } catch(KeyNotFoundException knfe){
-                    
+                } catch (KeyNotFoundException knfe) {
+
                 }
             }
 
@@ -245,8 +233,8 @@ public class GameController extends Controller implements Runnable {
                 int keyCode = e.getKeyCode();
                 try {
                     keyboard.release((char) keyCode);
-                } catch(KeyNotFoundException knfe){
-                    
+                } catch (KeyNotFoundException knfe) {
+
                 }
             }
         });
