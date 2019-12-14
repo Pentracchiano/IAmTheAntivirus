@@ -1,0 +1,25 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package utilities;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author LordCatello
+ */
+public class ThreadUtilities {
+    
+    public static void sleep(long time_ms) {
+        try {
+            Thread.sleep(time_ms);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ThreadUtilities.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+}

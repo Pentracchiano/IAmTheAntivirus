@@ -73,6 +73,7 @@ public class IAmTheAntivirus {
     public void startGame() {
         EventQueue.invokeLater(() -> {
             frame.remove(currentMenu);
+            GameStatus.disposeInstance();
             gameView = new GameView();
             gameController = new GameController(gameView);
             frame.add(gameView);
@@ -96,7 +97,7 @@ public class IAmTheAntivirus {
     }
 
     public void displayGameOverMenu(){
-        GameStatus.resetInstance();
+        GameStatus.disposeInstance();
         EventQueue.invokeLater(() -> {
             frame.remove(gameView);
             currentMenu = new GameOverViewController(panelDimension);

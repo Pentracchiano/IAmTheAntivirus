@@ -5,6 +5,8 @@
  */
 package controllers.game;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import models.sprites.Trojan;
 import models.sprites.Virus;
@@ -42,7 +44,8 @@ public class WaveManager {
         int delay;
         Virus virus = null;
 
-        Wave wave = new Wave();
+        // Wave wave = new Wave();
+        List<VirusToSpawn> virusesToSpawn = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
 
@@ -58,9 +61,9 @@ public class WaveManager {
 
             delay = r.nextInt(10) + i * 20;
 
-            wave.addElement(new VirusToSpawn(virus, delay));
+            virusesToSpawn.add(new VirusToSpawn(virus, delay));
         }
 
-        return wave;
+        return new Wave(virusesToSpawn);
     }
 }

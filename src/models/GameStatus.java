@@ -17,14 +17,10 @@ public class GameStatus {
     private boolean inGame;
     private boolean inWave;
     private boolean inWaveTransition;
+    
     // the number of the current wave
-    private int currentWave;
-
-    // number of enemies assigned to the currentWave
-    private int totalWaveEnemies;
-    // totalWaveEnemies - totalDeadEnemies
-    private int remainingWaveEnemies;
-
+    private int currentWaveNumber;
+    
     /**
      * the next two variables represent the score of the player, incrementing
      * during the game. The "score" never decreases; the bitcoins are always
@@ -40,7 +36,7 @@ public class GameStatus {
      * the multiplier is reset to 1.
      */
     private int multiplier = 1;
-    private final int MAX_MULTIPLIER = 8;
+    public final int MAX_MULTIPLIER = 8;
 
     /**
      * represents how many times the player hit the viruses consecutively and is
@@ -49,26 +45,28 @@ public class GameStatus {
      * or when a virus hit the base
      */
     private int consecutiveHits = 0;
-    private final int HITS_PER_MULTIPLIER = 3;
+    public final int HITS_PER_MULTIPLIER = 3;
 
-    private GameStatus(boolean inGame, boolean inWave, int currentWave, int totalWaveEnemies, int remainingWaveEnemies, boolean waveTransition) {
-        this.inGame = inGame;
-        this.inWave = inWave;
-
-        this.currentWave = currentWave;
-
-        this.totalWaveEnemies = totalWaveEnemies;
-        this.remainingWaveEnemies = remainingWaveEnemies;
+    private GameStatus() {
+        this.inGame = false;
+        this.inWave = false;
+        this.inWaveTransition = false;
+        
+        this.currentWaveNumber = 0;
     }
 
     public synchronized static GameStatus getInstance() {
-        if (GameStatus.instance == null) {
-            instance = new GameStatus(false, false, 0, 0, 0, false);
+        if(GameStatus.instance == null) {
+            instance = new GameStatus();       
         }
         return instance;
     }
 
-    public synchronized static void resetInstance(){
+    /**
+     * Marks the current GameStatus instance for deletion: the next instance will be a fresh one
+     * with default parameters.
+     */
+    public synchronized static void disposeInstance(){
         GameStatus.instance = null;
     }
     
@@ -128,28 +126,12 @@ public class GameStatus {
         this.inWave = inWave;
     }
 
-    public synchronized int getCurrentWave() {
-        return currentWave;
+    public synchronized int getCurrentWaveNumber() {
+        return currentWaveNumber;
     }
 
-    public synchronized void setCurrentWave(int currentWave) {
-        this.currentWave = currentWave;
-    }
-
-    public synchronized int getTotalWaveEnemies() {
-        return totalWaveEnemies;
-    }
-
-    public synchronized void setTotalWaveEnemies(int totalWaveEnemies) {
-        this.totalWaveEnemies = totalWaveEnemies;
-    }
-
-    public synchronized int getRemainingWaveEnemies() {
-        return remainingWaveEnemies;
-    }
-
-    public synchronized void setRemainingWaveEnemies(int remainingWaveEnemies) {
-        this.remainingWaveEnemies = remainingWaveEnemies;
+    public synchronized void setCurrentWaveNumber(int currentWaveNumber) {
+        this.currentWaveNumber = currentWaveNumber;
     }
 
     public synchronized boolean isInWaveTransition() {
@@ -160,4 +142,8 @@ public class GameStatus {
         this.inWaveTransition = waveTransition;
     }
 
+    @Override
+    public String toString() {
+        return "GameStatus{" + "inGame=" + inGame + ", inWave=" + inWave + ", inWaveTransition=" + inWaveTransition + ", currentWaveNumber=" + currentWaveNumber + ", score=" + score + ", bitcoins=" + bitcoins + ", multiplier=" + multiplier + ", MAX_MULTIPLIER=" + MAX_MULTIPLIER + ", consecutiveHits=" + consecutiveHits + ", HITS_PER_MULTIPLIER=" + HITS_PER_MULTIPLIER + '}';
+    }
 }

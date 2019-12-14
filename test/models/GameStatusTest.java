@@ -6,9 +6,7 @@
 package models;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -18,61 +16,112 @@ import static org.junit.Assert.*;
  */
 public class GameStatusTest {
     
-    public GameStatusTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
+    GameStatus gameStatus;
     
     @Before
     public void setUp() {
+        gameStatus = GameStatus.getInstance();
     }
     
     @After
     public void tearDown() {
+        GameStatus.disposeInstance();
     }
 
     /**
-     * Test of getInstance method, of class GameStatus.
+     * Tests if the get instance gives a default-initialized instance when called for the first time.
      */
     @Test
     public void testGetInstance() {
-        System.out.println("getInstance");
-        GameStatus expResult = null;
-        GameStatus result = GameStatus.getInstance();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        GameStatus currentInstance = gameStatus;
+        
+        int actualBitcoins = currentInstance.getBitcoins();
+        int actualMultiplier = currentInstance.getMultiplier();
+        int actualScore = currentInstance.getScore();
+        boolean actualIsInGame = currentInstance.isInGame();
+        boolean actualIsInWave = currentInstance.isInWave();
+        boolean actualIsInWaveTransition = currentInstance.isInWaveTransition();
+        
+        int defaultBitcoins = 0;
+        int defaultMultiplier = 1;
+        int defaultScore = 0;
+        boolean defaultIsInGame = false;
+        boolean defaultIsInWave = false;
+        boolean defaultIsInWaveTransition = false;
+        
+        assertEquals(actualBitcoins, defaultBitcoins);
+        assertEquals(actualMultiplier, defaultMultiplier);
+        assertEquals(actualScore, defaultScore);
+        assertEquals(actualIsInGame, defaultIsInGame);
+        assertEquals(actualIsInWave, defaultIsInWave);
+        assertEquals(actualIsInWaveTransition, defaultIsInWaveTransition);
     }
-
+    
     /**
-     * Test of resetInstance method, of class GameStatus.
+     * Test of disposeInstance method, of class GameStatus.
+     * Checks if the new instance is a new one.
      */
     @Test
-    public void testResetInstance() {
-        System.out.println("resetInstance");
-        GameStatus.resetInstance();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+    public void testDisposeInstance() {
+        System.out.println("disposeInstance");
+        
+        GameStatus previousInstance = gameStatus;
+        
+        // random modifications to the old instance
+        gameStatus.addBitcoinsAndScore(25);
+        gameStatus.setInGame(true);
+        for(int i = 0; i < 100; i++) {
+            gameStatus.incrementConsecutiveHits();
+        }
+        gameStatus.setInWave(true);
+        
+        // reset of the instance
+        
+        GameStatus.disposeInstance();
+        GameStatus currentInstance = GameStatus.getInstance();
+        
+        // checking usage of the instance
+        
+        assertNotSame("After dispose, GameStatus is still using the old instance.",
+                previousInstance, currentInstance);
+        
+        assertSame("After dispose, the current instance is different from the getInstance.",
+                currentInstance, GameStatus.getInstance());
+        
+        }
 
     /**
      * Test of getMultiplier method, of class GameStatus.
+     * Default case is not checked: it is checked in testGetInstance().
+     * Checking if the multiplier exceeds max multiplier.
      */
     @Test
-    public void testGetMultiplier() {
-        System.out.println("getMultiplier");
-        GameStatus instance = null;
-        int expResult = 0;
-        int result = instance.getMultiplier();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testGetMultiplierMax() {
+        System.out.println("getMultiplier Max");
+        
+        for(int i = 0; i < gameStatus.MAX_MULTIPLIER * gameStatus.HITS_PER_MULTIPLIER * 2; i++) {
+            gameStatus.incrementConsecutiveHits();
+        }
+        
+        assertEquals(gameStatus.getMultiplier(), gameStatus.MAX_MULTIPLIER);
+    }
+    
+    /**
+     * Test of getMultiplier method, of class GameStatus.
+     * Default case is not checked: it is checked in testGetInstance().
+     * Checking if the multiplier is correctly updated when incrementing the consecutive hits.
+     */
+    @Test
+    public void testGetMultiplierPerHits() {
+        System.out.println("testGetMultiplierPerHits");
+        
+        for(int i = 0; i < gameStatus.HITS_PER_MULTIPLIER - 1; i++) {
+            gameStatus.incrementConsecutiveHits();
+            assertNotEquals(gameStatus.getMultiplier(), 2);
+        }
+        
+        gameStatus.incrementConsecutiveHits();
+        assertEquals(gameStatus.getMultiplier(), 2);
     }
 
     /**
@@ -81,22 +130,13 @@ public class GameStatusTest {
     @Test
     public void testResetConsecutiveHits() {
         System.out.println("resetConsecutiveHits");
-        GameStatus instance = null;
-        instance.resetConsecutiveHits();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of incrementConsecutiveHits method, of class GameStatus.
-     */
-    @Test
-    public void testIncrementConsecutiveHits() {
-        System.out.println("incrementConsecutiveHits");
-        GameStatus instance = null;
-        instance.incrementConsecutiveHits();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        for(int i = 0; i < 100; i++) {
+            gameStatus.incrementConsecutiveHits();
+        }
+        gameStatus.resetConsecutiveHits();
+        
+        assertEquals(gameStatus.getMultiplier(), 1);
     }
 
     /**
@@ -105,214 +145,39 @@ public class GameStatusTest {
     @Test
     public void testAddBitcoinsAndScore() {
         System.out.println("addBitcoinsAndScore");
-        int bitcoins = 0;
-        GameStatus instance = null;
-        instance.addBitcoinsAndScore(bitcoins);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        int amount = 25;
+        
+        gameStatus.addBitcoinsAndScore(amount);
+        assertEquals(gameStatus.getScore(), gameStatus.getBitcoins());
+        assertEquals(gameStatus.getBitcoins(), amount);
     }
 
     /**
      * Test of withdrawBitcoins method, of class GameStatus.
+     * Tests an enourmous withdrawal, impossible for now.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testWithdrawBitcoinsNegative() {
+        System.out.println("withdrawBitcoins Negative");
+        gameStatus.withdrawBitcoins(10000);
+    }
+    
+    /**
+     * Test of withdrawBitcoins method, of class GameStatus.
+     * Checks if the correct amount is substracted to the bitcoins amount.
      */
     @Test
     public void testWithdrawBitcoins() {
         System.out.println("withdrawBitcoins");
-        int bitcoins = 0;
-        GameStatus instance = null;
-        instance.withdrawBitcoins(bitcoins);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        int addAmount = 100;
+        int withdrawalAmount = 75;
+        
+        gameStatus.addBitcoinsAndScore(addAmount);
+        gameStatus.withdrawBitcoins(withdrawalAmount);
+        
+        assertEquals(gameStatus.getBitcoins(), addAmount - withdrawalAmount);
     }
 
-    /**
-     * Test of getScore method, of class GameStatus.
-     */
-    @Test
-    public void testGetScore() {
-        System.out.println("getScore");
-        GameStatus instance = null;
-        int expResult = 0;
-        int result = instance.getScore();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getBitcoins method, of class GameStatus.
-     */
-    @Test
-    public void testGetBitcoins() {
-        System.out.println("getBitcoins");
-        GameStatus instance = null;
-        int expResult = 0;
-        int result = instance.getBitcoins();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of isInGame method, of class GameStatus.
-     */
-    @Test
-    public void testIsInGame() {
-        System.out.println("isInGame");
-        GameStatus instance = null;
-        boolean expResult = false;
-        boolean result = instance.isInGame();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setInGame method, of class GameStatus.
-     */
-    @Test
-    public void testSetInGame() {
-        System.out.println("setInGame");
-        boolean inGame = false;
-        GameStatus instance = null;
-        instance.setInGame(inGame);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of isInWave method, of class GameStatus.
-     */
-    @Test
-    public void testIsInWave() {
-        System.out.println("isInWave");
-        GameStatus instance = null;
-        boolean expResult = false;
-        boolean result = instance.isInWave();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setInWave method, of class GameStatus.
-     */
-    @Test
-    public void testSetInWave() {
-        System.out.println("setInWave");
-        boolean inWave = false;
-        GameStatus instance = null;
-        instance.setInWave(inWave);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getCurrentWave method, of class GameStatus.
-     */
-    @Test
-    public void testGetCurrentWave() {
-        System.out.println("getCurrentWave");
-        GameStatus instance = null;
-        int expResult = 0;
-        int result = instance.getCurrentWave();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setCurrentWave method, of class GameStatus.
-     */
-    @Test
-    public void testSetCurrentWave() {
-        System.out.println("setCurrentWave");
-        int currentWave = 0;
-        GameStatus instance = null;
-        instance.setCurrentWave(currentWave);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getTotalWaveEnemies method, of class GameStatus.
-     */
-    @Test
-    public void testGetTotalWaveEnemies() {
-        System.out.println("getTotalWaveEnemies");
-        GameStatus instance = null;
-        int expResult = 0;
-        int result = instance.getTotalWaveEnemies();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setTotalWaveEnemies method, of class GameStatus.
-     */
-    @Test
-    public void testSetTotalWaveEnemies() {
-        System.out.println("setTotalWaveEnemies");
-        int totalWaveEnemies = 0;
-        GameStatus instance = null;
-        instance.setTotalWaveEnemies(totalWaveEnemies);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getRemainingWaveEnemies method, of class GameStatus.
-     */
-    @Test
-    public void testGetRemainingWaveEnemies() {
-        System.out.println("getRemainingWaveEnemies");
-        GameStatus instance = null;
-        int expResult = 0;
-        int result = instance.getRemainingWaveEnemies();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setRemainingWaveEnemies method, of class GameStatus.
-     */
-    @Test
-    public void testSetRemainingWaveEnemies() {
-        System.out.println("setRemainingWaveEnemies");
-        int remainingWaveEnemies = 0;
-        GameStatus instance = null;
-        instance.setRemainingWaveEnemies(remainingWaveEnemies);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of isInWaveTransition method, of class GameStatus.
-     */
-    @Test
-    public void testIsInWaveTransition() {
-        System.out.println("isInWaveTransition");
-        GameStatus instance = null;
-        boolean expResult = false;
-        boolean result = instance.isInWaveTransition();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setInWaveTransition method, of class GameStatus.
-     */
-    @Test
-    public void testSetInWaveTransition() {
-        System.out.println("setInWaveTransition");
-        boolean waveTransition = false;
-        GameStatus instance = null;
-        instance.setInWaveTransition(waveTransition);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
     
 }
