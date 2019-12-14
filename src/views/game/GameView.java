@@ -43,7 +43,10 @@ public class GameView extends View {
     private BufferedImage backgroundImage;
 
     private static final Color COLOR_TERMINAL_GREEN = new Color(97, 231, 79);
-    private final Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 30);
+    private static final Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 30);
+    
+    private static final Color LEVEL_COLOR = COLOR_TERMINAL_GREEN;
+    private static final Font LEVEL_FONT = new Font(Font.MONOSPACED, Font.BOLD, 15);
 
     private static final String HEART_IMAGE_PATH = "src/resources/heart_50_red.png";
     private static final String HEALTH_BAR_IMAGE_PATH = "src/resources/health_bar_green_150_30.png";
@@ -174,8 +177,8 @@ public class GameView extends View {
 
         // draw health bar
         aliveSpawnedViruses.forEach((virus) -> {
-            if (virus.getCurrentHealth() < virus.getTotalHealth()) {
-                double healthRatio = (double) virus.getCurrentHealth() / (double) virus.getTotalHealth();
+            if (virus.getCurrentHealth() < virus.getTOTAL_HEALTH()) {
+                double healthRatio = (double) virus.getCurrentHealth() / (double) virus.getTOTAL_HEALTH();
 
                 g.setColor(getColorHealthBar(healthRatio));
 
@@ -183,6 +186,11 @@ public class GameView extends View {
 
                 g.fillRect(virus.getX(), virus.getY() - 7, width, 5);
             }
+        });
+        
+        // draw level
+        aliveSpawnedViruses.forEach((virus) -> {
+            drawFormattedString(g, "LvL " + virus.getLevel(), virus.getX(), virus.getY() + virus.getHeight() + 15, LEVEL_COLOR, LEVEL_FONT);
         });
     }
 

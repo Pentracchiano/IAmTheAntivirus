@@ -45,7 +45,7 @@ public class GameController extends Controller implements Runnable {
         this.keyboard = view.getKeyboard();
         this.base = view.getBase();
         this.gameStatus = GameStatus.getInstance();
-        this.waveManager = new WaveManager();
+        this.waveManager = new WaveManager(keyboard.getX(), keyboard.getWidth(), view.getHeight());
 
         this.gameLoop = new Thread(this);
         
@@ -66,8 +66,8 @@ public class GameController extends Controller implements Runnable {
             System.out.println("I am in game");
             
             // set wave
-            wave = waveManager.getWave(keyboard.getX(), keyboard.getWidth(), view.getHeight());
             gameStatus.setCurrentWaveNumber(gameStatus.getCurrentWaveNumber() + 1);
+            wave = waveManager.getWave(gameStatus.getCurrentWaveNumber());
             GameView gameView = (GameView) view;
             gameView.setCurrentWave(wave);
             
