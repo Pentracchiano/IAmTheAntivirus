@@ -5,12 +5,9 @@
  */
 package models.sprites;
 
-import java.util.Collection;
-import java.util.Set;
-import org.junit.After;
-import org.junit.AfterClass;
+import models.sprites.Keyboard.Key;
+import models.sprites.exceptions.KeyNotFoundException;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,93 +16,77 @@ import static org.junit.Assert.*;
  * @author Davide Cafaro
  */
 public class KeyboardTest {
-    
-    public KeyboardTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
+    private Keyboard keyboard;
+
     @Before
     public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
+        keyboard = new Keyboard(160,300);
     }
 
     /**
-     * Test of getSetKeyKeys method, of class Keyboard.
+     * Test if the press method throws the KeyNotFoundException when an illegal
+     * key is pressed
      */
-    @Test
-    public void testGetSetKeyKeys() {
-        System.out.println("getSetKeyKeys");
-        Keyboard instance = null;
-        Set<Character> expResult = null;
-        Set<Character> result = instance.getSetKeyKeys();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    @Test(expected= KeyNotFoundException.class)
+    public void testPressedNotSupportedKey() throws Exception {
+        System.out.println("Not supported key pressed");
+        char id = '@';
+        keyboard.press(id);
     }
 
-    /**
-     * Test of getKeys method, of class Keyboard.
-     */
-    @Test
-    public void testGetKeys() {
-        System.out.println("getKeys");
-        Keyboard instance = null;
-        Collection<Keyboard.Key> expResult = null;
-        Collection<Keyboard.Key> result = instance.getKeys();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of press method, of class Keyboard.
+     /**
+     * Test if the press method change the states of the appropriate keys.
      */
     @Test
     public void testPress() throws Exception {
-        System.out.println("press");
-        char id = ' ';
-        Keyboard instance = null;
-        instance.press(id);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        System.out.println("key pressed");
+        char CHARACTERS[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
+        
+        for(char id : CHARACTERS){
+        Key expected=keyboard.getKey(id);
+        keyboard.press(id);
+        assertEquals("The states maste be equals", Keyboard.State.PRESSED,expected.getState());
+        }
+        
     }
-
+    
+    
+       /**
+     * Test if GetKey() throws the KeyNotFoundException when an illegale key is requested.
+     */
+    @Test(expected= KeyNotFoundException.class)
+    public void testGetIllegalKey() throws Exception {
+        System.out.println("get illegal key");
+        char keyCode = '@';
+        keyboard.getKey(keyCode);
+    }
+    
     /**
      * Test of getKey method, of class Keyboard.
      */
     @Test
     public void testGetKey() throws Exception {
         System.out.println("getKey");
-        char keyCode = ' ';
-        Keyboard instance = null;
-        Keyboard.Key expResult = null;
-        Keyboard.Key result = instance.getKey(keyCode);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        char CHARACTERS[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
+        
+        for(char id : CHARACTERS){
+        assertEquals("The keys must be equals", id,keyboard.getKey(id).getId());
+        }
     }
 
+    
     /**
      * Test of release method, of class Keyboard.
      */
     @Test
     public void testRelease() throws Exception {
         System.out.println("release");
-        char id = ' ';
-        Keyboard instance = null;
-        instance.release(id);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        char CHARACTERS[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
+        for(char id : CHARACTERS){
+        Key expected=keyboard.getKey(id);
+        keyboard.release(id);
+        assertEquals("The states maste be equals", Keyboard.State.RELEASED,expected.getState());
+        }
     }
     
 }
