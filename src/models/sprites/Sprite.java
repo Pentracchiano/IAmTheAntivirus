@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package models;
+package models.sprites;
 
 /**
  *
  * @author ccarratu
  */
+import models.sprites.exceptions.NullBoundsException;
 import java.awt.Image;
 import java.awt.Rectangle;
 import utilities.ImageUtilities;

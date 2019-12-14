@@ -6,8 +6,8 @@
 package views.game;
 
 import views.View;
-import controllers.game.GameStatus;
-import models.Keyboard.Key;
+import models.GameStatus;
+import models.sprites.Keyboard.Key;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -22,9 +22,9 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import models.Base;
-import models.Keyboard;
-import models.Virus;
+import models.sprites.Base;
+import models.sprites.Keyboard;
+import models.sprites.Virus;
 import utilities.ImageUtilities;
 
 public class GameView extends View {

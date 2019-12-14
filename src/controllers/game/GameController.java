@@ -1,5 +1,10 @@
 package controllers.game;
 
+import models.sprites.exceptions.KeyNotFoundException;
+import models.sprites.Keyboard;
+import models.sprites.Virus;
+import models.sprites.Base;
+import models.GameStatus;
 import controllers.IAmTheAntivirus;
 import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
@@ -10,8 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
-import models.*;
-import models.Keyboard.Key;
+import models.sprites.Keyboard.Key;
 import views.game.GameView;
 
 
@@ -98,7 +102,7 @@ public class GameController extends Controller implements Runnable {
             try {
                 Thread.sleep(sleep);
             } catch (InterruptedException e) {
-                throw new NotImplementedException();
+                throw new UnsupportedOperationException();
             }
 
             timeCount++;
