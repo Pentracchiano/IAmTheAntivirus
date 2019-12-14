@@ -103,7 +103,6 @@ public class GameController extends Controller implements Runnable {
 
                 timeCount++;
             }
-
             // wave transition
             gameStatus.setInWaveTransition(true);
             
@@ -126,6 +125,8 @@ public class GameController extends Controller implements Runnable {
 
             if (!v.isAlive()) {
                 it.remove();
+                
+                gameStatus.addBitcoinsAndScore(v.getBitcoinsValue()*gameStatus.getMultiplier());
             } else {
                 v.move();
             }
@@ -158,6 +159,7 @@ public class GameController extends Controller implements Runnable {
                 synchronized (base) {
                     base.damage(virus.getAttack());
                 }
+                gameStatus.resetConsecutiveHits();
 
                 it.remove();
             }
@@ -173,10 +175,16 @@ public class GameController extends Controller implements Runnable {
         Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
         
         synchronized (aliveSpawnedViruses) {
+            boolean missedViruses = true;
             for (Virus virus : aliveSpawnedViruses) {
                 if (checkCollision(key.getBounds(), virus.getBounds())) {
                     virus.damage(key.getAttack());
+                    gameStatus.incrementConsecutiveHits();
+                    missedViruses = false;
                 }
+            }
+            if (missedViruses) {
+                gameStatus.resetConsecutiveHits();
             }
         }
     }
@@ -230,8 +238,8 @@ public class GameController extends Controller implements Runnable {
             }
         });
     }
-    
-    private void gameEnded(){
+
+    private void gameEnded() {
         IAmTheAntivirus.getGameInstance().displayGameOverMenu();
     }
 

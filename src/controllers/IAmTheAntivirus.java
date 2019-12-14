@@ -97,6 +97,7 @@ public class IAmTheAntivirus {
     }
 
     public void displayGameOverMenu(){
+        GameStatus.resetInstance();
         EventQueue.invokeLater(() -> {
             frame.remove(gameView);
             currentMenu = new GameOverViewController(panelDimension);
