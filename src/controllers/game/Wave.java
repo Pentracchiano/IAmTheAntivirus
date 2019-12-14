@@ -6,7 +6,9 @@
 package controllers.game;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import models.Virus;
 
 /**
  *
@@ -15,6 +17,10 @@ import java.util.List;
 public class Wave {
         // I shall create a class that represent a virus with a delay
         private final List<VirusToSpawn> list;
+        
+        // it's final because we only add or remove viruses, but we don't change the referenced object
+        // it containts the spawned and alive viruses
+        private final Collection<Virus> aliveSpawnedViruses;
         
         public Wave() {
             list = new ArrayList<>();

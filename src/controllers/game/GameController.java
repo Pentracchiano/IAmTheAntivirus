@@ -14,23 +14,13 @@ import models.*;
 import models.Keyboard.Key;
 import views.game.GameView;
 
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
  * @author Gerardo
  */
 public class GameController extends Controller implements Runnable {
-
     private final Keyboard keyboard;
     private final Base base;
-    // it's final because we only add or remove viruses, but we don't change the referenced object
-    // it containts the alive(it's visible on the user interface and its health is greater then 0) virus in the current wave
-    private final Collection<Virus> viruses;
 
     private final Thread gameLoop;
 
@@ -98,7 +88,7 @@ public class GameController extends Controller implements Runnable {
             try {
                 Thread.sleep(sleep);
             } catch (InterruptedException e) {
-                throw new NotImplementedException();
+                
             }
 
             timeCount++;
@@ -115,7 +105,7 @@ public class GameController extends Controller implements Runnable {
                 gameStatus.setRemainingWaveEnemies(wave.getSize());
                 gameStatus.setCurrentWave(gameStatus.getCurrentWave() + 1);
                 gameStatus.setInWaveTransition(true);
-                for(int i=0; i<3000/DELAY_MS; i++){
+                for(int i=0; i<3000/DELAY_MS; i++) {
                     view.update();
                     try {
                         Thread.sleep(DELAY_MS);
