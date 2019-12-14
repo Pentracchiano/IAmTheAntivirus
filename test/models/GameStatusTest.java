@@ -36,31 +36,22 @@ public class GameStatusTest {
         GameStatus currentInstance = gameStatus;
         
         int actualBitcoins = currentInstance.getBitcoins();
-        int actualWave = currentInstance.getCurrentWave();
         int actualMultiplier = currentInstance.getMultiplier();
-        int actualRemainingWaveEnemies = currentInstance.getRemainingWaveEnemies();
         int actualScore = currentInstance.getScore();
-        int actualTotalWaveEnemies = currentInstance.getTotalWaveEnemies();
         boolean actualIsInGame = currentInstance.isInGame();
         boolean actualIsInWave = currentInstance.isInWave();
         boolean actualIsInWaveTransition = currentInstance.isInWaveTransition();
         
         int defaultBitcoins = 0;
-        int defaultWave = 0;
         int defaultMultiplier = 1;
-        int defaultRemainingEnemies = 0;
         int defaultScore = 0;
-        int defaultTotalWaveEnemies = 0;
         boolean defaultIsInGame = false;
         boolean defaultIsInWave = false;
         boolean defaultIsInWaveTransition = false;
         
         assertEquals(actualBitcoins, defaultBitcoins);
-        assertEquals(actualWave, defaultWave);
         assertEquals(actualMultiplier, defaultMultiplier);
-        assertEquals(actualRemainingWaveEnemies, defaultRemainingEnemies);
         assertEquals(actualScore, defaultScore);
-        assertEquals(actualTotalWaveEnemies, defaultTotalWaveEnemies);
         assertEquals(actualIsInGame, defaultIsInGame);
         assertEquals(actualIsInWave, defaultIsInWave);
         assertEquals(actualIsInWaveTransition, defaultIsInWaveTransition);
@@ -78,7 +69,6 @@ public class GameStatusTest {
         
         // random modifications to the old instance
         gameStatus.addBitcoinsAndScore(25);
-        gameStatus.setCurrentWave(3);
         gameStatus.setInGame(true);
         for(int i = 0; i < 100; i++) {
             gameStatus.incrementConsecutiveHits();

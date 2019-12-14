@@ -16,140 +16,117 @@ import java.util.logging.Logger;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import models.sprites.Keyboard.Key;
+import utilities.ThreadUtilities;
 import views.game.GameView;
 
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
  * @author Gerardo
  */
 public class GameController extends Controller implements Runnable {
-
     private final Keyboard keyboard;
     private final Base base;
-    // it's final because we only add or remove viruses, but we don't change the referenced object
-    // it containts the alive(it's visible on the user interface and its health is greater then 0) virus in the current wave
-    private final Collection<Virus> viruses;
 
     private final Thread gameLoop;
+    private final Thread graphicsUpdater;
 
-    private final int DELAY_MS = 20; // in milliseconds
+    private final static int GAME_DELAY_MS = 20;
+    private final static int GRAPHICS_DELAY_MS = 20;
+    private final static int WAVE_DELAY_MS = 3000;
 
-    /*inGame is a boolean that we use to indicate if we have to stop the game evolution
-      thread or not, so it indicates if the match is going on or it is over.
-     */
     private final GameStatus gameStatus;
 
     private final WaveManager waveManager;
+    private Wave wave;
 
     public GameController(GameView view) {
         super(view);
-
+        
         this.keyboard = view.getKeyboard();
         this.base = view.getBase();
-        this.viruses = view.getViruses();
         this.gameStatus = GameStatus.getInstance();
         this.waveManager = new WaveManager();
 
         this.gameLoop = new Thread(this);
+        
+        this.graphicsUpdater = new Thread(new ViewUpdater(view, GRAPHICS_DELAY_MS));
 
         this.initListeners();
     }
 
     @Override
     public void run() {
+        int timeCount;
         long beforeTime, timeDiff, sleep;
-        int timeCount = 0; // counts the number of cycles
-
-        //Wave wave = buildWave();
-        Wave wave = waveManager.getWave(keyboard.getX(), keyboard.getWidth(), view.getHeight());
-
-        gameStatus.setTotalWaveEnemies(wave.getSize());
-        gameStatus.setRemainingWaveEnemies(wave.getSize());
-        gameStatus.setCurrentWave(1);
+        
+        graphicsUpdater.start();
 
         while (gameStatus.isInGame()) {
-            beforeTime = System.currentTimeMillis();
-
-            if (wave.getSize() == 0 && viruses.isEmpty()) {
-                gameStatus.setInGame(false);
-                this.gameEnded();
-            }
-
-            // spawn and move
-            synchronized (viruses) {
-                updateViruses(wave, timeCount);
-                checkBaseCollision();
-            }
-
-            view.update();
-
-            timeDiff = System.currentTimeMillis() - beforeTime;
-            sleep = DELAY_MS - timeDiff;
-
-            /*we use this if to handle the case in which the execution time of
-            updateEnemies(), checkBaseCollision() and update() methods is larger then the DELAY.
-             */
-            if (sleep < 0) {
-                // 2 is a random chose.
-                sleep = 2;
-            }
-            try {
-                Thread.sleep(sleep);
-            } catch (InterruptedException e) {
-                throw new UnsupportedOperationException();
-            }
-
-            timeCount++;
-
-            if (wave.getSize() == 0 && viruses.isEmpty()) {
-                /*
-                All the enemies have spawned and they've been killed/they've
-                reached the base, so the game can continue with the successive
-                wave.
-                 */
-                wave = waveManager.getWave(keyboard.getX(), keyboard.getWidth(), view.getHeight());
-                timeCount = 0;
-                gameStatus.setTotalWaveEnemies(wave.getSize());
-                gameStatus.setRemainingWaveEnemies(wave.getSize());
-                gameStatus.setCurrentWave(gameStatus.getCurrentWave() + 1);
-                gameStatus.setInWaveTransition(true);
-                for (int i = 0; i < 3000 / DELAY_MS; i++) {
-                    view.update();
-                    try {
-                        Thread.sleep(DELAY_MS);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+            timeCount = 0; // counts the number of cycles
+            System.out.println("I am in game");
+            
+            // set wave
+            wave = waveManager.getWave(keyboard.getX(), keyboard.getWidth(), view.getHeight());
+            gameStatus.setCurrentWaveNumber(gameStatus.getCurrentWaveNumber() + 1);
+            GameView gameView = (GameView) view;
+            gameView.setCurrentWave(wave);
+            
+            gameStatus.setInWave(true);
+            
+            System.out.println(gameStatus.toString());
+            while (gameStatus.isInGame() && gameStatus.isInWave() ) {
+                // System.out.println("In wave");
+                
+                beforeTime = System.currentTimeMillis();
+                
+                if (!wave.hasVirusToSpawn() && !wave.hasAliveViruses()) {
+                    gameStatus.setInWave(false);
                 }
-                gameStatus.setInWaveTransition(false);
+                
+                // spawn and move
+                synchronized (wave) {
+                    updateWave(timeCount);
+                    checkBaseCollision();
+                }
+                
+                timeDiff = System.currentTimeMillis() - beforeTime;
+                sleep = GAME_DELAY_MS - timeDiff;
+                
+                // we use this if to handle the case in which the execution time of
+                // updateEnemies(), checkBaseCollision() and update() methods is larger then the DELAY.
+                if (sleep < 0) {
+                    // 2 is a random chose.
+                    sleep = 2;
+                }
+            
+                ThreadUtilities.sleep(sleep);
+
+                timeCount++;
             }
+            // wave transition
+            gameStatus.setInWaveTransition(true);
+            
+            ThreadUtilities.sleep(WAVE_DELAY_MS);
+            
+            gameStatus.setInWaveTransition(false);
         }
     }
 
-    private void updateViruses(Wave wave, int timeCount) {
-        if (wave.getSize() > 0) {
-            VirusToSpawn vts = wave.getCurrentElement();
+    private void updateWave(int timeCount) {
+        // spawn
+        wave.spawnVirus(timeCount);
+        
+        // remove dead viruses and move viruses
+        Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
 
-            if (vts.getTimeToSpawn() <= timeCount) {
-                viruses.add(wave.removeCurrentElement().getVirus());
-            }
-        }
-
-        Iterator<Virus> it = viruses.iterator();
-
+        Iterator<Virus> it = aliveSpawnedViruses.iterator();
         while (it.hasNext()) {
             Virus v = it.next();
 
             if (!v.isAlive()) {
                 it.remove();
+                
                 gameStatus.addBitcoinsAndScore(v.getBitcoinsValue()*gameStatus.getMultiplier());
-                gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
             } else {
                 v.move();
             }
@@ -163,7 +140,9 @@ public class GameController extends Controller implements Runnable {
 
     private void checkBaseCollision() {
         Rectangle baseBounds = base.getBounds();
-        Iterator<Virus> it = viruses.iterator();
+        Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
+        
+        Iterator<Virus> it = aliveSpawnedViruses.iterator();
 
         while (it.hasNext()) {
             Virus virus = it.next();
@@ -183,7 +162,6 @@ public class GameController extends Controller implements Runnable {
                 gameStatus.resetConsecutiveHits();
 
                 it.remove();
-                gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
             }
         }
 
@@ -193,16 +171,17 @@ public class GameController extends Controller implements Runnable {
         }
     }
 
-    private void checkKeyCollision(Key key) {
-        synchronized (viruses) {
+    private void checKeyCollision(Key key) {
+        Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
+        
+        synchronized (aliveSpawnedViruses) {
             boolean missedViruses = true;
-            for (Virus v : viruses) {
-                if (checkCollision(key.getBounds(), v.getBounds())) {
-                    v.damage(key.getAttack());
+            for (Virus virus : aliveSpawnedViruses) {
+                if (checkCollision(key.getBounds(), virus.getBounds())) {
+                    virus.damage(key.getAttack());
                     gameStatus.incrementConsecutiveHits();
                     missedViruses = false;
                 }
-
             }
             if (missedViruses) {
                 gameStatus.resetConsecutiveHits();
@@ -226,8 +205,7 @@ public class GameController extends Controller implements Runnable {
             // this event is called when the view is removed by the frame
             @Override
             public void ancestorRemoved(AncestorEvent e) {
-                gameStatus.setInGame(false);
-
+                gameStatus.setInGame(false);  
             }
 
             @Override
@@ -243,7 +221,7 @@ public class GameController extends Controller implements Runnable {
                 int keyCode = e.getKeyCode();
                 try {
                     keyboard.press((char) keyCode);
-                    checkKeyCollision(keyboard.getKey((char) keyCode));
+                    checKeyCollision(keyboard.getKey((char) keyCode));
                 } catch (KeyNotFoundException knfe) {
 
                 }

@@ -73,6 +73,7 @@ public class IAmTheAntivirus {
     public void startGame() {
         EventQueue.invokeLater(() -> {
             frame.remove(currentMenu);
+            GameStatus.disposeInstance();
             gameView = new GameView();
             gameController = new GameController(gameView);
             frame.add(gameView);
