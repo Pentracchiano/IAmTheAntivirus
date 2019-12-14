@@ -24,6 +24,14 @@ public class GameStatus {
     // totalWaveEnemies - totalDeadEnemies
     private int remainingWaveEnemies;
     
+    /* the next two variables represent the score of the player, incrementing during the game.
+    The "score" never decreases; 
+    the bitcoins are always equal to the score, until the player decides to spend them in the shop
+    to get upgrades. This doesn't affect the total overall score.
+    */
+    private int score = 0;
+    private int bitcoins = 0;
+    
     private GameStatus(boolean inGame, boolean inWave, int currentWave, int totalWaveEnemies, int remainingWaveEnemies, boolean waveTransition) {
         this.inGame = inGame;
         this.inWave = inWave;
@@ -41,6 +49,22 @@ public class GameStatus {
         return instance;
     }
 
+    public synchronized void setBitcoins(int bitcoins) {
+        this.bitcoins = bitcoins;
+    }
+
+    public synchronized int getScore() {
+        return score;
+    }
+
+    public synchronized void setScore(int score) {
+        this.score = score;
+    }
+
+    public synchronized int getBitcoins() {
+        return bitcoins;
+    }
+    
     public synchronized boolean isInGame() {
         return inGame;
     }

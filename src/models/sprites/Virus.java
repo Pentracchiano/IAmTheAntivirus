@@ -18,7 +18,9 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
     private int totalHealth;
     private int currentHealth;
     private int speed;
-
+    private int bitcoinsValue; // the score amount the player gets when this virus is killed
+    public static final int BASE_BITCOINS_VALUE = 1;
+    
     public Virus(int x, int y, Image image, int attack, int totalHealth, int speed) {
         super(x, y, image, attack);
 
@@ -63,6 +65,22 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
 
     public boolean isAlive() {
         return currentHealth > 0;
+    }
+
+    /**
+     * This method MUST be overridden by subclasses.
+     * 
+     * @return the base (class-level) score given to the player that kills that virus.
+     */
+    public abstract int getBaseBitcoinsValue();
+
+    // maybe consider not exposing it as a setter, but calculating it through "level"
+    public void setBitcoinsValue(int bitcoinsValue) {
+        this.bitcoinsValue = bitcoinsValue;
+    }
+
+    public int getBitcoinsValue() {
+        return bitcoinsValue;
     }
 
     @Override
