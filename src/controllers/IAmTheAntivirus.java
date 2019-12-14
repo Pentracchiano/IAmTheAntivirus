@@ -16,6 +16,7 @@ import views.game.GameView;
 import menu.AbstractMenuViewController;
 import menu.gameovermenu.GameOverViewController;
 import menu.mainmenu.MainMenuViewController;
+import models.GameStatus;
 import utilities.FontUtilities;
 
 /**
@@ -72,6 +73,7 @@ public class IAmTheAntivirus {
     public void startGame() {
         EventQueue.invokeLater(() -> {
             frame.remove(currentMenu);
+            GameStatus.resetInstance();
             gameView = new GameView();
             gameController = new GameController(gameView);
             frame.add(gameView);
@@ -96,7 +98,6 @@ public class IAmTheAntivirus {
 
     public void displayGameOverMenu(){
         EventQueue.invokeLater(() -> {
-  
             frame.remove(gameView);
             currentMenu = new GameOverViewController(panelDimension);
             frame.add(currentMenu);

@@ -5,6 +5,7 @@
  */
 package views.game;
 
+import controllers.game.Wave;
 import views.View;
 import models.GameStatus;
 import models.sprites.Keyboard.Key;
@@ -17,7 +18,6 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,13 +31,16 @@ public class GameView extends View {
 
     private Keyboard keyboard;
     private Base base;
-    private ArrayList<Virus> viruses;
+    
+    private Wave currentWave;
+    
+    private GameStatus gameStatus;
+    
     private final int B_WIDTH = 1300;
     private final int B_HEIGHT = 747;
+    
     private final Dimension dimension = new Dimension(B_WIDTH,B_HEIGHT);
     private BufferedImage backgroundImage;
-
-    private GameStatus gameStatus;
 
     private static final String HEART_IMAGE_PATH = "src/resources/heart_50_red.png";
     private static final String HEALTH_BAR_IMAGE_PATH = "src/resources/health_bar_green_150_30.png";
@@ -50,22 +53,22 @@ public class GameView extends View {
     private Image enemyImage;
 
     public GameView() {
-
         initView();
     }
 
     private void initView() {
-
-        viruses = new ArrayList<>();
         base = new Base(0, 0, 20);
+        
         setBackground(Color.GRAY);
         try {
             backgroundImage = ImageIO.read(new File("src/resources/background/background.png"));
         } catch (IOException ex) {
             Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
 	setFocusable(true);
         setPreferredSize(dimension);
+        
         keyboard = new Keyboard(160,300);
         
         this.gameStatus = GameStatus.getInstance();
@@ -88,16 +91,20 @@ public class GameView extends View {
         g.drawImage(backgroundImage, 0, 0, this);
 
         drawKeyboard(g);
-
-        synchronized (viruses) {
-            drawViruses(g);
-        }
-
+        
+        // the draws must be called in this order, otherwise the base will cover other drawings
         synchronized (base) {
             drawBase(g);
         }
+        
+        if(!gameStatus.isInWaveTransition()) {
+            synchronized (currentWave) {
+                drawViruses(g);
+            }
+        }
 
         drawGameStatus(g);
+        
         Toolkit.getDefaultToolkit().sync();
     }
 
@@ -113,14 +120,7 @@ public class GameView extends View {
         // draw wave indicator
         x = base.getX() + 560;
         y = base.getY() + 40;
-        drawFormattedString(g, "Wave " + gameStatus.getCurrentWave(), x, y, new Color(97, 231, 79), new Font(Font.MONOSPACED, Font.BOLD, 30));
-
-        // draw enemies indicator
-        x += 150;
-        g.drawImage(enemyImage, x, base.getY() + 15, this);
-
-        x += enemyImage.getWidth(this) + 10;
-        drawFormattedString(g, gameStatus.getRemainingWaveEnemies() + "/" + gameStatus.getTotalWaveEnemies(), x, y, new Color(97, 231, 79), new Font(Font.MONOSPACED, Font.BOLD, 30));
+        drawFormattedString(g, "Wave " + gameStatus.getCurrentWaveNumber(), x, y, new Color(97, 231, 79), new Font(Font.MONOSPACED, Font.BOLD, 30));
     }
 
     private void drawFormattedString(Graphics g, String string, int x, int y, Color color, Font font) {
@@ -130,21 +130,52 @@ public class GameView extends View {
     }
 
     private void drawViruses(Graphics g) {
+        // draw enemies indicator
+        int x;
+        int y;
+        Collection<Virus> aliveSpawnedViruses = null;
+        int aliveSpawnedVirusesSize;
+        int remainingVirusesSize;
+        int waveSize;
+        
+        if(currentWave == null) {
+            aliveSpawnedVirusesSize = 0;
+            waveSize = 0;
+            remainingVirusesSize = 0;
+        } else {
+            aliveSpawnedViruses = currentWave.getAliveSpawnedViruses();
+            aliveSpawnedVirusesSize = aliveSpawnedViruses.size();
+            waveSize = currentWave.getWaveSize();
+            remainingVirusesSize = currentWave.getVirusesToSpawnSize() + aliveSpawnedVirusesSize;
+        }
+        
+        x = base.getX() + 710;
+        y = base.getY() + 15;
+        g.drawImage(enemyImage, x, y, this);
+
+        x += enemyImage.getWidth(this) + 10;
+        y = base.getY() + 40;
+        drawFormattedString(g, remainingVirusesSize +  "/" + waveSize, x, y, new Color(97, 231, 79), new Font(Font.MONOSPACED, Font.BOLD, 30));
+        
         // draw viruses
-        viruses.forEach((vir) -> {
-            g.drawImage(vir.getImage(), vir.getX(), vir.getY(), this);
+        if(aliveSpawnedViruses == null) {
+            return;
+        }
+        
+        aliveSpawnedViruses.forEach((virus) -> {
+            g.drawImage(virus.getImage(), virus.getX(), virus.getY(), this);
         });
 
         // draw health bar
-        viruses.forEach((vir) -> {
-            if (vir.getCurrentHealth() < vir.getTotalHealth()) {
-                double healthRatio = (double) vir.getCurrentHealth() / (double) vir.getTotalHealth();
+        aliveSpawnedViruses.forEach((virus) -> {
+            if (virus.getCurrentHealth() < virus.getTotalHealth()) {
+                double healthRatio = (double) virus.getCurrentHealth() / (double) virus.getTotalHealth();
 
                 g.setColor(getColorHealthBar(healthRatio));
 
-                int width = (int) (vir.getWidth() * healthRatio);
+                int width = (int) (virus.getWidth() * healthRatio);
 
-                g.fillRect(vir.getX(), vir.getY() - 7, width, 5);
+                g.fillRect(virus.getX(), virus.getY() - 7, width, 5);
             }
         });
     }
@@ -193,10 +224,6 @@ public class GameView extends View {
         return base;
     }
 
-    public ArrayList<Virus> getViruses() {
-        return viruses;
-    }
-
     @Override
     public int getWidth() {
         return backgroundImage.getWidth();
@@ -214,5 +241,11 @@ public class GameView extends View {
     public GameStatus getGameStatus() {
         return gameStatus;
     }
+
+    public void setCurrentWave(Wave currentWave) {
+        this.currentWave = currentWave;
+    }
+    
+    
 
 }
