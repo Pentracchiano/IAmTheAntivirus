@@ -45,7 +45,8 @@ public class GameStatus {
     /**
      * represents how many times the player hit the viruses consecutively and is
      * used to update the multiplier, every HITS_PER_MULTIPLIER the multiplier
-     * is incremented.
+     * is incremented. The consecutiveHits is reset when the player misses a virus
+     * or when a virus hit the base
      */
     private int consecutiveHits = 0;
     private final int HITS_PER_MULTIPLIER = 3;

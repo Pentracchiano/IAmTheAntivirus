@@ -180,6 +180,7 @@ public class GameController extends Controller implements Runnable {
                 synchronized (base) {
                     base.damage(virus.getAttack());
                 }
+                gameStatus.resetConsecutiveHits();
 
                 it.remove();
                 gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
