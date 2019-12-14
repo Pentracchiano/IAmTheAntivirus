@@ -40,7 +40,7 @@ public class GameStatus {
      * the multiplier is reset to 1.
      */
     private int multiplier = 1;
-    private final int MAX_MULTIPLIER = 8;
+    public final int MAX_MULTIPLIER = 8;
 
     /**
      * represents how many times the player hit the viruses consecutively and is
@@ -49,7 +49,7 @@ public class GameStatus {
      * or when a virus hit the base
      */
     private int consecutiveHits = 0;
-    private final int HITS_PER_MULTIPLIER = 3;
+    public final int HITS_PER_MULTIPLIER = 3;
 
     private GameStatus(boolean inGame, boolean inWave, int currentWave, int totalWaveEnemies, int remainingWaveEnemies, boolean waveTransition) {
         this.inGame = inGame;
@@ -68,7 +68,11 @@ public class GameStatus {
         return instance;
     }
 
-    public synchronized static void resetInstance(){
+    /**
+     * Marks the current GameStatus instance for deletion: the next instance will be a fresh one
+     * with default parameters.
+     */
+    public synchronized static void disposeInstance(){
         GameStatus.instance = null;
     }
     
