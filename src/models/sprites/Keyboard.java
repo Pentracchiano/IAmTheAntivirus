@@ -1,5 +1,6 @@
-package models;
+package models.sprites;
 
+import models.sprites.exceptions.KeyNotFoundException;
 import java.awt.Image;
 import java.util.Collection;
 import java.util.HashMap;

@@ -6,9 +6,9 @@
 package controllers.game;
 
 import java.util.Random;
-import models.Trojan;
-import models.Virus;
-import models.Worm;
+import models.sprites.Trojan;
+import models.sprites.Virus;
+import models.sprites.Worm;
 
 /**
  *

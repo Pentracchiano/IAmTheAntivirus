@@ -5,7 +5,7 @@
  */
 package controllers.game;
 
-import models.Virus;
+import models.sprites.Virus;
 
 /**
  *
