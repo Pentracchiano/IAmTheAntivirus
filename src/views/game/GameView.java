@@ -40,6 +40,7 @@ public class GameView extends View {
     private GameStatus gameStatus;
     
     private static final Color COLOR_TERMINAL_GREEN = new Color(97, 231, 79);
+    private final Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 30);
 
     private static final String HEART_IMAGE_PATH = "src/resources/heart_50_red.png";
     private static final String HEALTH_BAR_IMAGE_PATH = "src/resources/health_bar_green_150_30.png";
@@ -111,21 +112,21 @@ public class GameView extends View {
         int y;
 
         if (gameStatus.isInWaveTransition()) {
-            drawFormattedString(g, "Loading new wave...", base.getX() + 540, base.getY() + 40, new Color(97, 231, 79), new Font(Font.MONOSPACED, Font.BOLD, 30));
+            drawFormattedString(g, "Loading new wave...", base.getX() + 540, base.getY() + 40, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
             return;
         }
 
         // draw wave indicator
         x = base.getX() + 560;
         y = base.getY() + 40;
-        drawFormattedString(g, "Wave " + gameStatus.getCurrentWave(), x, y, new Color(97, 231, 79), new Font(Font.MONOSPACED, Font.BOLD, 30));
+        drawFormattedString(g, "Wave " + gameStatus.getCurrentWave(), x, y, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
 
         // draw enemies indicator
         x += 150;
         g.drawImage(enemyImage, x, base.getY() + 15, this);
 
         x += enemyImage.getWidth(this) + 10;
-        drawFormattedString(g, gameStatus.getRemainingWaveEnemies() + "/" + gameStatus.getTotalWaveEnemies(), x, y, new Color(97, 231, 79), new Font(Font.MONOSPACED, Font.BOLD, 30));
+        drawFormattedString(g, gameStatus.getRemainingWaveEnemies() + "/" + gameStatus.getTotalWaveEnemies(), x, y, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
     }
 
     private void drawFormattedString(Graphics g, String string, int x, int y, Color color, Font font) {
@@ -200,9 +201,12 @@ public class GameView extends View {
         
         g.drawImage(bitcoinImage, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X, BASE_SPAN_Y, this);
         
+        String multiplier = "x" + gameStatus.getMultiplier();
+        drawFormattedString(g, multiplier, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X-10, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT.deriveFont((float)18));
         String bitcoins = String.valueOf(gameStatus.getBitcoins());
-        System.out.println(gameStatus.getBitcoins());
-        drawFormattedString(g, bitcoins, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, new Font(Font.SANS_SERIF, Font.BOLD, 30));
+        drawFormattedString(g, bitcoins, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X +15, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
+        
+        
     }
     
     public Keyboard getKeyboard() {

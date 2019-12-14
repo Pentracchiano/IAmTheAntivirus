@@ -119,7 +119,7 @@ public class GameController extends Controller implements Runnable {
                 gameStatus.setRemainingWaveEnemies(wave.getSize());
                 gameStatus.setCurrentWave(gameStatus.getCurrentWave() + 1);
                 gameStatus.setInWaveTransition(true);
-                for(int i=0; i<3000/DELAY_MS; i++){
+                for (int i = 0; i < 3000 / DELAY_MS; i++) {
                     view.update();
                     try {
                         Thread.sleep(DELAY_MS);
@@ -148,9 +148,7 @@ public class GameController extends Controller implements Runnable {
 
             if (!v.isAlive()) {
                 it.remove();
-                gameStatus.addBitcoinsAndScore(v.getBitcoinsValue());
-                System.out.println(v.getBitcoinsValue());
-                
+                gameStatus.addBitcoinsAndScore(v.getBitcoinsValue()*gameStatus.getMultiplier());
                 gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
             } else {
                 v.move();
@@ -196,10 +194,17 @@ public class GameController extends Controller implements Runnable {
 
     private void checkKeyCollision(Key key) {
         synchronized (viruses) {
+            boolean missedViruses = true;
             for (Virus v : viruses) {
                 if (checkCollision(key.getBounds(), v.getBounds())) {
                     v.damage(key.getAttack());
+                    gameStatus.incrementConsecutiveHits();
+                    missedViruses = false;
                 }
+
+            }
+            if (missedViruses) {
+                gameStatus.resetConsecutiveHits();
             }
         }
     }
@@ -221,9 +226,7 @@ public class GameController extends Controller implements Runnable {
             @Override
             public void ancestorRemoved(AncestorEvent e) {
                 gameStatus.setInGame(false);
-               
-                
-                
+
             }
 
             @Override
@@ -256,8 +259,8 @@ public class GameController extends Controller implements Runnable {
             }
         });
     }
-    
-    private void gameEnded(){
+
+    private void gameEnded() {
         IAmTheAntivirus.getGameInstance().displayGameOverMenu();
     }
 
