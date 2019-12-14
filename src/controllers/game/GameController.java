@@ -148,6 +148,9 @@ public class GameController extends Controller implements Runnable {
 
             if (!v.isAlive()) {
                 it.remove();
+                gameStatus.addBitcoinsAndScore(v.getBitcoinsValue());
+                System.out.println(v.getBitcoinsValue());
+                
                 gameStatus.setRemainingWaveEnemies(gameStatus.getRemainingWaveEnemies() - 1);
             } else {
                 v.move();
@@ -191,7 +194,7 @@ public class GameController extends Controller implements Runnable {
         }
     }
 
-    private void checKeyCollision(Key key) {
+    private void checkKeyCollision(Key key) {
         synchronized (viruses) {
             for (Virus v : viruses) {
                 if (checkCollision(key.getBounds(), v.getBounds())) {
@@ -236,7 +239,7 @@ public class GameController extends Controller implements Runnable {
                 int keyCode = e.getKeyCode();
                 try {
                     keyboard.press((char) keyCode);
-                    checKeyCollision(keyboard.getKey((char) keyCode));
+                    checkKeyCollision(keyboard.getKey((char) keyCode));
                 } catch (KeyNotFoundException knfe) {
 
                 }

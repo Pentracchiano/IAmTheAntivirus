@@ -13,12 +13,13 @@ import utilities.ImageUtilities;
  */
 public class Worm extends Virus {
     private static final String DEFAULT_IMAGE_PATH = "src/resources/worm_50.png";
-    private static final int BASE_BITCOINS_VALUE = Virus.BASE_BITCOINS_VALUE * 5;
+    private static final int BASE_BITCOINS_VALUE = Virus.BASE_BITCOINS_VALUE * 5000;
     
     public Worm(int x, int y) {
         super(x, y, DEFAULT_IMAGE_PATH, 5, 50, 1);
+        this.setBitcoinsValue(BASE_BITCOINS_VALUE); // maybe base * level in the future
     }
-
+    
     @Override
     public String toString() {
         return "Worm: " + super.toString();
@@ -28,6 +29,8 @@ public class Worm extends Virus {
     public int getBaseBitcoinsValue() {
         return BASE_BITCOINS_VALUE;
     }
+    
+    
     
 }
 

@@ -49,16 +49,21 @@ public class GameStatus {
         return instance;
     }
 
-    public synchronized void setBitcoins(int bitcoins) {
-        this.bitcoins = bitcoins;
+    public synchronized void addBitcoinsAndScore(int bitcoins) {
+        this.bitcoins += bitcoins;
+        this.score += bitcoins;
+    }
+    
+    public synchronized void withdrawBitcoins(int bitcoins) {
+        if(this.bitcoins - bitcoins < 0) {
+            throw new IllegalArgumentException("Bitcoins can't become negative!");
+        }
+        
+        this.bitcoins -= bitcoins;
     }
 
     public synchronized int getScore() {
         return score;
-    }
-
-    public synchronized void setScore(int score) {
-        this.score = score;
     }
 
     public synchronized int getBitcoins() {

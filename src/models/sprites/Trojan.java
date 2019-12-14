@@ -15,6 +15,7 @@ public class Trojan extends Virus {
     
     public Trojan(int x, int y) {
         super(x, y, DEFAULT_IMAGE_PATH, 5, 25, 2);
+        this.setBitcoinsValue(BASE_BITCOINS_VALUE); // maybe base * level in the future
     }
 
     @Override

@@ -38,16 +38,20 @@ public class GameView extends View {
     private BufferedImage backgroundImage;
 
     private GameStatus gameStatus;
+    
+    private static final Color COLOR_TERMINAL_GREEN = new Color(97, 231, 79);
 
     private static final String HEART_IMAGE_PATH = "src/resources/heart_50_red.png";
     private static final String HEALTH_BAR_IMAGE_PATH = "src/resources/health_bar_green_150_30.png";
     private static final String HEALTH_BORDERS_IMAGE_PATH = "src/resources/health_bar_borders_green_150_30.png";
     private static final String ENEMY_IMAGE_PATH = "src/resources/enemy_40.png";
-
+    private static final String BITCOIN_IMAGE_PATH = "src/resources/bitcoin.png";
+    
     private Image heartImage;
     private Image healthBarImage;
     private Image healthBordersImage;
     private Image enemyImage;
+    private Image bitcoinImage;
 
     public GameView() {
 
@@ -74,6 +78,7 @@ public class GameView extends View {
         this.healthBarImage = ImageUtilities.loadImageFromPath(HEALTH_BAR_IMAGE_PATH);
         this.healthBordersImage = ImageUtilities.loadImageFromPath(HEALTH_BORDERS_IMAGE_PATH);
         this.enemyImage = ImageUtilities.loadImageFromPath(ENEMY_IMAGE_PATH);
+        this.bitcoinImage = ImageUtilities.loadImageFromPath(BITCOIN_IMAGE_PATH).getScaledInstance(30, -1, Image.SCALE_DEFAULT);
     }
 
     @Override
@@ -97,11 +102,11 @@ public class GameView extends View {
             drawBase(g);
         }
 
-        drawGameStatus(g);
+        drawWaveStatus(g);
         Toolkit.getDefaultToolkit().sync();
     }
 
-    private void drawGameStatus(Graphics g) {
+    private void drawWaveStatus(Graphics g) {
         int x;
         int y;
 
@@ -151,7 +156,7 @@ public class GameView extends View {
 
     private Color getColorHealthBar(double healthRatio) {
         if (healthRatio >= 0.66) {
-            return new Color(97, 231, 79);
+            return COLOR_TERMINAL_GREEN;
         } else if (healthRatio >= 0.33) {
             return Color.ORANGE;
         } else {
@@ -173,18 +178,33 @@ public class GameView extends View {
     }
 
     private void drawBase(Graphics g) {
+        final int BASE_SPAN_X = base.getX() + 200;
+        final int BASE_SPAN_Y = base.getY() + 15;
+        
+        final int HEART_SPAN_X = heartImage.getWidth(this) + 10;
+        
+        final int HEALTH_SPAN_X = healthBordersImage.getWidth(this) + 10;
+        
+        final int BITCOIN_SPAN_X = bitcoinImage.getWidth(this) + 10;
+        
+        
         g.drawImage(base.getImage(), base.getX(), base.getY(), this);
 
-        g.drawImage(heartImage, base.getX() + 200, base.getY() + 5, this);
+        g.drawImage(heartImage, BASE_SPAN_X, base.getY() + 5, this);
 
-        g.drawImage(healthBordersImage, base.getX() + 200 + heartImage.getWidth(this) + 10, base.getY() + 15, this);
+        g.drawImage(healthBordersImage, BASE_SPAN_X + HEART_SPAN_X, BASE_SPAN_Y, this);
 
         int width = healthBarImage.getWidth(this) * base.getCurrentHealth() / base.getTotalHealth();
 
-        g.drawImage(healthBarImage, base.getX() + 200 + heartImage.getWidth(this) + 10, base.getY() + 15, width, healthBarImage.getHeight(this), this);
-
+        g.drawImage(healthBarImage, BASE_SPAN_X + HEART_SPAN_X, BASE_SPAN_Y, width, healthBarImage.getHeight(this), this);
+        
+        g.drawImage(bitcoinImage, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X, BASE_SPAN_Y, this);
+        
+        String bitcoins = String.valueOf(gameStatus.getBitcoins());
+        System.out.println(gameStatus.getBitcoins());
+        drawFormattedString(g, bitcoins, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, new Font(Font.SANS_SERIF, Font.BOLD, 30));
     }
-
+    
     public Keyboard getKeyboard() {
         return keyboard;
     }
