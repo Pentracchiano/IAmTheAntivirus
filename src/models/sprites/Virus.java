@@ -112,6 +112,4 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
         return super.toString() + ", BASE_TOTAL_HEALTH=" + BASE_TOTAL_HEALTH + ", BASE_SPEED=" + BASE_SPEED + ", HEALTH_MULTIPLIER=" + HEALTH_MULTIPLIER + ", SPEED_MULTIPLIER=" + SPEED_MULTIPLIER + ", TOTAL_HEALTH=" + TOTAL_HEALTH + ", currentHealth=" + currentHealth + ", speed=" + speed + ", bitcoinsValue=" + bitcoinsValue;
     }
 
-    
-
 }

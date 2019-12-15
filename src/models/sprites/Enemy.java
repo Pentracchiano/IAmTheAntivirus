@@ -10,7 +10,7 @@ import java.awt.Image;
 import static java.lang.Math.ceil;
 
 /**
- *
+ * 
  * @author ccarratu
  */
 public abstract class Enemy extends Sprite {
