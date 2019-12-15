@@ -113,6 +113,10 @@ public class WaveManager {
      * {@link VirusToSpawn} class.
      */
     public Wave getWave(int waveNumber) {
+        if(waveNumber <= 0) {
+            throw new IllegalArgumentException();
+        }
+        
         int waveDifficulty = 0;
         int lastDelay = 0;     
         Random r = new Random();
