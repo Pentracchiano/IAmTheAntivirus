@@ -46,7 +46,12 @@ public class VirusFactory {
             virus = new Trojan(0, yPoint, level);
         }
         
-        int x = r.nextInt(xRightLimit - virus.getWidth()) + xLeftLimit;
+        int interval = xRightLimit - virus.getWidth();
+        if(interval <= 0) {
+            throw new IllegalArgumentException("xRightLimit must be grater than the width of the virus");
+        }
+        
+        int x = r.nextInt(interval) + xLeftLimit;
         virus.setX(x);
         
         return virus;

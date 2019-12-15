@@ -40,7 +40,7 @@ public class WaveManagerTest {
     /**
      * Test of getWave method, of class WaveManager.
      */
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testGetWave() {
         System.out.println("getWave");
         int xLeftLimit = 0;
