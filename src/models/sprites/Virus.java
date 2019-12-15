@@ -11,22 +11,43 @@ import java.awt.Image;
 import static java.lang.Math.ceil;
 
 /**
- *
+ * Virus is an Enemy that can attack, move and being damaged (it implements the Movable and Damageable interfaces)
+ * A virus is one of the entity that the player has to kill in order to defend the base.
+ * 
  * @author ccarratu
  */
 public abstract class Virus extends Enemy implements Movable, Damageable {
     private final int BASE_TOTAL_HEALTH;
     private final int BASE_SPEED;
     
+    // The multipliers are used to balance the differences between the attributes.
+    // For example, a set fo standard value for the attributes is:
+    // health = 25, attack = 5, speed = 1
+    // all the attributes have the same importance, so, when the difficulty, the value and the growth of the attributes are evaluated, the values have to be balanced.
+    // So for the difficulty, each attribute si multiplied for the inverse of the value of the corresponding multiplier.
+    // For example the speed is multiplied by 5 and the health by 2
+    // In this way the attributes are more balanced.
     private final double HEALTH_MULTIPLIER = 0.5;
     private final double SPEED_MULTIPLIER = 0.2;
     
     private final int TOTAL_HEALTH;
-    private int currentHealth; //it's not final because it changes subsequently to damage
-    private int speed; //it's not final because we could introduce powerups that slow down viruses
+    
+    private int currentHealth; // it's not final because it changes subsequently to damage
+    private int speed; // it's not final because we could introduce powerups that slow down viruses
     private int bitcoinsValue; // the score amount the player gets when this virus is killed
     public static final int BASE_BITCOINS_VALUE = 1;
     
+    /**
+     * Creates a new virus with the specified position, attributes, level and image.
+     * 
+     * @param x The x position of the virus.
+     * @param y The y position of the virus.
+     * @param image The image of the virus.
+     * @param baseTotalHealth The initial total health of the virus. The effective total health is proportional to this parameter and to the level.
+     * @param baseSpeed The initial speed of the virus. The effective speed is proportional to this parameter and to the level.
+     * @param baseAttack The initial attack of the virus. The effective attack is proportional to this parameter and to the level.
+     * @param level The level of the virus. The level determines the difficult, the value and the attributes of the instance.
+     */
     public Virus(int x, int y, Image image, int baseTotalHealth, int baseSpeed, int baseAttack, int level) {
         super(x, y, image, level, baseAttack);
         this.BASE_TOTAL_HEALTH = baseTotalHealth;
@@ -36,6 +57,19 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
         initVirus();
     }
 
+    /**
+     * Creates a new virus with the specified position, attribures, level and image.
+     * The image is obtained using the path of the image passed as parameter.
+     * 
+     * 
+     * @param x The x position of the virus.
+     * @param y The y position of the virus.
+     * @param imagePath The path of the image of the virus.
+     * @param baseTotalHealth The initial total health of the virus. The effective total health is proportional to this parameter and to the level.
+     * @param baseSpeed The initial speed of the virus. The effective speed is proportional to this parameter and to the level.
+     * @param baseAttack The initial attack of the virus. The effective attack is proportional to this parameter and to the level.
+     * @param level The level of the virus. The level determines the difficult, the value and the attributes of the instance.
+     */
     public Virus(int x, int y, String imagePath, int baseTotalHealth, int baseSpeed, int baseAttack, int level) {
         super(x, y, imagePath, level, baseAttack);
         this.BASE_TOTAL_HEALTH = baseTotalHealth;
@@ -47,6 +81,8 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
 
     private void initVirus() {
         this.currentHealth = TOTAL_HEALTH;
+        
+        // for evaluating each attribute, like the speed, we multiply the BASE_SPEED by the level and by a constant, that is different for each attribute.
         this.speed = BASE_SPEED + (int) (this.BASE_SPEED * ( getLevel() - 1) * SPEED_MULTIPLIER);
         this.setDifficulty((int) ceil(this.getAttack() * (1 / this.getAttackMultiplier()) + this.speed * (1 / this.SPEED_MULTIPLIER) + this.TOTAL_HEALTH * (1 / this.HEALTH_MULTIPLIER)));
     }

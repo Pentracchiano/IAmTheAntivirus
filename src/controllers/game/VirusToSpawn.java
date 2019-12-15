@@ -8,7 +8,8 @@ package controllers.game;
 import models.sprites.Virus;
 
 /**
- *
+ * 
+ * 
  * @author LordCatello
  */
 public class VirusToSpawn {
