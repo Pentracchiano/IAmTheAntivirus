@@ -45,7 +45,7 @@ public class GameController extends Controller implements Runnable {
         this.keyboard = view.getKeyboard();
         this.base = view.getBase();
         this.gameStatus = GameStatus.getInstance();
-        this.waveManager = new WaveManager();
+        this.waveManager = new WaveManager(keyboard.getX(), keyboard.getWidth(), view.getHeight());
 
         this.gameLoop = new Thread(this);
         
@@ -63,17 +63,15 @@ public class GameController extends Controller implements Runnable {
 
         while (gameStatus.isInGame()) {
             timeCount = 0; // counts the number of cycles
-            System.out.println("I am in game");
             
             // set wave
-            wave = waveManager.getWave(keyboard.getX(), keyboard.getWidth(), view.getHeight());
             gameStatus.setCurrentWaveNumber(gameStatus.getCurrentWaveNumber() + 1);
+            wave = waveManager.getWave(gameStatus.getCurrentWaveNumber());
             GameView gameView = (GameView) view;
             gameView.setCurrentWave(wave);
             
             gameStatus.setInWave(true);
             
-            System.out.println(gameStatus.toString());
             while (gameStatus.isInGame() && gameStatus.isInWave() ) {
                 // System.out.println("In wave");
                 
@@ -174,9 +172,8 @@ public class GameController extends Controller implements Runnable {
     }
     
     private void checKeyCollision(Key key) {
-        Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
-        
-        synchronized (aliveSpawnedViruses) {
+        synchronized (this.wave) {
+            Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
             boolean missedViruses = true;
             for (Virus virus : aliveSpawnedViruses) {
                 if (checkCollision(key.getBounds(), virus.getBounds())) {

@@ -8,39 +8,51 @@ package models.sprites;
 import models.sprites.behaviors.Movable;
 import models.sprites.behaviors.Damageable;
 import java.awt.Image;
+import static java.lang.Math.ceil;
 
 /**
  *
  * @author ccarratu
  */
 public abstract class Virus extends Enemy implements Movable, Damageable {
-
-    private int totalHealth;
-    private int currentHealth;
-    private int speed;
+    private final int BASE_TOTAL_HEALTH;
+    private final int BASE_SPEED;
+    
+    private final double HEALTH_MULTIPLIER = 0.5;
+    private final double SPEED_MULTIPLIER = 0.2;
+    
+    private final int TOTAL_HEALTH;
+    private int currentHealth; //it's not final because it changes subsequently to damage
+    private int speed; //it's not final because we could introduce powerups that slow down viruses
     private int bitcoinsValue; // the score amount the player gets when this virus is killed
     public static final int BASE_BITCOINS_VALUE = 1;
     
-    public Virus(int x, int y, Image image, int attack, int totalHealth, int speed) {
-        super(x, y, image, attack);
-
-        initVirus(totalHealth, speed);
+    public Virus(int x, int y, Image image, int baseTotalHealth, int baseSpeed, int baseAttack, int level) {
+        super(x, y, image, level, baseAttack);
+        this.BASE_TOTAL_HEALTH = baseTotalHealth;
+        this.BASE_SPEED = baseSpeed;
+        this.TOTAL_HEALTH = BASE_TOTAL_HEALTH + (int) (this.BASE_TOTAL_HEALTH * (getLevel() - 1) * HEALTH_MULTIPLIER);
+        
+        initVirus();
     }
 
-    public Virus(int x, int y, String imagePath, int attack, int totalHealth, int speed) {
-        super(x, y, imagePath, attack);
+    public Virus(int x, int y, String imagePath, int baseTotalHealth, int baseSpeed, int baseAttack, int level) {
+        super(x, y, imagePath, level, baseAttack);
+        this.BASE_TOTAL_HEALTH = baseTotalHealth;
+        this.BASE_SPEED = baseSpeed;
+        this.TOTAL_HEALTH = BASE_TOTAL_HEALTH + (int) (this.BASE_TOTAL_HEALTH * (getLevel() - 1) * HEALTH_MULTIPLIER);
 
-        initVirus(totalHealth, speed);
+        initVirus();
     }
 
-    private void initVirus(int totalHealth, int speed) {
-        this.totalHealth = totalHealth;
-        this.currentHealth = totalHealth;
-        this.speed = speed;
+    private void initVirus() {
+        this.currentHealth = TOTAL_HEALTH;
+        this.speed = BASE_SPEED + (int) (this.BASE_SPEED * ( getLevel() - 1) * SPEED_MULTIPLIER);
+        this.setDifficulty((int) ceil(this.getAttack() * (1 / this.getAttackMultiplier()) + this.speed * (1 / this.SPEED_MULTIPLIER) + this.TOTAL_HEALTH * (1 / this.HEALTH_MULTIPLIER)));
     }
     
-    public int getTotalHealth() {
-        return totalHealth;
+    public int getTOTAL_HEALTH() {
+        return TOTAL_HEALTH;
     }
 
     public int getCurrentHealth() {
@@ -51,10 +63,6 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
         return speed;
     }
     
-    public void setTotalHealth(int totalHealth) {
-        this.totalHealth = totalHealth;        
-    }
-
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
     }
@@ -101,7 +109,9 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
 
     @Override
     public String toString() {
-        return super.toString() + ", totalHealth=" + totalHealth + ", currentHealth=" + currentHealth + ", speed=" + speed;
+        return super.toString() + ", BASE_TOTAL_HEALTH=" + BASE_TOTAL_HEALTH + ", BASE_SPEED=" + BASE_SPEED + ", HEALTH_MULTIPLIER=" + HEALTH_MULTIPLIER + ", SPEED_MULTIPLIER=" + SPEED_MULTIPLIER + ", TOTAL_HEALTH=" + TOTAL_HEALTH + ", currentHealth=" + currentHealth + ", speed=" + speed + ", bitcoinsValue=" + bitcoinsValue;
     }
+
+    
 
 }

@@ -15,8 +15,12 @@ public class Worm extends Virus {
     private static final String DEFAULT_IMAGE_PATH = "src/resources/worm_50.png";
     private static final int BASE_BITCOINS_VALUE = Virus.BASE_BITCOINS_VALUE * 5;
     
-    public Worm(int x, int y) {
-        super(x, y, DEFAULT_IMAGE_PATH, 5, 50, 1);
+     private static final int BASE_TOTAL_HEALTH = 50;
+    private static final int BASE_ATTACK = 5;
+    private static final int BASE_SPEED = 1;
+    
+    public Worm(int x, int y, int level) {
+        super(x, y, DEFAULT_IMAGE_PATH, BASE_TOTAL_HEALTH, BASE_SPEED, BASE_ATTACK, level);
         this.setBitcoinsValue(BASE_BITCOINS_VALUE); // maybe base * level in the future
     }
     
