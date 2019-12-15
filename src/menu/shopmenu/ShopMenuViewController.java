@@ -33,8 +33,6 @@ public class ShopMenuViewController extends javax.swing.JPanel {
         health.setNameLabel("Health");
         health.setCostValue(50);
         health.setDescriptionLabel("Increase the maximum health of your base to:");
-        health.setNextValueLabel(TOOL_TIP_TEXT_KEY);
-        items.put("health", new ShopItemView())
     }
 
     /**
@@ -46,7 +44,9 @@ public class ShopMenuViewController extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setBackground(new java.awt.Color(0, 0, 0));
+        shopItemView1 = new menu.shopmenu.ShopItemView();
+
+        setBackground(new java.awt.Color(204, 204, 204));
         addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
@@ -57,6 +57,8 @@ public class ShopMenuViewController extends javax.swing.JPanel {
             }
         });
         setLayout(null);
+        add(shopItemView1);
+        shopItemView1.setBounds(50, 41, 600, 300);
     }// </editor-fold>//GEN-END:initComponents
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
@@ -70,5 +72,6 @@ public class ShopMenuViewController extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private menu.shopmenu.ShopItemView shopItemView1;
     // End of variables declaration//GEN-END:variables
 }
