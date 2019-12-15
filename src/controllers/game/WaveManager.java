@@ -80,7 +80,7 @@ public class WaveManager {
                 constantDelay = WaveManager.LOWEST_CONST_DELAY;
             }
             System.out.println("Constant delay: " + constantDelay);
-            //double delayCoeff = 
+            double delayCoeff = (WaveManager.LOWEST_CONST_DELAY - 2*WaveManager.MAX_CONST_DELAY + constantDelay)/(WaveManager.LOWEST_CONST_DELAY - WaveManager.MAX_CONST_DELAY);
             waveDifficulty += (int) ceil(virus.getDifficulty() * DELAY_COEFF * PATH_COEFF);
             delay += (r.nextInt(10) + constantDelay);
             virusesToSpawn.add(new VirusToSpawn(virus, delay));
