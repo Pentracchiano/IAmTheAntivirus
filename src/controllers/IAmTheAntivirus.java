@@ -16,6 +16,7 @@ import views.game.GameView;
 import menu.AbstractMenuViewController;
 import menu.gameovermenu.GameOverViewController;
 import menu.mainmenu.MainMenuViewController;
+import menu.shopmenu.ShopMenuViewController;
 import models.GameStatus;
 import utilities.FontUtilities;
 
@@ -30,6 +31,7 @@ public class IAmTheAntivirus {
     private final JFrame frame;
     private GameView gameView;
     private GameController gameController;
+    private ShopMenuViewController shopMenu;
     //HO MODIFICATO currentMenu da final a non final
     private AbstractMenuViewController currentMenu;
     private static IAmTheAntivirus gameApplication;
@@ -80,6 +82,8 @@ public class IAmTheAntivirus {
             frame.pack();
             frame.setLocationRelativeTo(null);
             gameView.requestFocusInWindow();
+            
+            shopMenu = new ShopMenuViewController();
         });
     }
     
@@ -105,6 +109,13 @@ public class IAmTheAntivirus {
             frame.pack();
             frame.setLocationRelativeTo(null);
             currentMenu.requestFocusInWindow();
+        });
+    }
+    
+    public void openShopMenu(){
+        EventQueue.invokeLater(() -> {
+            gameView.add(shopMenu);
+            shopMenu.setVisible(true);
         });
     }
     

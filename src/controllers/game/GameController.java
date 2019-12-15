@@ -104,11 +104,13 @@ public class GameController extends Controller implements Runnable {
                 timeCount++;
             }
             // wave transition
-            gameStatus.setInWaveTransition(true);
             
-            ThreadUtilities.sleep(WAVE_DELAY_MS);
+            //gameStatus.setInWaveTransition(true);
             
-            gameStatus.setInWaveTransition(false);
+            //ThreadUtilities.sleep(WAVE_DELAY_MS);
+            
+            //gameStatus.setInWaveTransition(false);
+            IAmTheAntivirus.getGameInstance().openShopMenu();
         }
     }
 
@@ -170,7 +172,7 @@ public class GameController extends Controller implements Runnable {
             this.gameEnded();
         }
     }
-
+    
     private void checKeyCollision(Key key) {
         Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
         
@@ -225,6 +227,7 @@ public class GameController extends Controller implements Runnable {
                 } catch (KeyNotFoundException knfe) {
 
                 }
+                
             }
 
             @Override
