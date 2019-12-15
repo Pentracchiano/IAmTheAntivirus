@@ -56,7 +56,7 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
         
         initVirus();
     }
-
+    
     /**
      * Creates a new virus with the specified position, attribures, level and image.
      * The image is obtained using the path of the image passed as parameter.
