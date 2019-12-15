@@ -114,8 +114,9 @@ public class IAmTheAntivirus {
     
     public void openShopMenu(){
         EventQueue.invokeLater(() -> {
-            gameView.add(shopMenu);
             shopMenu.setVisible(true);
+            gameView.add(shopMenu);
+            
         });
     }
     

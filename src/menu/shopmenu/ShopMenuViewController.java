@@ -6,8 +6,17 @@
 package menu.shopmenu;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import javax.swing.JPanel;
+import menu.RetroButton;
+import models.GameStatus;
+import models.shop.Stat;
 
 /**
  *
@@ -15,24 +24,65 @@ import java.util.Map;
  */
 public class ShopMenuViewController extends javax.swing.JPanel {
     
-    private Map<String,ShopItemView> items = new HashMap<>();
+    private List<ShopItemView> items = new ArrayList<>();
+    private GameStatus gameStatus = GameStatus.getInstance();
+    
     
     /**
      * Creates new form ShopMenuViewController
      */
     public ShopMenuViewController() {
         initComponents();
-        
-        
+        initItems();
+        addButtonListener();
         
     }
     
     private void initItems(){
+        List<Stat> stats = gameStatus.getStats();
         
-        ShopItemView health = new ShopItemView();
-        health.setNameLabel("Health");
-        health.setCostValue(50);
-        health.setDescriptionLabel("Increase the maximum health of your base to:");
+        for( Stat s : stats ){
+            ShopItemView newShopItem = new ShopItemView(s);
+            items.add(newShopItem);
+        }       
+    }
+    
+    private void addButtonListener(){
+        
+        final ActionListener buttonActionHandler = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                RetroButton target = (RetroButton) e.getSource();
+                
+                ShopItemView shopItem = (ShopItemView) target.getParent();
+                ShopMenuViewController shop = (ShopMenuViewController) shopItem.getParent();
+                shop.buyItem(shopItem);
+            }
+        };
+        
+        for( ShopItemView s : items ){
+            s.getPlusButton().addActionListener(buttonActionHandler);
+        }
+        
+    }
+    
+    private void buyItem(ShopItemView shopItem){
+        Stat s = shopItem.getStat();
+        System.out.println(s.getCost());
+        s.buy();
+        shopItem.updateValues();
+    }
+    private void setItemsBounds(){
+        int w = this.getSize().width;
+        int h = (int)(this.getSize().height*0.2);
+        int currH = 0;
+        
+        for( ShopItemView e : items ){
+            e.setVisible(true);
+            this.add(e);
+            e.setBounds(0, currH, w, h);
+            currH += h;
+        }
     }
 
     /**
@@ -44,9 +94,8 @@ public class ShopMenuViewController extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        shopItemView1 = new menu.shopmenu.ShopItemView();
-
         setBackground(new java.awt.Color(204, 204, 204));
+        setPreferredSize(new java.awt.Dimension(700, 500));
         addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
@@ -57,21 +106,22 @@ public class ShopMenuViewController extends javax.swing.JPanel {
             }
         });
         setLayout(null);
-        add(shopItemView1);
-        shopItemView1.setBounds(50, 41, 600, 300);
     }// </editor-fold>//GEN-END:initComponents
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
+        setOwnPosition();
+    }//GEN-LAST:event_formAncestorAdded
+
+    private void setOwnPosition(){
         Component parent = this.getParent();
         int width = (int) (parent.getWidth() * 0.7);
         int height = (int)(parent.getHeight()*0.9);
         int x = (parent.getWidth() - width)/2;
         int y = (parent.getHeight() - height)/2;
         this.setBounds(x, y, width, height);
-    }//GEN-LAST:event_formAncestorAdded
-
-
+        
+        setItemsBounds();
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private menu.shopmenu.ShopItemView shopItemView1;
     // End of variables declaration//GEN-END:variables
 }

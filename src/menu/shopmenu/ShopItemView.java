@@ -8,6 +8,8 @@ package menu.shopmenu;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JLabel;
+import menu.RetroButton;
+import models.shop.Stat;
 
 /**
  *
@@ -19,13 +21,36 @@ public class ShopItemView extends javax.swing.JPanel {
      * Creates new form MyComponent
      */
     private int margin;
-    public ShopItemView() {
+    private String name;
+    private Stat stat;
+    
+    public ShopItemView(Stat stat) {
         initComponents();
-        
+        this.stat = stat;
+        updateValues();
     }
 
-    public void setCostLabel(String value) {
-        this.costLabel.setText(value);
+    public Stat getStat() {
+        return stat;
+    }
+
+    public RetroButton getPlusButton() {
+        return plusButton;
+    }
+
+    public void setPlusButton(RetroButton plusButton) {
+        this.plusButton = plusButton;
+    }
+
+    public void setStat(Stat stat) {
+        this.stat = stat;
+    }
+    
+    public void updateValues(){
+        this.costLabel.setText(Integer.toString(stat.getCost()));
+        this.descriptionLabel.setText(stat.getDescription());
+        this.nextValueLabel.setText(Integer.toString(stat.getNextValue()));
+        this.nameLabel.setText(stat.getName());
     }
 
 
@@ -38,7 +63,12 @@ public class ShopItemView extends javax.swing.JPanel {
         this.nameLabel.setText(value);
     }
 
+    public String getItemName() {
+        return name;
+    }
 
+    
+    
     public void setNextValueLabel(String value) {
         this.nextValueLabel.setText(value);
     }
@@ -68,7 +98,7 @@ public class ShopItemView extends javax.swing.JPanel {
         costLabel.setForeground(new java.awt.Color(255, 255, 255));
         costLabel.setText("500");
         add(costLabel);
-        costLabel.setBounds(500, 40, 48, 50);
+        costLabel.setBounds(500, 40, 170, 50);
 
         descriptionLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         descriptionLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -121,17 +151,17 @@ public class ShopItemView extends javax.swing.JPanel {
         plusButton.setBounds(430, 40, 50, 50);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void plusButtonFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_plusButtonFocusGained
-        plusButton.toggleColors();
-    }//GEN-LAST:event_plusButtonFocusGained
+    private void plusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plusButtonActionPerformed
+        progressBar.increaseProgression();
+    }//GEN-LAST:event_plusButtonActionPerformed
 
     private void plusButtonFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_plusButtonFocusLost
         plusButton.toggleColors();
     }//GEN-LAST:event_plusButtonFocusLost
 
-    private void plusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plusButtonActionPerformed
-        progressBar.increaseProgression();
-    }//GEN-LAST:event_plusButtonActionPerformed
+    private void plusButtonFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_plusButtonFocusGained
+        plusButton.toggleColors();
+    }//GEN-LAST:event_plusButtonFocusGained
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
