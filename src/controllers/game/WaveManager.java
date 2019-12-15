@@ -9,9 +9,7 @@ import static java.lang.Math.ceil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import models.sprites.Trojan;
 import models.sprites.Virus;
-import models.sprites.Worm;
 
 /**
  *
@@ -23,15 +21,20 @@ public class WaveManager {
     private final int yPoint;
     private final VirusFactory virusFactory;
     
-    private final static int INITIAL_WAVE_DIFFICULTY = 300;
-    private final static double WAVE_DIFFICULTY_MULTIPLIER = 0.5;
-    private final static int VIRUS_LEVEL_INTERVAL = 3;
-    private final static double[] SPAWN_PROBABILITIES = {0.2, 0.3, 0.5};
-    private final static double DELAY_COEFF = 1;
-    private final static double PATH_COEFF = 1;
-    private final static int LOWEST_CONST_DELAY = 5; //5*20 = 100 ms
-    private final static int MAX_CONST_DELAY = 75; //half a second
-    private final static double CONST_DELAY_DECREASE_QUANTITY = 3;
+    private final static int BASE_NUMBER_VIRUSES = 4;
+    private final static int NUMBER_VIRUSES_INTERVAL = 2;
+    private final static int CONST_NUMBER_VIRUSES = 1;
+    
+    private final static double[] SPAWN_PROBABILITIES = {0.1, 0.2, 0.7};
+    
+    private final static int LOW_CONST_DELAY = 5;
+    private final static int MAX_CONST_DELAY = 25;
+    private final static int RANDOM_INTERVAL_DELAY = 10;
+    
+    private final static int MAX_DELAY = RANDOM_INTERVAL_DELAY + MAX_CONST_DELAY;
+    private final static int MIN_DELAY = LOW_CONST_DELAY;
+    
+    private final static double CONST_DELAY_DECREASE_QUANTITY = 5;
     
     public WaveManager(int xLeftLimit, int xRightLimit, int yPoint) {
         this.xLeftLimit = xLeftLimit;
@@ -45,47 +48,93 @@ public class WaveManager {
      * VirusToSpawn class), whose spawn point x coordinate is between xLeftLimit
      * and xRightLimit, while its y coordinate is fixed, and it's equal to the
      * lower border of the application screen (not game's console screen).
+     * 
+     * In each wave the difficulty increases. In particular this things should happens:
+     * - The number of viruses increase.
+     * - The level of viruses increase.
+     * - The spawn delay between two consecutive viruses decrease
      */
     public Wave getWave(int waveNumber) {
-        int constantDelay; //minum spawn interval between two different viruses
-        int randomDelay; //random additive spawn interval between two different viruses
-        
-        int maxWaveDifficulty = (int) ceil(INITIAL_WAVE_DIFFICULTY * WAVE_DIFFICULTY_MULTIPLIER * waveNumber); //linear wrt wave number
-        int delay = 0;
-        List<VirusToSpawn> virusesToSpawn = new ArrayList<>();
+        // int maxWaveDifficulty = (int) ceil(BASE_WAVE_DIFFICULTY * waveNumber); // linear wrt wave number
         int waveDifficulty = 0;
+        int lastDelay = 0;
+        
+        // evaluate maxWaveDifficulty as a number that depends of the number of viruses
+        
         Random r = new Random();
+        
+        int randomNumberViruses = r.nextInt(NUMBER_VIRUSES_INTERVAL);
+        int maxWaveDifficulty = getMaxWaveDifficulty(randomNumberViruses, waveNumber);
+        
+        List<VirusToSpawn> virusesToSpawn = new ArrayList<>();
+        
+        // Viruses are add to the Wave untile the maxWaveDifficulty i reached
+        System.out.println("wave_difficuly: " + maxWaveDifficulty);
         while (waveDifficulty < maxWaveDifficulty) {
-            // Virus level construction
-            double guess = r.nextDouble();
+            double choice = r.nextDouble();
+            int level = getVirusLevel(choice, waveNumber);
+            
+            Virus virus = virusFactory.createVirus(this.xLeftLimit, this.xRightLimit, this.yPoint, level);
+            
+            // delay choice
+            int randomDelay = r.nextInt(RANDOM_INTERVAL_DELAY);
+            int constDelay = getConstDelay(waveNumber);
+            
+            int delay = getVirusDelay(lastDelay, randomDelay, constDelay);
+            
+            int relativeDelay = randomDelay + constDelay;
+            lastDelay += relativeDelay;
+            
+            // Add a new virusToSpawn
+            virusesToSpawn.add(new VirusToSpawn(virus, delay));
+            
+            // delayCoeff is 1 if relativeDelay == MAX. It's 2 if relativeDelay == MIN
+            double delayCoeff = (double) (WaveManager.MIN_DELAY - 2 * WaveManager.MAX_DELAY + relativeDelay) /  (double) (WaveManager.MIN_DELAY - WaveManager.MAX_DELAY);
+            
+            waveDifficulty += (int) ceil(virus.getDifficulty() * delayCoeff);
+        }
+
+        return new Wave(virusesToSpawn);
+    }
+    
+    private int getMaxWaveDifficulty(int randomNumberViruses, int waveNumber) {
+        Virus sampleVirus = virusFactory.createVirus(this.xLeftLimit, this.xRightLimit, this.yPoint, waveNumber);
+        int maxWaveDifficulty = sampleVirus.getDifficulty() * (BASE_NUMBER_VIRUSES + (randomNumberViruses + CONST_NUMBER_VIRUSES) * waveNumber);
+        return maxWaveDifficulty;
+    }
+    
+    private int getVirusLevel(double choice, int waveNumber) {
             int level;
-            if (guess >= 0 && guess <= SPAWN_PROBABILITIES[0]){
+        
+            if (choice >= 0 && choice <= SPAWN_PROBABILITIES[0]){
                 level = waveNumber;
             }
-            else if (guess > SPAWN_PROBABILITIES[0] && guess <= (SPAWN_PROBABILITIES[0] + SPAWN_PROBABILITIES[1])){ //guess > SPAWN_PROBABILITIES[0] && guess <= SPAWN_PROBABILITIES[1]
+            else if (choice > SPAWN_PROBABILITIES[0] && choice <= (SPAWN_PROBABILITIES[0] + SPAWN_PROBABILITIES[1])) {
                 level = waveNumber - 1;
             }
             else{
                 level = waveNumber - 2;
             }
+            
             if (level <= 0){
                 level = 1;
             }
-            Virus virus;
-            virus = virusFactory.createVirus(this.xLeftLimit, this.xRightLimit, this.yPoint, level);
             
-            //Virus delay construction
-            constantDelay = this.MAX_CONST_DELAY - (int)(waveNumber*WaveManager.CONST_DELAY_DECREASE_QUANTITY);
-            if (constantDelay < WaveManager.LOWEST_CONST_DELAY){
-                constantDelay = WaveManager.LOWEST_CONST_DELAY;
-            }
-            System.out.println("Constant delay: " + constantDelay);
-            double delayCoeff = (WaveManager.LOWEST_CONST_DELAY - 2*WaveManager.MAX_CONST_DELAY + constantDelay)/(WaveManager.LOWEST_CONST_DELAY - WaveManager.MAX_CONST_DELAY);
-            waveDifficulty += (int) ceil(virus.getDifficulty() * DELAY_COEFF * PATH_COEFF);
-            delay += (r.nextInt(10) + constantDelay);
-            virusesToSpawn.add(new VirusToSpawn(virus, delay));
+            return level;
+    }
+    
+    private int getVirusDelay(int lastDelay, int randomDelay, int constDelay) {
+        int delay = lastDelay + randomDelay + constDelay;
+        
+        return delay;
+    }
+    
+    private int getConstDelay(int waveNumber) {
+        int constDelay = MAX_CONST_DELAY - (int)(waveNumber * CONST_DELAY_DECREASE_QUANTITY);
+        if (constDelay < LOW_CONST_DELAY){
+            constDelay = LOW_CONST_DELAY;
         }
-
-        return new Wave(virusesToSpawn);
+        
+        return constDelay;
     }
 }
