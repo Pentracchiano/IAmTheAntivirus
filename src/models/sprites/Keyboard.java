@@ -24,7 +24,7 @@ public class Keyboard extends Sprite {
         super(x, y, KEYBOARD_IMAGE_PATH);
         initKeyboard();
     }
-
+ 
     private void initKeyboard() {
         keyboard = new HashMap<>();
         initKeys();
