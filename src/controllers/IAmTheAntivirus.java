@@ -9,12 +9,15 @@ import controllers.game.GameController;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.WindowEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import views.game.GameView;
 import menu.AbstractMenuViewController;
 import menu.gameovermenu.GameOverViewController;
 import menu.mainmenu.MainMenuViewController;
 import models.GameStatus;
+import models.sprites.exceptions.KeyNotFoundException;
 import utilities.FontUtilities;
 
 /**
@@ -73,7 +76,11 @@ public class IAmTheAntivirus {
             frame.remove(currentMenu);
             GameStatus.disposeInstance();
             gameView = new GameView();
-            gameController = new GameController(gameView);
+            try {
+                gameController = new GameController(gameView);
+            } catch (KeyNotFoundException ex) {
+                Logger.getLogger(IAmTheAntivirus.class.getName()).log(Level.SEVERE, null, ex);
+            }
             frame.add(gameView);
             frame.pack();
             frame.setLocationRelativeTo(null);
