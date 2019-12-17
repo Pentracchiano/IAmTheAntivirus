@@ -5,9 +5,12 @@
  */
 package models.sprites;
 
+import behaviors.Direction;
+import behaviors.DirectionGenerator;
 import models.sprites.behaviors.Movable;
 import models.sprites.behaviors.Damageable;
 import java.awt.Image;
+import java.awt.Rectangle;
 import static java.lang.Math.ceil;
 
 /**
@@ -17,6 +20,9 @@ import static java.lang.Math.ceil;
  * @author ccarratu
  */
 public abstract class Virus extends Enemy implements Movable, Damageable {
+    private DirectionGenerator directionGenerator;
+    private Rectangle externalBounds;
+    
     private final int BASE_TOTAL_HEALTH;
     private final int BASE_SPEED;
     
@@ -47,19 +53,20 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
      * @param baseSpeed The initial speed of the virus. The effective speed is proportional to this parameter and to the level.
      * @param baseAttack The initial attack of the virus. The effective attack is proportional to this parameter and to the level.
      * @param level The level of the virus. The level determines the difficult, the value and the attributes of the instance.
+     * @param directionGenerator The DirectionGenerator determines the path followed by the virus.
+     * @param externalBounds The Bounds of the Sprite space where the virus can move.
      */
-    public Virus(int x, int y, Image image, int baseTotalHealth, int baseSpeed, int baseAttack, int level) {
+    public Virus(int x, int y, Image image, int baseTotalHealth, int baseSpeed, int baseAttack, int level, DirectionGenerator directionGenerator, Rectangle externalBounds) {
         super(x, y, image, level, baseAttack);
         this.BASE_TOTAL_HEALTH = baseTotalHealth;
         this.BASE_SPEED = baseSpeed;
         this.TOTAL_HEALTH = BASE_TOTAL_HEALTH + (int) (this.BASE_TOTAL_HEALTH * (getLevel() - 1) * HEALTH_MULTIPLIER);
         
-        initVirus();
+        initVirus(directionGenerator, externalBounds);
     }
     
     /**
-     * Creates a new virus with the specified position, attribures, level and image.
-     * The image is obtained using the path of the image passed as parameter.
+     * Creates a new virus with the specified position, attribures, level and image.The image is obtained using the path of the image passed as parameter.
      * 
      * 
      * @param x The x position of the virus.
@@ -69,17 +76,21 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
      * @param baseSpeed The initial speed of the virus. The effective speed is proportional to this parameter and to the level.
      * @param baseAttack The initial attack of the virus. The effective attack is proportional to this parameter and to the level.
      * @param level The level of the virus. The level determines the difficult, the value and the attributes of the instance.
+     * @param directionGenerator The DirectionGenerator determines the path followed by the virus.
+     * @param externalBounds The Bounds of the Sprite space where the virus can move.
      */
-    public Virus(int x, int y, String imagePath, int baseTotalHealth, int baseSpeed, int baseAttack, int level) {
+    public Virus(int x, int y, String imagePath, int baseTotalHealth, int baseSpeed, int baseAttack, int level, DirectionGenerator directionGenerator, Rectangle externalBounds) {
         super(x, y, imagePath, level, baseAttack);
         this.BASE_TOTAL_HEALTH = baseTotalHealth;
         this.BASE_SPEED = baseSpeed;
         this.TOTAL_HEALTH = BASE_TOTAL_HEALTH + (int) (this.BASE_TOTAL_HEALTH * (getLevel() - 1) * HEALTH_MULTIPLIER);
 
-        initVirus();
+        initVirus(directionGenerator, externalBounds);
     }
 
-    private void initVirus() {
+    private void initVirus(DirectionGenerator directionGenerator, Rectangle externalBounds) {
+        this.directionGenerator = directionGenerator;
+        this.externalBounds = externalBounds;
         this.currentHealth = TOTAL_HEALTH;
         
         // for evaluating each attribute, like the speed, we multiply the BASE_SPEED by the level and by a constant, that is different for each attribute.
@@ -106,6 +117,12 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
     public void setSpeed(int speed) {
         this.speed = speed;
     }
+    
+    // maybe directionGenerator can be final, but in a general case, if I want,
+    // I can change the movement style of the virus at run time multiple time after the creation of the istance.
+    public void setDirectionGenerator(DirectionGenerator directionGenerator) {
+        this.directionGenerator = directionGenerator;
+    }
 
     public boolean isAlive() {
         return currentHealth > 0;
@@ -129,8 +146,17 @@ public abstract class Virus extends Enemy implements Movable, Damageable {
 
     @Override
     public void move() {
-        // at the moment, any virus simply advance towards the base following a line
-        setY(getY() - speed);
+        Direction d = directionGenerator.getDirection(this.getBounds(), externalBounds);
+        
+        setX(getX() + speed * d.getX());
+        setY(getY() + speed * d.getY());
+        
+        // the following checks can be avoided because
+        // the getDirection function should provide always an ammisible direction
+        // because the externalBounds are passed as parameters
+        if(getX() < 0) {
+            setY(0);
+        }
 
         if (getY() < 0) {
             setY(0);

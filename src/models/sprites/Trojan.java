@@ -5,6 +5,9 @@
  */
 package models.sprites;
 
+import behaviors.UpwardDirectionGenerator;
+import java.awt.Rectangle;
+
 /**
  * Trojan is a particolar type of Virus.
  *  It's quite fast.
@@ -29,9 +32,10 @@ public class Trojan extends Virus {
      * @param x The x position of the trojan.
      * @param y The y position of the trojan.
      * @param level The level of the trojan. The level determines the difficult, the value and the attributes of the instance.
+     * @param externalBounds The Bounds of the Sprite space where the virus can move.
      */
-    public Trojan(int x, int y, int level) {
-        super(x, y, DEFAULT_IMAGE_PATH, BASE_TOTAL_HEALTH, BASE_SPEED, BASE_ATTACK, level);
+    public Trojan(int x, int y, int level, Rectangle externalBounds) {
+        super(x, y, DEFAULT_IMAGE_PATH, BASE_TOTAL_HEALTH, BASE_SPEED, BASE_ATTACK, level, new UpwardDirectionGenerator(), externalBounds);
         this.setBitcoinsValue(BASE_BITCOINS_VALUE); // maybe base * level in the future
     }
 

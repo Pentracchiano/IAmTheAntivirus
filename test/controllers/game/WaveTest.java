@@ -5,6 +5,7 @@
  */
 package controllers.game;
 
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import models.sprites.Worm;
@@ -28,8 +29,8 @@ public class WaveTest {
         System.out.println("spawnVirus");
         
         List<VirusToSpawn> virusesToSpawn = new ArrayList<>();
-        virusesToSpawn.add(new VirusToSpawn(new Worm(0, 0, 1), 1));
-        virusesToSpawn.add(new VirusToSpawn(new Worm(0, 0, 1), 2));
+        virusesToSpawn.add(new VirusToSpawn(new Worm(0, 0, 1, new Rectangle (50, 50, 200, 300)), 1));
+        virusesToSpawn.add(new VirusToSpawn(new Worm(0, 0, 1, new Rectangle (50, 50, 200, 300)), 2));
         
         Wave wave = new Wave(virusesToSpawn);
         

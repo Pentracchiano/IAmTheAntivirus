@@ -5,6 +5,7 @@
  */
 package controllers.game;
 
+import java.awt.Rectangle;
 import java.util.Random;
 import models.sprites.Trojan;
 import models.sprites.Virus;
@@ -39,13 +40,17 @@ public class VirusFactory {
         
         Virus virus = null;
         
+        // test
+        Rectangle externalBounds = new Rectangle(0, 0, 0, 0);
+        
         int virusType = r.nextInt(NUM_VIRUSES);
         if (virusType == 0) {
-            virus = new Worm(0, yPoint, level);
+            virus = new Worm(0, yPoint, level, externalBounds);
         } else if (virusType == 1) {
-            virus = new Trojan(0, yPoint, level);
+            virus = new Trojan(0, yPoint, level, externalBounds);
         }
         
+        // we should declare widht and height as static attributes
         int interval = xRightLimit - virus.getWidth();
         if(interval <= 0) {
             throw new IllegalArgumentException("xRightLimit must be grater than the width of the virus");
