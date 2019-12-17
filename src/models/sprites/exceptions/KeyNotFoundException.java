@@ -11,6 +11,6 @@ import java.io.IOException;
  *
  * @author mario
  */
-public class KeyNotFoundException extends Exception{
+public class KeyNotFoundException extends RuntimeException{
     
 }

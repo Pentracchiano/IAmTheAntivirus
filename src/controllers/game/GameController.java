@@ -43,7 +43,7 @@ public class GameController extends Controller implements Runnable {
         this.keyboard = view.getKeyboard();
         this.base = view.getBase();
         this.gameStatus = GameStatus.getInstance();
-         int rightLimit = keyboard.getKey('Q').getX();
+        int rightLimit = keyboard.getKey('Q').getX();
         int leftLimit = keyboard.getKey('P').getX() + keyboard.getKey('P').getWidth() - rightLimit;
         this.waveManager = new WaveManager(rightLimit, leftLimit, view.getHeight());
 
