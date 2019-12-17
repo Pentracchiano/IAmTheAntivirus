@@ -37,14 +37,17 @@ public class GameController extends Controller implements Runnable {
     private final WaveManager waveManager;
     private Wave wave;
 
-    public GameController(GameView view) {
+    public GameController(GameView view) throws KeyNotFoundException {
         super(view);
         
         this.keyboard = view.getKeyboard();
         this.base = view.getBase();
         this.gameStatus = GameStatus.getInstance();
-        this.waveManager = new WaveManager(keyboard.getX(), keyboard.getWidth(), view.getHeight());
+         int rightLimit = keyboard.getKey('Q').getX();
+        int leftLimit = keyboard.getKey('P').getX() + keyboard.getKey('P').getWidth() - rightLimit;
+        this.waveManager = new WaveManager(rightLimit, leftLimit, view.getHeight());
 
+       
         this.gameLoop = new Thread(this);
         
         this.graphicsUpdater = new Thread(new ViewUpdater(view, GRAPHICS_DELAY_MS));
