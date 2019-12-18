@@ -18,8 +18,8 @@ import javax.swing.JToggleButton;
  */
 public class MusicButton extends JToggleButton {
     
-    private static Icon musicOn = new ImageIcon("src/resources/1.png");
-    private static Icon musicOff = new ImageIcon("src/resources/2.png");
+    private static Icon musicOn = new ImageIcon("src/resources/on.png");
+    private static Icon musicOff = new ImageIcon("src/resources/off.png");
     
     public MusicButton (){
         super(musicOn);
