@@ -2,10 +2,14 @@ package models.sprites;
 
 import models.sprites.exceptions.KeyNotFoundException;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import models.sprites.exceptions.NullBoundsException;
 import utilities.ImageUtilities;
 
 public class Keyboard extends Sprite {
@@ -86,6 +90,29 @@ public class Keyboard extends Sprite {
         
         Key key = keyboard.get(id);
         key.press();
+        
+    }
+    
+    @Override
+    public Rectangle getBounds() throws NullBoundsException {
+        
+        int rightLimit = this.getX();
+        int leftLimit = this.getWidth();
+        
+        try {
+            rightLimit = this.getKey('1').getX();
+        } catch (KeyNotFoundException ex) {
+            Logger.getLogger(Keyboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try {
+            leftLimit = this.getKey('P').getX() + this.getKey('P').getWidth()-rightLimit;
+        } catch (KeyNotFoundException ex) {
+            Logger.getLogger(Keyboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return new Rectangle(rightLimit, this.getY(), leftLimit, this.getHeight());
+        
         
     }
 

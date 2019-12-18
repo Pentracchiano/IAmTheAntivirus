@@ -31,20 +31,20 @@ public class GameView extends View {
 
     private Keyboard keyboard;
     private Base base;
-    
+
     private Wave currentWave;
-    
+
     private GameStatus gameStatus;
-    
+
     private final int B_WIDTH = 1300;
     private final int B_HEIGHT = 747;
-    
-    private final Dimension dimension = new Dimension(B_WIDTH,B_HEIGHT);
+
+    private final Dimension dimension = new Dimension(B_WIDTH, B_HEIGHT);
     private BufferedImage backgroundImage;
 
     private static final Color COLOR_TERMINAL_GREEN = new Color(97, 231, 79);
     private static final Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 30);
-    
+
     private static final Color LEVEL_COLOR = COLOR_TERMINAL_GREEN;
     private static final Font LEVEL_FONT = new Font(Font.MONOSPACED, Font.BOLD, 15);
 
@@ -53,7 +53,7 @@ public class GameView extends View {
     private static final String HEALTH_BORDERS_IMAGE_PATH = "src/resources/health_bar_borders_green_150_30.png";
     private static final String ENEMY_IMAGE_PATH = "src/resources/enemy_40.png";
     private static final String BITCOIN_IMAGE_PATH = "src/resources/bitcoin.png";
-    
+
     private Image heartImage;
     private Image healthBarImage;
     private Image healthBordersImage;
@@ -66,19 +66,19 @@ public class GameView extends View {
 
     private void initView() {
         base = new Base(0, 0, 20);
-        
+
         setBackground(Color.GRAY);
         try {
             backgroundImage = ImageIO.read(new File("src/resources/background/background.png"));
         } catch (IOException ex) {
             Logger.getLogger(GameView.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-	setFocusable(true);
+
+        setFocusable(true);
         setPreferredSize(dimension);
-        
-        keyboard = new Keyboard(37,275);
-        
+
+        keyboard = new Keyboard(37, 275);
+
         this.gameStatus = GameStatus.getInstance();
 
         this.heartImage = ImageUtilities.loadImageFromPath(HEART_IMAGE_PATH);
@@ -100,15 +100,17 @@ public class GameView extends View {
         g.drawImage(backgroundImage, 0, 0, this);
 
         drawKeyboard(g);
-        
+
         // the draws must be called in this order, otherwise the base will cover other drawings
         synchronized (base) {
             drawBase(g);
         }
-        
-        if(!gameStatus.isInWaveTransition()) {
-            synchronized (currentWave) {
-                drawViruses(g);
+
+        if (currentWave != null) {
+            if (!gameStatus.isInWaveTransition()) {
+                synchronized (currentWave) {
+                    drawViruses(g);
+                }
             }
         }
 
@@ -128,7 +130,7 @@ public class GameView extends View {
         // draw wave indicator
         x = base.getX() + 560;
         y = base.getY() + 40;
-        
+
         drawFormattedString(g, "Wave " + gameStatus.getCurrentWaveNumber(), x, y, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
     }
 
@@ -146,8 +148,8 @@ public class GameView extends View {
         int aliveSpawnedVirusesSize;
         int remainingVirusesSize;
         int waveSize;
-        
-        if(currentWave == null) {
+
+        if (currentWave == null) {
             aliveSpawnedVirusesSize = 0;
             waveSize = 0;
             remainingVirusesSize = 0;
@@ -157,20 +159,20 @@ public class GameView extends View {
             waveSize = currentWave.getWaveSize();
             remainingVirusesSize = currentWave.getVirusesToSpawnSize() + aliveSpawnedVirusesSize;
         }
-        
+
         x = base.getX() + 710;
         y = base.getY() + 15;
         g.drawImage(enemyImage, x, y, this);
 
         x += enemyImage.getWidth(this) + 10;
         y = base.getY() + 40;
-        drawFormattedString(g, remainingVirusesSize +  "/" + waveSize, x, y, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
-        
+        drawFormattedString(g, remainingVirusesSize + "/" + waveSize, x, y, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
+
         // draw viruses
-        if(aliveSpawnedViruses == null) {
+        if (aliveSpawnedViruses == null) {
             return;
         }
-        
+
         aliveSpawnedViruses.forEach((virus) -> {
             g.drawImage(virus.getImage(), virus.getX(), virus.getY(), this);
         });
@@ -187,7 +189,7 @@ public class GameView extends View {
                 g.fillRect(virus.getX(), virus.getY() - 7, width, 5);
             }
         });
-        
+
         // draw level
         aliveSpawnedViruses.forEach((virus) -> {
             drawFormattedString(g, "LvL " + virus.getLevel(), virus.getX(), virus.getY() + virus.getHeight() + 15, LEVEL_COLOR, LEVEL_FONT);
@@ -220,14 +222,13 @@ public class GameView extends View {
     private void drawBase(Graphics g) {
         final int BASE_SPAN_X = base.getX() + 200;
         final int BASE_SPAN_Y = base.getY() + 15;
-        
+
         final int HEART_SPAN_X = heartImage.getWidth(this) + 10;
-        
+
         final int HEALTH_SPAN_X = healthBordersImage.getWidth(this) + 10;
-        
+
         final int BITCOIN_SPAN_X = bitcoinImage.getWidth(this) + 10;
-        
-        
+
         g.drawImage(base.getImage(), base.getX(), base.getY(), this);
 
         g.drawImage(heartImage, BASE_SPAN_X, base.getY() + 5, this);
@@ -237,17 +238,16 @@ public class GameView extends View {
         int width = healthBarImage.getWidth(this) * base.getCurrentHealth() / base.getTotalHealth();
 
         g.drawImage(healthBarImage, BASE_SPAN_X + HEART_SPAN_X, BASE_SPAN_Y, width, healthBarImage.getHeight(this), this);
-        
+
         g.drawImage(bitcoinImage, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X, BASE_SPAN_Y, this);
-        
+
         String multiplier = "x" + gameStatus.getMultiplier();
-        drawFormattedString(g, multiplier, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X-10, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT.deriveFont((float)18));
+        drawFormattedString(g, multiplier, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X - 10, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT.deriveFont((float) 18));
         String bitcoins = String.valueOf(gameStatus.getBitcoins());
-        drawFormattedString(g, bitcoins, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X +15, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
-        
-        
+        drawFormattedString(g, bitcoins, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X + 15, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
+
     }
-    
+
     public Keyboard getKeyboard() {
         return keyboard;
     }
@@ -265,11 +265,11 @@ public class GameView extends View {
     public int getHeight() {
         return backgroundImage.getHeight();
     }
-    
+
     public Dimension getPanelDimension() {
         return dimension;
     }
-    
+
     public GameStatus getGameStatus() {
         return gameStatus;
     }
@@ -277,7 +277,5 @@ public class GameView extends View {
     public void setCurrentWave(Wave currentWave) {
         this.currentWave = currentWave;
     }
-    
-    
 
 }
