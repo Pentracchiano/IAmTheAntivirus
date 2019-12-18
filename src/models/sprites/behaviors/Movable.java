@@ -5,11 +5,15 @@
  */
 package models.sprites.behaviors;
 
+import java.awt.Rectangle;
+
 /**
  *
  * @author ccarratu
  */
 public interface Movable {
     public void move();
-    
+    // Parameters externalBounds represents the boundaries of the space in which
+    // the movable object moves.
+    public void move(Rectangle externalBounds);
 }

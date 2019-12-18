@@ -5,7 +5,6 @@
  */
 package controllers.game;
 
-import java.awt.Rectangle;
 import java.util.Random;
 import models.sprites.Trojan;
 import models.sprites.Virus;
@@ -39,15 +38,12 @@ public class VirusFactory {
         Random r = new Random();
         
         Virus virus = null;
-        
-        // test
-        Rectangle externalBounds = new Rectangle(0, 0, 0, 0);
-        
+         
         int virusType = r.nextInt(NUM_VIRUSES);
         if (virusType == 0) {
-            virus = new Worm(0, yPoint, level, externalBounds);
+            virus = new Worm(0, yPoint, level);
         } else if (virusType == 1) {
-            virus = new Trojan(0, yPoint, level, externalBounds);
+            virus = new Trojan(0, yPoint, level);
         }
         
         // we should declare widht and height as static attributes

@@ -6,7 +6,6 @@
 package models.sprites;
 
 import behaviors.UpwardDirectionGenerator;
-import java.awt.Rectangle;
 
 /**
  * Worm is a particolar type of Virus.
@@ -32,10 +31,9 @@ public class Worm extends Virus {
      * @param x The x position of the worm.
      * @param y The y position of the worm.
      * @param level The level of the worm. The level determines the difficult, the value and the attributes of the instance.
-     * @param externalBounds The Bounds of the Sprite space where the virus can move.
      */
-    public Worm(int x, int y, int level, Rectangle externalBounds) {
-        super(x, y, DEFAULT_IMAGE_PATH, BASE_TOTAL_HEALTH, BASE_SPEED, BASE_ATTACK, level, new UpwardDirectionGenerator(), externalBounds);
+    public Worm(int x, int y, int level) {
+        super(x, y, DEFAULT_IMAGE_PATH, BASE_TOTAL_HEALTH, BASE_SPEED, BASE_ATTACK, level, new UpwardDirectionGenerator());
         this.setBitcoinsValue(BASE_BITCOINS_VALUE); // maybe base * level in the future
     }
     

@@ -14,8 +14,12 @@ import java.awt.Rectangle;
 public class UpwardDirectionGenerator implements DirectionGenerator {
 
     @Override
-    public Direction getDirection(Rectangle MovableSpriteBounds, Rectangle ExternalBounds) {
+    public Direction getDirection(Rectangle movableSpriteBounds, Rectangle externalBounds, int speed) {
+        /*
+        * Don't have to do any check, because a movable sprite can always move upwards. In the worst
+        * case, it will hit the base.
+        */
         return new Direction(0, -1);
     }
-    
+   
 }

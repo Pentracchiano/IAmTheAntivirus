@@ -29,8 +29,8 @@ public class WaveTest {
         System.out.println("spawnVirus");
         
         List<VirusToSpawn> virusesToSpawn = new ArrayList<>();
-        virusesToSpawn.add(new VirusToSpawn(new Worm(0, 0, 1, new Rectangle (50, 50, 200, 300)), 1));
-        virusesToSpawn.add(new VirusToSpawn(new Worm(0, 0, 1, new Rectangle (50, 50, 200, 300)), 2));
+        virusesToSpawn.add(new VirusToSpawn(new Worm(0, 0, 1), 1));
+        virusesToSpawn.add(new VirusToSpawn(new Worm(0, 0, 1), 2));
         
         Wave wave = new Wave(virusesToSpawn);
         

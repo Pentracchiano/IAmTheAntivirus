@@ -13,6 +13,19 @@ import java.awt.Rectangle;
  */
 
 // It is used as a strategy pattern
+
+/*
+* x and y coordinates of the movableSpriteBounds object are the coordinates of
+* this point:
+*                   O---------
+*                   |         |
+*                   |         |
+*                   |         |  
+*                    ---------
+*/
 public interface DirectionGenerator {
-    public Direction getDirection(Rectangle MovableSpriteBounds, Rectangle ExternalBounds);
+    // Classes implementing this method have the responsibility to always return
+    // admissible directions with respect to speed, actual position and dimension
+    // of the sprite
+    public Direction getDirection(Rectangle movableSpriteBounds, Rectangle externalBounds, int speed);
 }

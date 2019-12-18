@@ -127,7 +127,7 @@ public class GameController extends Controller implements Runnable {
                 
                 gameStatus.addBitcoinsAndScore(v.getBitcoinsValue()*gameStatus.getMultiplier());
             } else {
-                v.move();
+                v.move(keyboard.getBounds());
             }
         }
     }
