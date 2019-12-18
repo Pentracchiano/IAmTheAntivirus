@@ -77,7 +77,7 @@ public class GameView extends View {
 	setFocusable(true);
         setPreferredSize(dimension);
         
-        keyboard = new Keyboard(160,300);
+        keyboard = new Keyboard(37,275);
         
         this.gameStatus = GameStatus.getInstance();
 

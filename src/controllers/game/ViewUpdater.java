@@ -10,18 +10,29 @@ import java.util.logging.Logger;
 import views.View;
 
 /**
- *
+ * ViewUpdater is the class responsible for triggering in a loop the update of a view.
+ * 
  * @author LordCatello
  */
 public class ViewUpdater implements Runnable {
     private final View VIEW;
     private final int DELAY_MS;
 
+    /**
+     * Creates a ViewUpdater with the specified view to trigger every delay milliseconds.
+     * 
+     * @param view The view to trigger
+     * @param delay_ms The time, in milliseconds, that elaps between two consecutive triggers.
+     */
     public ViewUpdater(View view, int delay_ms) {
         this.VIEW = view;
         this.DELAY_MS = delay_ms;
     }
 
+    /**
+     * This method trigger the view every delay milliseconds.
+     * 
+     */
     @Override
     public void run() {
         long beforeTimeMs, timeDifferenceMs, sleepTimeMs;

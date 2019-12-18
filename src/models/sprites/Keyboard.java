@@ -17,7 +17,7 @@ public class Keyboard extends Sprite {
     private static final int DEFAULT_KEY_ATTACK = 10;
     private static final char CHARACTERS[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
     private static final String KEYBOARD_IMAGE_PATH = "src/resources/keyboard/keyboard.png";
-
+    private static final int WIDTH_KEY = 69;
     private Map<Character, Key> keyboard;
 
     public Keyboard(int x, int y) {
@@ -32,33 +32,40 @@ public class Keyboard extends Sprite {
 
     private void initKeys() {
 
-        int spaceAmongKeys = 5;
-        int border = 15;
-        int xKeyboard = getX();
-        int yKeyboard = getY();
-        int xKey = xKeyboard + border;
-        int yKey = yKeyboard + border;
+        int spaceAmongKeys = 12;
+        int xKey = 104 + getX();
+        int yKey = 30 + getY();
         char idKey;
-        int widthKey;
-        int heightKey;
         Key key;
 
         for (int i = 0; i < CHARACTERS.length; i++) {
 
             idKey = CHARACTERS[i];
-            key = new Key(xKey, yKey, idKey); //creo sprite tasto
-            keyboard.put(idKey, key); //inserisco nella tabella
-
-            widthKey = key.getImage().getWidth(null);
-            heightKey = key.getImage().getHeight(null);
-
-            if (idKey == '0' || idKey == 'P' || idKey == 'L') {
-                //vado a capo
-                xKey = xKeyboard + border;
-                yKey = yKey + border + heightKey;
-            } else {
-                xKey = xKey + widthKey + spaceAmongKeys;
+            
+            switch(idKey) {
+                case '1':
+                    xKey = 104 + getX();
+                    yKey = 30 + getY();
+                    break;
+                case 'Q':
+                    xKey = 139+getX();
+                    yKey = 104+getY();
+                    break;
+                case 'A':
+                    xKey = 154+getX();
+                    yKey = 182+getY();
+                    break;
+                case 'Z':
+                    xKey = 178+getX();
+                    yKey = 256+getY();
+                    break;
+                default:
+                    xKey = xKey + WIDTH_KEY + spaceAmongKeys;
             }
+            
+            key = new Key(xKey, yKey, idKey); //creo sprite tasto
+            keyboard.put(idKey, key); //inserisco nella tabella           
+
         }
     }
 

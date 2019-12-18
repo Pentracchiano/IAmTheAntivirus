@@ -5,53 +5,71 @@
  */
 package controllers.game;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  *
- * @author Davide Cafaro
+ * @author ccarratu
  */
 public class WaveManagerTest {
     
     public WaveManagerTest() {
     }
     
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
     @Before
     public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     /**
      * Test of getWave method, of class WaveManager.
      */
+    @Test(expected=IllegalArgumentException.class)
+    public void testIllegalWaveManagerParameters() {
+        System.out.println("testIllegalWaveManagerParameters");
+        
+        WaveManager instance = new WaveManager(0,0,0);
+        int waveNumber = 0;
+        Wave expResult = null;
+        Wave result = instance.getWave(waveNumber);
+        assertEquals(expResult, result);
+
+    }
+    
+    /**
+     * Test of getWave method, of class WaveManager.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testIllegalWaveNumber() {
+       System.out.println("testIllegalWaveNumber");
+       
+       WaveManager instance = new WaveManager(500,500,200);
+       int waveNumber = 0;
+       Wave expResult = null;
+       Wave result = instance.getWave(waveNumber);
+       assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of getWave method, of class WaveManager.
+     */
     @Test
     public void testGetWave() {
-        System.out.println("getWave");
-        int xLeftLimit = 0;
-        int xRightLimit = 0;
-        int yPoint = 0;
-        WaveManager instance = new WaveManager();
-        Wave expResult = null;
-        Wave result = instance.getWave(xLeftLimit, xRightLimit, yPoint);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+       System.out.println("testGetWave");
+       
+       WaveManager instance = new WaveManager(500,500,200);
+       int waveNumber = 10;
+       Wave wave = instance.getWave(waveNumber);
+       boolean expResult, result;
+       
+       expResult = true;
+       result = wave.hasVirusToSpawn();
+       assertEquals(expResult, result);
+       
+       expResult = false;
+       result = wave.hasAliveViruses();
+       assertEquals(expResult, result);
     }
     
 }

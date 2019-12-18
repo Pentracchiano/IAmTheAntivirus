@@ -6,12 +6,10 @@
 package controllers;
 
 import controllers.game.GameController;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import views.game.GameView;
 import menu.AbstractMenuViewController;
 import menu.gameovermenu.GameOverViewController;
