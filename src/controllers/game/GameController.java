@@ -14,6 +14,7 @@ import java.util.Iterator;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import models.sprites.Keyboard.Key;
+import sounds.BackgroundMusic;
 import utilities.ThreadUtilities;
 import views.game.GameView;
 
@@ -27,6 +28,8 @@ public class GameController extends Controller implements Runnable {
 
     private final Thread gameLoop;
     private final Thread graphicsUpdater;
+    private final Thread backgroundMusicThread;
+    private final BackgroundMusic backgroundMusic;
 
     private final static int GAME_DELAY_MS = 20;
     private final static int GRAPHICS_DELAY_MS = 20;
@@ -43,13 +46,14 @@ public class GameController extends Controller implements Runnable {
         this.keyboard = view.getKeyboard();
         this.base = view.getBase();
         this.gameStatus = GameStatus.getInstance();
-        int rightLimit = keyboard.getKey('Q').getX();
-        int leftLimit = keyboard.getKey('P').getX() + keyboard.getKey('P').getWidth() - rightLimit;
-        this.waveManager = new WaveManager(rightLimit, leftLimit, view.getHeight());
+        int leftLimit = keyboard.getKey('1').getX();
+        int rightLimit = keyboard.getKey('P').getX() + keyboard.getKey('P').getWidth() - leftLimit;
+        this.waveManager = new WaveManager(leftLimit, rightLimit, view.getHeight());
 
        
         this.gameLoop = new Thread(this);
-        
+        this.backgroundMusic = new BackgroundMusic("src/resources/music/backgroundMusic.wav");
+        this.backgroundMusicThread = new Thread(backgroundMusic);
         this.graphicsUpdater = new Thread(new ViewUpdater(view, GRAPHICS_DELAY_MS));
 
         this.initListeners();
@@ -168,6 +172,7 @@ public class GameController extends Controller implements Runnable {
 
         if (base.isInfected()) {
             gameStatus.setInGame(false);
+            backgroundMusic.setRunning(false);
             this.gameEnded();
         }
     }
@@ -200,12 +205,18 @@ public class GameController extends Controller implements Runnable {
             public void ancestorAdded(AncestorEvent e) {
                 gameStatus.setInGame(true);
                 gameLoop.start();
+                if(IAmTheAntivirus.getGameInstance().getMusicOn()){
+                    backgroundMusicThread.start();
+                    backgroundMusic.setRunning(true);
+                }
+                
             }
 
             // this event is called when the view is removed by the frame
             @Override
             public void ancestorRemoved(AncestorEvent e) {
-                gameStatus.setInGame(false);  
+                gameStatus.setInGame(false);
+                backgroundMusic.setRunning(false);
             }
 
             @Override
