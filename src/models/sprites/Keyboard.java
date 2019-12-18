@@ -162,25 +162,25 @@ public class Keyboard extends Sprite {
         
     }
     
-          @Override
+    @Override
     public Rectangle getBounds() throws NullBoundsException {
         
-        int rightLimit = this.getX();
-        int leftLimit = this.getWidth();
+        int leftLimit = this.getX();
+        int rightLimit = this.getWidth();
         
         try {
-            rightLimit = this.getKey('1').getX();
+            leftLimit = this.getKey('1').getX();
         } catch (KeyNotFoundException ex) {
             Logger.getLogger(Keyboard.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         try {
-            leftLimit = this.getKey('P').getX() + this.getKey('P').getWidth()+rightLimit;
+            rightLimit = this.getKey('P').getX() + this.getKey('P').getWidth()-leftLimit;
         } catch (KeyNotFoundException ex) {
             Logger.getLogger(Keyboard.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return new Rectangle(rightLimit, this.getY(), leftLimit, this.getHeight());
+        return new Rectangle(leftLimit, this.getY(), rightLimit, this.getHeight());
         
         
     }

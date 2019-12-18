@@ -46,9 +46,9 @@ public class GameController extends Controller implements Runnable {
         this.keyboard = view.getKeyboard();
         this.base = view.getBase();
         this.gameStatus = GameStatus.getInstance();
-        int rightLimit = keyboard.getKey('Q').getX();
-        int leftLimit = keyboard.getKey('P').getX() + keyboard.getKey('P').getWidth() - rightLimit;
-        this.waveManager = new WaveManager(rightLimit, leftLimit, view.getHeight());
+        int leftLimit = keyboard.getKey('1').getX();
+        int rightLimit = keyboard.getKey('P').getX() + keyboard.getKey('P').getWidth() - leftLimit;
+        this.waveManager = new WaveManager(leftLimit, rightLimit, view.getHeight());
 
         this.gameLoop = new Thread(this);
         this.backgroundMusic = new BackgroundMusic("src/resources/music/backgroundMusic.wav");
