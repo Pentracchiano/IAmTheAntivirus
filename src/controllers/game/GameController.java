@@ -15,7 +15,6 @@ import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import models.sprites.Keyboard.Key;
 import sounds.BackgroundMusic;
-import sounds.Sound;
 import utilities.ThreadUtilities;
 import views.game.GameView;
 
@@ -52,7 +51,7 @@ public class GameController extends Controller implements Runnable {
         this.waveManager = new WaveManager(rightLimit, leftLimit, view.getHeight());
 
         this.gameLoop = new Thread(this);
-        backgroundMusic = new BackgroundMusic();
+        this.backgroundMusic = new BackgroundMusic("src/resources/music/backgroundMusic.wav");
         this.backgroundMusicThread = new Thread(backgroundMusic);
         this.graphicsUpdater = new Thread(new ViewUpdater(view, GRAPHICS_DELAY_MS));
 
@@ -203,8 +202,11 @@ public class GameController extends Controller implements Runnable {
             public void ancestorAdded(AncestorEvent e) {
                 gameStatus.setInGame(true);
                 gameLoop.start();
-                backgroundMusicThread.start();
-                backgroundMusic.setRunning(true);
+                if(IAmTheAntivirus.getGameInstance().getMusicOn()){
+                    backgroundMusicThread.start();
+                    backgroundMusic.setRunning(true);
+                }
+                
             }
 
             // this event is called when the view is removed by the frame

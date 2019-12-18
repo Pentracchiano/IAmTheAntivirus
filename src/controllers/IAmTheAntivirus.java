@@ -36,14 +36,14 @@ public class IAmTheAntivirus {
     private static IAmTheAntivirus gameApplication;
     private static final String FONT_MENU_PATH = "src/resources/fonts/Minecraft.ttf";
     private final Dimension panelDimension = new GameView().getPanelDimension();
-
+    private boolean musicOn = true;
+    
     private IAmTheAntivirus() {
         FontUtilities.registerFont(FONT_MENU_PATH);
        
         frame = new JFrame();
         
-        initFrame();
-        
+        initFrame();    
     }
 
     /**
@@ -129,11 +129,18 @@ public class IAmTheAntivirus {
         frame.setTitle("IAmTheAntivirus");
         // this method has to be called after add() and before setLocationRelativeTo()
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        displayMainMenu();
-        
+        displayMainMenu();       
         
     }
 
+    public boolean getMusicOn (){
+        return musicOn;
+    }
+    
+    public void setMusicOn (boolean musicOn){
+        this.musicOn = musicOn;
+    }
+    
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             IAmTheAntivirus application = IAmTheAntivirus.getGameInstance();

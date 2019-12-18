@@ -51,7 +51,6 @@ public class GameStatus {
         this.inGame = false;
         this.inWave = false;
         this.inWaveTransition = false;
-        
         this.currentWaveNumber = 0;
     }
 
@@ -141,7 +140,7 @@ public class GameStatus {
     public synchronized void setInWaveTransition(boolean waveTransition) {
         this.inWaveTransition = waveTransition;
     }
-
+  
     @Override
     public String toString() {
         return "GameStatus{" + "inGame=" + inGame + ", inWave=" + inWave + ", inWaveTransition=" + inWaveTransition + ", currentWaveNumber=" + currentWaveNumber + ", score=" + score + ", bitcoins=" + bitcoins + ", multiplier=" + multiplier + ", MAX_MULTIPLIER=" + MAX_MULTIPLIER + ", consecutiveHits=" + consecutiveHits + ", HITS_PER_MULTIPLIER=" + HITS_PER_MULTIPLIER + '}';
