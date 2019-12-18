@@ -106,12 +106,13 @@ public class GameView extends View {
             drawBase(g);
         }
         
-        if(!gameStatus.isInWaveTransition()) {
-            synchronized (currentWave) {
-                drawViruses(g);
+        if(currentWave != null){
+            if(!gameStatus.isInWaveTransition()) {
+                synchronized (currentWave) {
+                    drawViruses(g);
+                }
             }
         }
-
         drawWaveStatus(g);
         Toolkit.getDefaultToolkit().sync();
     }
