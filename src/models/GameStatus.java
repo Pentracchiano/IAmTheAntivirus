@@ -5,6 +5,10 @@
  */
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+import models.shop.Stat;
+
 /**
  *
  * @author ccarratu
@@ -17,6 +21,8 @@ public class GameStatus {
     private boolean inGame;
     private boolean inWave;
     private boolean inWaveTransition;
+    private List<Stat> stats = new ArrayList<>();
+    
     
     // the number of the current wave
     private int currentWaveNumber;
@@ -52,7 +58,15 @@ public class GameStatus {
         this.inWave = false;
         this.inWaveTransition = false;
         this.currentWaveNumber = 0;
+        
+        this.stats.add(new Stat("health","Max Health",50,30));
+        this.stats.add(new Stat("attack","Attack",50,2));
     }
+
+    public List<Stat> getStats() {
+        return stats;
+    }
+    
 
     public synchronized static GameStatus getInstance() {
         if(GameStatus.instance == null) {
