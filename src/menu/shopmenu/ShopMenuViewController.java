@@ -94,7 +94,7 @@ public class ShopMenuViewController extends javax.swing.JPanel {
         if( balance-cost >= 0 )
         {
             s.buy();
-            gameStatus.setBitcoins(balance-cost);
+            gameStatus.withdrawBitcoins(cost);
             this.updateMoneyLabel();
             EventQueue.invokeLater(() -> {
              shopItem.updateValues();

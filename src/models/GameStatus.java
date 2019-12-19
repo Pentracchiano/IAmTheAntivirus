@@ -20,6 +20,7 @@ public class GameStatus {
 
     private boolean inGame;
     private boolean inWave;
+    private boolean inShop;
     private boolean inWaveTransition;
     private List<Stat> stats = new ArrayList<>();
     
@@ -56,6 +57,7 @@ public class GameStatus {
     private GameStatus() {
         this.inGame = false;
         this.inWave = false;
+        this.inShop = false;
         this.inWaveTransition = false;
         this.currentWaveNumber = 0;
         
@@ -154,9 +156,17 @@ public class GameStatus {
     public synchronized void setInWaveTransition(boolean waveTransition) {
         this.inWaveTransition = waveTransition;
     }
-  
+
+    public boolean isInShop() {
+        return inShop;
+    }
+
+    public void setInShop(boolean inShop) {
+        this.inShop = inShop;
+    }
+
     @Override
     public String toString() {
-        return "GameStatus{" + "inGame=" + inGame + ", inWave=" + inWave + ", inWaveTransition=" + inWaveTransition + ", currentWaveNumber=" + currentWaveNumber + ", score=" + score + ", bitcoins=" + bitcoins + ", multiplier=" + multiplier + ", MAX_MULTIPLIER=" + MAX_MULTIPLIER + ", consecutiveHits=" + consecutiveHits + ", HITS_PER_MULTIPLIER=" + HITS_PER_MULTIPLIER + '}';
+        return "GameStatus{" + "inGame=" + inGame + ", inWave=" + inWave + ", inShop=" + inShop + ", inWaveTransition=" + inWaveTransition + ", stats=" + stats + ", currentWaveNumber=" + currentWaveNumber + ", score=" + score + ", bitcoins=" + bitcoins + ", multiplier=" + multiplier + ", MAX_MULTIPLIER=" + MAX_MULTIPLIER + ", consecutiveHits=" + consecutiveHits + ", HITS_PER_MULTIPLIER=" + HITS_PER_MULTIPLIER + '}';
     }
 }

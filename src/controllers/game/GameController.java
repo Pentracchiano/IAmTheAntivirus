@@ -11,6 +11,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import models.sprites.Keyboard.Key;
@@ -108,12 +110,27 @@ public class GameController extends Controller implements Runnable {
             }
             // wave transition
             
-            //gameStatus.setInWaveTransition(true);
+            gameStatus.setInWaveTransition(true);
             
-            //ThreadUtilities.sleep(WAVE_DELAY_MS);
-            
-            //gameStatus.setInWaveTransition(false);
             IAmTheAntivirus.getGameInstance().openShopMenu();
+            
+            /*
+            try {
+                this.wait();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            */
+            
+            // usare un altro metodo, wait e notify, oppure uccidere e riavviare il thread
+            while(gameStatus.isInShop()) {
+                System.out.println(gameStatus.toString());
+                ThreadUtilities.sleep(1000);
+            }
+            
+            ThreadUtilities.sleep(WAVE_DELAY_MS);
+            
+            gameStatus.setInWaveTransition(false);
         }
     }
 

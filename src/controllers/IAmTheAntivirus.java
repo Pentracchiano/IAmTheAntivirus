@@ -47,7 +47,7 @@ public class IAmTheAntivirus {
         
         initFrame();    
     }
-
+    
     /**
      * The only way to obtain an instance of the IAmTheAntivirus (so, the game
      * app class) is to call this method: it always returns the same instance as
@@ -118,10 +118,19 @@ public class IAmTheAntivirus {
     }
     
     public void openShopMenu(){
+        GameStatus.getInstance().setInShop(true);
         EventQueue.invokeLater(() -> {
             shopMenu.setVisible(true);
             gameView.add(shopMenu);
             
+        });
+    }
+    
+    public void closeShopMenu(){
+        GameStatus.getInstance().setInShop(false);
+        EventQueue.invokeLater(() -> {
+            shopMenu.setVisible(false);
+            gameView.remove(shopMenu);
         });
     }
     
