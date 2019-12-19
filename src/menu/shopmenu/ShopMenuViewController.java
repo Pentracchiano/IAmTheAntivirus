@@ -118,7 +118,8 @@ public class ShopMenuViewController extends javax.swing.JPanel {
     @Override
     public void paintComponents(Graphics g) {
         super.paintComponents(g);
-        g.drawImage(image, 0, 0, 1300, 747, this);
+        System.out.println(image);
+        g.drawImage(image, 0, 0, this.getPreferredSize().width, this.getPreferredSize().height, this);
     }
 
     /**
