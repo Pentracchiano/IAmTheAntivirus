@@ -11,8 +11,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
@@ -25,7 +23,6 @@ import javax.swing.JPanel;
 import menu.RetroButton;
 import models.GameStatus;
 import models.shop.Stat;
-import utilities.ImageUtilities;
 
 /**
  *
@@ -36,8 +33,6 @@ public class ShopMenuViewController extends javax.swing.JPanel {
     private List<ShopItemView> items = new ArrayList<>();
     private GameStatus gameStatus = GameStatus.getInstance();
     
-    private String imagePath = "src/resources/shopBg.jpg";
-    private Image image; 
     
     /**
      * Creates new form ShopMenuViewController
@@ -47,8 +42,7 @@ public class ShopMenuViewController extends javax.swing.JPanel {
         
         initComponents();
         initItems();
-        
-        this.image = ImageUtilities.loadImageFromPath(imagePath);
+       
         
         this.titleLabel.setFont(new Font("Minecraft", Font.BOLD, 72));
         this.moneyLabel.setFont(new Font("Minecraft",Font.BOLD, 32));
@@ -104,7 +98,6 @@ public class ShopMenuViewController extends javax.swing.JPanel {
             this.updateMoneyLabel();
             EventQueue.invokeLater(() -> {
              shopItem.updateValues();
-             shopItem.increaseCounter();
             });
         }
         
@@ -113,12 +106,6 @@ public class ShopMenuViewController extends javax.swing.JPanel {
     
     public void updateMoneyLabel(){
         this.moneyLabel.setText(Integer.toString(this.gameStatus.getBitcoins()));
-    }
-
-    @Override
-    public void paintComponents(Graphics g) {
-        super.paintComponents(g);
-        g.drawImage(image, 0, 0, 1300, 747, this);
     }
 
     /**
