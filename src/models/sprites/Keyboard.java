@@ -20,7 +20,7 @@ public class Keyboard extends Sprite {
 
     private static final int DEFAULT_KEY_ATTACK = 10;
     private static final char CHARACTERS[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
-    private static final String KEYBOARD_IMAGE_PATH = "src/resources/keyboard/keyboard.png";
+    private static final String KEYBOARD_IMAGE_PATH = "src/resources/keyboard/keyboard4.png";
     private static final int WIDTH_KEY = 69;
     private Map<Character, Key> keyboard;
 
@@ -28,7 +28,7 @@ public class Keyboard extends Sprite {
         super(x, y, KEYBOARD_IMAGE_PATH);
         initKeyboard();
     }
-
+ 
     private void initKeyboard() {
         keyboard = new HashMap<>();
         initKeys();
@@ -73,7 +73,6 @@ public class Keyboard extends Sprite {
         }
     }
 
-    //attenzione dopo si deve rivedere
     public Set<Character> getSetKeyKeys() {
 
         return keyboard.keySet();
@@ -82,7 +81,6 @@ public class Keyboard extends Sprite {
     public Collection<Key> getKeys() {
         return keyboard.values();
     }
-    //fine attenzione
 
     public void press(char id) throws KeyNotFoundException{      
         if(!keyboard.containsKey(id))
@@ -93,29 +91,6 @@ public class Keyboard extends Sprite {
         
     }
     
-    @Override
-    public Rectangle getBounds() throws NullBoundsException {
-        
-        int rightLimit = this.getX();
-        int leftLimit = this.getWidth();
-        
-        try {
-            rightLimit = this.getKey('1').getX();
-        } catch (KeyNotFoundException ex) {
-            Logger.getLogger(Keyboard.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        try {
-            leftLimit = this.getKey('P').getX() + this.getKey('P').getWidth()-rightLimit;
-        } catch (KeyNotFoundException ex) {
-            Logger.getLogger(Keyboard.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return new Rectangle(rightLimit, this.getY(), leftLimit, this.getHeight());
-        
-        
-    }
-
     public Key getKey(char keyCode) throws KeyNotFoundException{
         if(!keyboard.containsKey(keyCode))
             throw new KeyNotFoundException();
@@ -184,5 +159,29 @@ public class Keyboard extends Sprite {
             this.state = State.RELEASED;
             setImage(keyImages.get(state));
         }
+        
+    }
+    
+    @Override
+    public Rectangle getBounds() throws NullBoundsException {
+        
+        int leftLimit = this.getX();
+        int rightLimit = this.getWidth();
+        
+        try {
+            leftLimit = this.getKey('1').getX();
+        } catch (KeyNotFoundException ex) {
+            Logger.getLogger(Keyboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try {
+            rightLimit = this.getKey('P').getX() + this.getKey('P').getWidth()-leftLimit;
+        } catch (KeyNotFoundException ex) {
+            Logger.getLogger(Keyboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return new Rectangle(leftLimit, this.getY(), rightLimit, this.getHeight());
+        
+        
     }
 }

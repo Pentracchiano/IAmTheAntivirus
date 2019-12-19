@@ -30,7 +30,6 @@ public class MainMenuViewController extends AbstractMenuViewController {
     private static final double IMAGE_SCREEN_TOP_LEFT_X_SCREEN_RATIO = 0.4956;
     private static final double IMAGE_SCREEN_TOP_LEFT_Y_SCREEN_RATIO = 0.2899;
     private static final double IMAGE_SCREEN_WIDTH_SCREEN_RATIO = 0.31789;
-    
     private static final double IMAGE_SCREEN_TOP_TITLE_MARGIN_RATIO = 0.05;
     
     private static final String BACKGROUND_IMAGE_MENU_PATH = "src/resources/background/backgroundMenu.jpg";
@@ -131,6 +130,7 @@ public class MainMenuViewController extends AbstractMenuViewController {
         exitGameButton = new menu.RetroButton();
         titleLabel = new javax.swing.JLabel();
         playGameButton = new menu.RetroButton();
+        musicButton = new menu.MusicButton();
 
         setOpaque(false);
         addFocusListener(new java.awt.event.FocusAdapter() {
@@ -179,6 +179,25 @@ public class MainMenuViewController extends AbstractMenuViewController {
         });
         add(playGameButton);
         playGameButton.setBounds(250, 250, 250, 56);
+
+        musicButton.setText("musicButton2");
+        musicButton.setActionCommand("musicButton");
+        musicButton.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                musicButtonAncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
+        musicButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                musicButtonActionPerformed(evt);
+            }
+        });
+        add(musicButton);
+        musicButton.setBounds(40, 590, 70, 70);
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitGameButtonActionPerformed
@@ -207,9 +226,28 @@ public class MainMenuViewController extends AbstractMenuViewController {
         playGameButton.requestFocusInWindow();
     }//GEN-LAST:event_formFocusGained
 
+    private void musicButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_musicButtonActionPerformed
+        IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
+        if (musicButton.isSelected()){         
+            gameApplication.setMusicOn(false);
+        } else {          
+            gameApplication.setMusicOn(true);
+        }
+    }//GEN-LAST:event_musicButtonActionPerformed
+
+    private void musicButtonAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_musicButtonAncestorAdded
+        IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
+        if (musicButton.isSelected()){         
+            gameApplication.setMusicOn(false);
+        } else {          
+            gameApplication.setMusicOn(true);
+        }
+    }//GEN-LAST:event_musicButtonAncestorAdded
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private menu.RetroButton exitGameButton;
+    private menu.MusicButton musicButton;
     private menu.RetroButton playGameButton;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables

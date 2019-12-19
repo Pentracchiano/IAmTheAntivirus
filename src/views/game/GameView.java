@@ -113,7 +113,6 @@ public class GameView extends View {
                 }
             }
         }
-
         drawWaveStatus(g);
         Toolkit.getDefaultToolkit().sync();
     }
