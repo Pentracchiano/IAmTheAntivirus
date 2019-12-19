@@ -27,7 +27,10 @@ public class ShopItemView extends javax.swing.JPanel {
     public ShopItemView(Stat stat) {
         initComponents();
         this.stat = stat;
-        updateValues();
+        this.costLabel.setText(Integer.toString(stat.getCost()));
+        this.descriptionLabel.setText(stat.getDescription());
+        this.nextValueLabel.setText(Integer.toString(stat.getNextValue()));
+        this.nameLabel.setText(stat.getName());
     }
 
     public Stat getStat() {
@@ -72,6 +75,10 @@ public class ShopItemView extends javax.swing.JPanel {
     public void setNextValueLabel(String value) {
         this.nextValueLabel.setText(value);
     }
+    
+    public void increaseCounter(){
+        this.progressBar.increaseProgression();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -91,33 +98,25 @@ public class ShopItemView extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(0, 0, 0));
         setForeground(new java.awt.Color(255, 255, 255));
-        setPreferredSize(new java.awt.Dimension(600, 300));
-        setLayout(null);
+        setOpaque(false);
+        setPreferredSize(new java.awt.Dimension(830, 200));
 
         costLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        costLabel.setForeground(new java.awt.Color(255, 255, 255));
+        costLabel.setForeground(new java.awt.Color(255, 204, 0));
         costLabel.setText("500");
-        add(costLabel);
-        costLabel.setBounds(500, 40, 170, 50);
 
         descriptionLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         descriptionLabel.setForeground(new java.awt.Color(255, 255, 255));
         descriptionLabel.setText("Increase your max health to:");
-        add(descriptionLabel);
-        descriptionLabel.setBounds(33, 115, 178, 64);
 
         nextValueLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         nextValueLabel.setForeground(java.awt.Color.green);
         nextValueLabel.setText("50");
-        add(nextValueLabel);
-        nextValueLabel.setBounds(218, 139, 48, 17);
 
         nameLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         nameLabel.setForeground(new java.awt.Color(255, 255, 255));
         nameLabel.setText("Max Health:");
         nameLabel.setPreferredSize(new java.awt.Dimension(68, 50));
-        add(nameLabel);
-        nameLabel.setBounds(33, 44, 135, 33);
 
         javax.swing.GroupLayout progressBarLayout = new javax.swing.GroupLayout(progressBar);
         progressBar.setLayout(progressBarLayout);
@@ -130,9 +129,6 @@ public class ShopItemView extends javax.swing.JPanel {
             .addGap(0, 47, Short.MAX_VALUE)
         );
 
-        add(progressBar);
-        progressBar.setBounds(180, 40, 241, 47);
-
         plusButton.setText("+");
         plusButton.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -142,18 +138,44 @@ public class ShopItemView extends javax.swing.JPanel {
                 plusButtonFocusLost(evt);
             }
         });
-        plusButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                plusButtonActionPerformed(evt);
-            }
-        });
-        add(plusButton);
-        plusButton.setBounds(430, 40, 50, 50);
-    }// </editor-fold>//GEN-END:initComponents
 
-    private void plusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plusButtonActionPerformed
-        progressBar.increaseProgression();
-    }//GEN-LAST:event_plusButtonActionPerformed
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(9, 9, 9)
+                        .addComponent(plusButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(5, 5, 5)
+                        .addComponent(nextValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(plusButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nextValueLabel)))
+        );
+    }// </editor-fold>//GEN-END:initComponents
 
     private void plusButtonFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_plusButtonFocusLost
         plusButton.toggleColors();
