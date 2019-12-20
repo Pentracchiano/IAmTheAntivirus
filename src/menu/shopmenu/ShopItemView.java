@@ -155,7 +155,7 @@ public class ShopItemView extends javax.swing.JPanel {
                         .addGap(30, 30, 30)
                         .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(descriptionLabel)
                         .addGap(5, 5, 5)
                         .addComponent(nextValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );

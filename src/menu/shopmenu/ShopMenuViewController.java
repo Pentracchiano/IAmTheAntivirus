@@ -36,7 +36,7 @@ public class ShopMenuViewController extends javax.swing.JPanel {
     private List<ShopItemView> items = new ArrayList<>();
     private GameStatus gameStatus = GameStatus.getInstance();
     
-    private String imagePath = "src/resources/shopBg.jpg";
+    private String imagePath = "src/resources/shopBackground.jpg";
     private Image image; 
     
     /**
@@ -118,8 +118,7 @@ public class ShopMenuViewController extends javax.swing.JPanel {
     @Override
     public void paintComponents(Graphics g) {
         super.paintComponents(g);
-        System.out.println(image);
-        g.drawImage(image, 0, 0, this.getPreferredSize().width, this.getPreferredSize().height, this);
+        g.drawImage(image, 0, 0, this.getPreferredSize().width, this.getPreferredSize().height, null);
     }
 
     /**

@@ -53,6 +53,10 @@ public class GameStatus {
      */
     private int consecutiveHits = 0;
     public final int HITS_PER_MULTIPLIER = 3;
+    
+    private final int DEFAULT_MAX_HEALTH = 20;
+    private final int DEFAULT_ATTACK = 10;
+    private final int DEFAULT_COST = 50;
 
     private GameStatus() {
         this.inGame = false;
@@ -61,8 +65,8 @@ public class GameStatus {
         this.inWaveTransition = false;
         this.currentWaveNumber = 0;
         
-        this.stats.add(new Stat("health","Max Health",50,30));
-        this.stats.add(new Stat("attack","Attack",50,2));
+        this.stats.add(new Stat("health","Max Health",DEFAULT_COST,DEFAULT_MAX_HEALTH,"Next max health value: "));
+        this.stats.add(new Stat("attack","Attack",DEFAULT_COST,DEFAULT_ATTACK,"Next attack value: "));
     }
 
     public List<Stat> getStats() {
