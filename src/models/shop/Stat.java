@@ -25,11 +25,12 @@ public class Stat {
     }
     
     
-    public Stat(String id, String name, int cost, int value){
+    public Stat(String id, String name, int cost, int value, String description){
         this.value = value;
         this.id = id;
         this.name = name;
         this.cost = cost;
+        this.description = description;
     }
     
     public void increase(int value){

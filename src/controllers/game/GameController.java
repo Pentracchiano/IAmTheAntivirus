@@ -11,10 +11,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
+import models.shop.Stat;
 import models.sprites.Keyboard.Key;
 import sounds.BackgroundMusic;
 import utilities.ThreadUtilities;
@@ -41,6 +43,8 @@ public class GameController extends Controller implements Runnable {
 
     private final WaveManager waveManager;
     private Wave wave;
+    
+    private List<Stat> stats;
 
     public GameController(GameView view) throws KeyNotFoundException {
         super(view);
@@ -57,7 +61,10 @@ public class GameController extends Controller implements Runnable {
         this.backgroundMusic = new BackgroundMusic("src/resources/music/backgroundMusic.wav");
         this.backgroundMusicThread = new Thread(backgroundMusic);
         this.graphicsUpdater = new Thread(new ViewUpdater(view, GRAPHICS_DELAY_MS));
-
+        
+        this.stats = gameStatus.getStats();
+        this.updateStats();
+        
         this.initListeners();
     }
 
@@ -127,6 +134,7 @@ public class GameController extends Controller implements Runnable {
                 System.out.println(gameStatus.toString());
                 ThreadUtilities.sleep(1000);
             }
+            this.updateStats();
             
             ThreadUtilities.sleep(WAVE_DELAY_MS);
             
@@ -266,6 +274,23 @@ public class GameController extends Controller implements Runnable {
                 }
             }
         });
+    }
+    
+    private void updateStats(){
+        for( Stat s : stats )
+        {
+            if(s.getId() == "health")
+            {
+                this.base.setTotalHealth(s.getValue());
+            }
+            if(s.getId() == "attack")
+            {
+                for( Key k : this.keyboard.getKeys())
+                {
+                    k.setAttack(s.getValue());
+                }
+            }
+        }
     }
 
     private void gameEnded() {
