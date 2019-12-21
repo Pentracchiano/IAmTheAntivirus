@@ -12,13 +12,10 @@ import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import models.shop.Stat;
 import models.sprites.Keyboard.Key;
-import sounds.BackgroundMusic;
 import utilities.ThreadUtilities;
 import views.game.GameView;
 
@@ -27,13 +24,12 @@ import views.game.GameView;
  * @author Gerardo
  */
 public class GameController extends Controller implements Runnable {
+
     private final Keyboard keyboard;
     private final Base base;
 
     private final Thread gameLoop;
     private final Thread graphicsUpdater;
-    private final Thread backgroundMusicThread;
-    private final BackgroundMusic backgroundMusic;
 
     private final static int GAME_DELAY_MS = 20;
     private final static int GRAPHICS_DELAY_MS = 20;
@@ -43,12 +39,12 @@ public class GameController extends Controller implements Runnable {
 
     private final WaveManager waveManager;
     private Wave wave;
-    
+
     private List<Stat> stats;
 
     public GameController(GameView view) throws KeyNotFoundException {
         super(view);
-        
+
         this.keyboard = view.getKeyboard();
         this.base = view.getBase();
         this.gameStatus = GameStatus.getInstance();
@@ -56,15 +52,12 @@ public class GameController extends Controller implements Runnable {
         int rightLimit = keyboard.getKey('P').getX() + keyboard.getKey('P').getWidth() - leftLimit;
         this.waveManager = new WaveManager(leftLimit, rightLimit, view.getHeight());
 
-       
         this.gameLoop = new Thread(this);
-        this.backgroundMusic = new BackgroundMusic("src/resources/music/backgroundMusic.wav");
-        this.backgroundMusicThread = new Thread(backgroundMusic);
         this.graphicsUpdater = new Thread(new ViewUpdater(view, GRAPHICS_DELAY_MS));
-        
+
         this.stats = gameStatus.getStats();
         this.updateStats();
-        
+
         this.initListeners();
     }
 
@@ -72,29 +65,30 @@ public class GameController extends Controller implements Runnable {
     public void run() {
         int timeCount;
         long beforeTime, timeDiff, sleep;
-        
+
         graphicsUpdater.start();
+        IAmTheAntivirus.getGameInstance().setMusicOn(true);
 
         while (gameStatus.isInGame()) {
             timeCount = 0; // counts the number of cycles
-            
+
             // set wave
             gameStatus.setCurrentWaveNumber(gameStatus.getCurrentWaveNumber() + 1);
             wave = waveManager.getWave(gameStatus.getCurrentWaveNumber());
             GameView gameView = (GameView) view;
             gameView.setCurrentWave(wave);
-            
+
             gameStatus.setInWave(true);
-            
-            while (gameStatus.isInGame() && gameStatus.isInWave() ) {
+
+            while (gameStatus.isInGame() && gameStatus.isInWave()) {
                 // System.out.println("In wave");
-                
+
                 beforeTime = System.currentTimeMillis();
-                
+
                 if (!wave.hasVirusToSpawn() && !wave.hasAliveViruses()) {
                     gameStatus.setInWave(false);
                 }
-                
+
                 // spawn and move
                 synchronized (wave) {
                     updateWave(timeCount);
@@ -107,44 +101,43 @@ public class GameController extends Controller implements Runnable {
                         return;
                     }
                 }
-                
+
                 timeDiff = System.currentTimeMillis() - beforeTime;
                 sleep = GAME_DELAY_MS - timeDiff;
-                
+
                 // we use this if to handle the case in which the execution time of
                 // updateEnemies(), checkBaseCollision() and update() methods is larger then the DELAY.
                 if (sleep < 0) {
                     // 2 is a random chose.
                     sleep = 2;
                 }
-            
+
                 ThreadUtilities.sleep(sleep);
 
                 timeCount++;
             }
             // wave transition
-            
+
             gameStatus.setInWaveTransition(true);
-            
+
             IAmTheAntivirus.getGameInstance().openShopMenu();
-            
+
             /*
             try {
                 this.wait();
             } catch (InterruptedException ex) {
                 Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            */
-            
+             */
             // usare un altro metodo, wait e notify, oppure uccidere e riavviare il thread
-            while(gameStatus.isInShop()) {
+            while (gameStatus.isInShop()) {
                 System.out.println(gameStatus.toString());
                 ThreadUtilities.sleep(1000);
             }
             this.updateStats();
-            
+
             ThreadUtilities.sleep(WAVE_DELAY_MS);
-            
+
             gameStatus.setInWaveTransition(false);
         }
     }
@@ -152,7 +145,7 @@ public class GameController extends Controller implements Runnable {
     private void updateWave(int timeCount) {
         // spawn
         wave.spawnVirus(timeCount);
-        
+
         // remove dead viruses and move viruses
         Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
 
@@ -162,8 +155,8 @@ public class GameController extends Controller implements Runnable {
 
             if (!v.isAlive()) {
                 it.remove();
-                
-                gameStatus.addBitcoinsAndScore(v.getBitcoinsValue()*gameStatus.getMultiplier());
+
+                gameStatus.addBitcoinsAndScore(v.getBitcoinsValue() * gameStatus.getMultiplier());
             } else {
                 v.move(keyboard.getBounds());
             }
@@ -178,7 +171,7 @@ public class GameController extends Controller implements Runnable {
     private void checkBaseCollision() {
         Rectangle baseBounds = base.getBounds();
         Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
-        
+
         Iterator<Virus> it = aliveSpawnedViruses.iterator();
 
         while (it.hasNext()) {
@@ -206,7 +199,7 @@ public class GameController extends Controller implements Runnable {
             this.gameEnded();
         }
     }
-    
+
     private void checKeyCollision(Key key) {
         synchronized (this.wave) {
             Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
@@ -235,18 +228,12 @@ public class GameController extends Controller implements Runnable {
             public void ancestorAdded(AncestorEvent e) {
                 gameStatus.setInGame(true);
                 gameLoop.start();
-                if(IAmTheAntivirus.getGameInstance().getMusicOn()){
-                    backgroundMusicThread.start();
-                    backgroundMusic.setRunning(true);
-                }
-                
             }
 
             // this event is called when the view is removed by the frame
             @Override
             public void ancestorRemoved(AncestorEvent e) {
                 gameStatus.setInGame(false);
-                backgroundMusic.setRunning(false);
             }
 
             @Override
@@ -266,7 +253,7 @@ public class GameController extends Controller implements Runnable {
                 } catch (KeyNotFoundException knfe) {
 
                 }
-                
+
             }
 
             @Override
@@ -280,18 +267,14 @@ public class GameController extends Controller implements Runnable {
             }
         });
     }
-    
-    private void updateStats(){
-        for( Stat s : stats )
-        {
-            if(s.getId() == "health")
-            {
+
+    private void updateStats() {
+        for (Stat s : stats) {
+            if (s.getId() == "health") {
                 this.base.setTotalHealth(s.getValue());
             }
-            if(s.getId() == "attack")
-            {
-                for( Key k : this.keyboard.getKeys())
-                {
+            if (s.getId() == "attack") {
+                for (Key k : this.keyboard.getKeys()) {
                     k.setAttack(s.getValue());
                 }
             }
@@ -300,9 +283,9 @@ public class GameController extends Controller implements Runnable {
 
     private void gameEnded() {
         gameStatus.setInGame(false);
-        backgroundMusic.setRunning(false);
-        backgroundMusicThread.interrupt();
         graphicsUpdater.interrupt();
+        IAmTheAntivirus appInstance = IAmTheAntivirus.getGameInstance();
+        appInstance.setMusicOn(false);
         
         IAmTheAntivirus.getGameInstance().displayGameOverMenu();
     }

@@ -182,15 +182,6 @@ public class MainMenuViewController extends AbstractMenuViewController {
 
         musicButton.setText("musicButton2");
         musicButton.setActionCommand("musicButton");
-        musicButton.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                musicButtonAncestorAdded(evt);
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
         musicButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 musicButtonActionPerformed(evt);
@@ -234,15 +225,6 @@ public class MainMenuViewController extends AbstractMenuViewController {
             gameApplication.setMusicOn(true);
         }
     }//GEN-LAST:event_musicButtonActionPerformed
-
-    private void musicButtonAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_musicButtonAncestorAdded
-        IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
-        if (musicButton.isSelected()){         
-            gameApplication.setMusicOn(false);
-        } else {          
-            gameApplication.setMusicOn(true);
-        }
-    }//GEN-LAST:event_musicButtonAncestorAdded
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

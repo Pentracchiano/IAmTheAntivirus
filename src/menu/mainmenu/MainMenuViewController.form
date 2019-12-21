@@ -93,7 +93,6 @@
         <Property name="actionCommand" type="java.lang.String" value="musicButton"/>
       </Properties>
       <Events>
-        <EventHandler event="ancestorAdded" listener="javax.swing.event.AncestorListener" parameters="javax.swing.event.AncestorEvent" handler="musicButtonAncestorAdded"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="musicButtonActionPerformed"/>
       </Events>
       <Constraints>

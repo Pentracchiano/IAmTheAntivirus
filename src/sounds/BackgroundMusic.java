@@ -6,23 +6,25 @@
 package sounds;
 
 import java.io.File;
+import java.io.IOException;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
-import models.GameStatus;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 /**
  *
  * @author marta
  */
-public class BackgroundMusic implements Runnable {
+public class BackgroundMusic {
 
     private String fileName;
     private Clip clip;
-    private Boolean running = true;
-    private final Object START_STOP_LOCK = new Object();
+    private Boolean running = false;
 
     public BackgroundMusic(String fileName) {
         this.fileName = fileName;
@@ -39,41 +41,18 @@ public class BackgroundMusic implements Runnable {
             clip.open(audioInputStream);
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(-10); //volume            
-        } catch (Exception e) {
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
         }
     }
 
     public void setRunning(Boolean running) {
-        synchronized (START_STOP_LOCK) {
-            this.running = running;
-            START_STOP_LOCK.notifyAll();
+        this.running = running;
+
+        if (running) {
+            clip.setMicrosecondPosition(0);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } else {
+            clip.stop();
         }
     }
-
-    @Override
-    public void run() {
-        while (true) {
-            synchronized (START_STOP_LOCK) {
-                if (running) {
-                    clip.loop(Clip.LOOP_CONTINUOUSLY);
-                    try {
-                        START_STOP_LOCK.wait();
-                    } catch (InterruptedException ex) {
-
-                    }
-                    //clip.start();
-                } else {
-                    clip.stop();
-                    try {
-                        START_STOP_LOCK.wait();
-                    } catch (InterruptedException ex) {
-
-                    }
-                }
-            }
-
-            // IMPORTANT! Otherwise, when the music is not playing, this loop is an active wait! (consumes 80% of my CPU in idle)
-        }
-    }
-
 }
