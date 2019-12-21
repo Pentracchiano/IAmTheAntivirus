@@ -32,86 +32,86 @@ import utilities.ImageUtilities;
  * @author gabri
  */
 public class ShopMenuViewController extends javax.swing.JPanel {
-    
+
     private List<ShopItemView> items = new ArrayList<>();
     private GameStatus gameStatus = GameStatus.getInstance();
-    
+
     private String imagePath = "src/resources/shopBackground.jpg";
-    private Image image; 
-    
+    private Image image;
+
     /**
      * Creates new form ShopMenuViewController
      */
     public ShopMenuViewController() {
-        this.setPreferredSize(new Dimension(1300,747));
-        
+        this.setPreferredSize(new Dimension(1300, 747));
+
         initComponents();
         initItems();
-        
+
         this.image = ImageUtilities.loadImageFromPath(imagePath);
-        
+
         this.titleLabel.setFont(new Font("Minecraft", Font.BOLD, 72));
-        this.moneyLabel.setFont(new Font("Minecraft",Font.BOLD, 32));
+        this.moneyLabel.setFont(new Font("Minecraft", Font.BOLD, 32));
         this.updateMoneyLabel();
-        
+
         this.addButtonListener();
     }
-    
-    private void initItems(){
+
+    private void initItems() {
         List<Stat> stats = gameStatus.getStats();
-        
-        for( Stat s : stats ){
+
+        for (Stat s : stats) {
             ShopItemView newShopItem = new ShopItemView(s);
             items.add(newShopItem);
         }
-        
-        for( ShopItemView s : items ){
+
+        for (ShopItemView s : items) {
             System.out.println(s.getPreferredSize());
             s.setSize(s.getPreferredSize());
             this.shelfPanel.add(s);
             s.setVisible(true);
         }
     }
-    
-    private void addButtonListener(){
-        
+
+    private void addButtonListener() {
+
         final ActionListener buttonActionHandler = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 RetroButton target = (RetroButton) e.getSource();
-                
+
                 ShopItemView shopItem = (ShopItemView) target.getParent();
-                JPanel shelf = (JPanel)shopItem.getParent();
+                JPanel shelf = (JPanel) shopItem.getParent();
                 ShopMenuViewController shop = (ShopMenuViewController) shelf.getParent();
                 shop.buyItem(shopItem);
             }
         };
-        
-        for( ShopItemView s : items ){
+
+        for (ShopItemView s : items) {
             s.getPlusButton().addActionListener(buttonActionHandler);
         }
-        
+
     }
-    
-    private void buyItem(ShopItemView shopItem){
-        Stat s = shopItem.getStat();
-        int balance = gameStatus.getBitcoins();
-        int cost = s.getCost();
-        if( balance-cost >= 0 )
-        {
-            s.buy();
-            gameStatus.withdrawBitcoins(cost);
-            this.updateMoneyLabel();
-            EventQueue.invokeLater(() -> {
-             shopItem.updateValues();
-             shopItem.increaseCounter();
-            });
-        }
-        
-       
+
+    private void buyItem(ShopItemView shopItem) {
+        EventQueue.invokeLater(() -> {
+            Stat s = shopItem.getStat();
+            int balance = gameStatus.getBitcoins();
+            int cost = s.getCost();
+            if (balance - cost >= 0) {
+                s.buy();
+                gameStatus.withdrawBitcoins(cost);
+                this.updateMoneyLabel();
+
+                shopItem.updateValues();
+                shopItem.increaseCounter();
+
+            }
+        });
+
     }
-    
-    public void updateMoneyLabel(){
+
+    public void updateMoneyLabel() {
         this.moneyLabel.setText(Integer.toString(this.gameStatus.getBitcoins()));
     }
 
