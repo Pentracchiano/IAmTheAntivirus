@@ -69,7 +69,7 @@ public class GameController extends Controller implements Runnable {
         graphicsUpdater.start();
         IAmTheAntivirus.getGameInstance().setMusicOn(true);
 
-        while (gameStatus.isInGame()) {
+        while (gameStatus.isInGame() && !Thread.currentThread().isInterrupted()) {
             timeCount = 0; // counts the number of cycles
 
             // set wave
@@ -80,7 +80,7 @@ public class GameController extends Controller implements Runnable {
 
             gameStatus.setInWave(true);
 
-            while (gameStatus.isInGame() && gameStatus.isInWave()) {
+            while (gameStatus.isInGame() && gameStatus.isInWave() && !Thread.currentThread().isInterrupted()) {
                 // System.out.println("In wave");
 
                 beforeTime = System.currentTimeMillis();
@@ -93,11 +93,7 @@ public class GameController extends Controller implements Runnable {
                 synchronized (wave) {
                     updateWave(timeCount);
                     checkBaseCollision();
-                    // maybe the GameStatus().isInGame() may updated by another thread
-                    // so is not sufficient to do this.
-                    if(!GameStatus.getInstance().isInGame()) {
-                        // the game ended
-                        // so I have to kill this thread. return is sufficient.
+                    if(Thread.currentThread().isInterrupted()) {
                         return;
                     }
                 }
@@ -131,7 +127,6 @@ public class GameController extends Controller implements Runnable {
              */
             // usare un altro metodo, wait e notify, oppure uccidere e riavviare il thread
             while (gameStatus.isInShop()) {
-                System.out.println(gameStatus.toString());
                 ThreadUtilities.sleep(1000);
             }
             this.updateStats();
@@ -284,6 +279,7 @@ public class GameController extends Controller implements Runnable {
     private void gameEnded() {
         gameStatus.setInGame(false);
         graphicsUpdater.interrupt();
+        gameLoop.interrupt();
         IAmTheAntivirus appInstance = IAmTheAntivirus.getGameInstance();
         appInstance.setMusicOn(false);
         

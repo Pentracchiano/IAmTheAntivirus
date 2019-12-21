@@ -5,9 +5,6 @@
  */
 package utilities;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author LordCatello
@@ -18,7 +15,7 @@ public class ThreadUtilities {
         try {
             Thread.sleep(time_ms);
         } catch (InterruptedException ex) {
-            Logger.getLogger(ThreadUtilities.class.getName()).log(Level.SEVERE, null, ex);
+            Thread.currentThread().interrupt();
         }
     }
     

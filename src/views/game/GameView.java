@@ -65,7 +65,7 @@ public class GameView extends View {
     }
 
     private void initView() {
-        base = new Base(0, 0, 20);
+        base = new Base(0, 0, GameStatus.getInstance().getDEFAULT_MAX_HEALTH());
 
         setBackground(Color.GRAY);
         try {
@@ -235,6 +235,9 @@ public class GameView extends View {
         g.drawImage(healthBordersImage, BASE_SPAN_X + HEART_SPAN_X, BASE_SPAN_Y, this);
 
         int width = healthBarImage.getWidth(this) * base.getCurrentHealth() / base.getTotalHealth();
+        
+        System.out.println("width: " + base.getCurrentHealth() / base.getTotalHealth());
+        System.out.println("baseCurrentHelath: " + base.getCurrentHealth() + "baseTotalHelath: " + base.getTotalHealth());
 
         g.drawImage(healthBarImage, BASE_SPAN_X + HEART_SPAN_X, BASE_SPAN_Y, width, healthBarImage.getHeight(this), this);
 

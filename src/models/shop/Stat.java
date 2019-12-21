@@ -25,7 +25,7 @@ public class Stat {
     }
     
     
-    public Stat(String id, String name, int cost, int value, String description){
+    public Stat(String id, String name, int cost, int value, String description) {
         this.value = value;
         this.id = id;
         this.name = name;

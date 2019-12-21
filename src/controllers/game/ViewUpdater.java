@@ -5,9 +5,7 @@
  */
 package controllers.game;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import models.GameStatus;
+import utilities.ThreadUtilities;
 import views.View;
 
 /**
@@ -37,9 +35,8 @@ public class ViewUpdater implements Runnable {
     @Override
     public void run() {
         long beforeTimeMs, timeDifferenceMs, sleepTimeMs;
-        // we have also to interrupt this thread
-        // because someone can set inGame = true before this thread is killed
-        while(GameStatus.getInstance().isInGame()) { 
+
+        while(!Thread.currentThread().isInterrupted()) { 
             beforeTimeMs = System.currentTimeMillis();
             
             VIEW.update();
@@ -54,12 +51,7 @@ public class ViewUpdater implements Runnable {
                 sleepTimeMs = 2;
             }
             
-            try {
-                Thread.sleep(sleepTimeMs);
-            } catch (InterruptedException ex) {
-                // an interrupt on this thread is called in the gameController, when the game finish
-                Thread.currentThread().interrupt();
-            }
+            ThreadUtilities.sleep(sleepTimeMs);
         }
     }
     

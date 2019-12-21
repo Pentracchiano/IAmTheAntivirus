@@ -65,6 +65,7 @@ public class GameStatus {
         this.inWaveTransition = false;
         this.currentWaveNumber = 0;
         
+        
         this.stats.add(new Stat("health","Max Health",DEFAULT_COST,DEFAULT_MAX_HEALTH,"Next max health value: "));
         this.stats.add(new Stat("attack","Attack",DEFAULT_COST,DEFAULT_ATTACK,"Next attack value: "));
     }
@@ -167,6 +168,10 @@ public class GameStatus {
 
     public void setInShop(boolean inShop) {
         this.inShop = inShop;
+    }
+
+    public int getDEFAULT_MAX_HEALTH() {
+        return DEFAULT_MAX_HEALTH;
     }
 
     @Override
