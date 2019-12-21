@@ -19,6 +19,7 @@ import menu.mainmenu.MainMenuViewController;
 import menu.shopmenu.ShopMenuViewController;
 import models.GameStatus;
 import models.sprites.exceptions.KeyNotFoundException;
+import sounds.BackgroundMusic;
 import utilities.FontUtilities;
 
 /**
@@ -38,7 +39,8 @@ public class IAmTheAntivirus {
     private static IAmTheAntivirus gameApplication;
     private static final String FONT_MENU_PATH = "src/resources/fonts/Minecraft.ttf";
     private final Dimension panelDimension = new GameView().getPanelDimension();
-    private boolean musicOn = true;
+    private boolean musicOn = false;
+    private final BackgroundMusic backgroundMusic = new BackgroundMusic("src/resources/music/backgroundMusic.wav");
     
     private IAmTheAntivirus() {
         FontUtilities.registerFont(FONT_MENU_PATH);
@@ -160,6 +162,8 @@ public class IAmTheAntivirus {
     
     public void setMusicOn (boolean musicOn){
         this.musicOn = musicOn;
+        
+        backgroundMusic.setRunning(musicOn);
     }
     
     public static void main(String[] args) {
