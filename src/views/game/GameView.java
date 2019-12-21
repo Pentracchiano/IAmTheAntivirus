@@ -5,6 +5,7 @@
  */
 package views.game;
 
+import controllers.game.Shell;
 import controllers.game.Wave;
 import views.View;
 import models.GameStatus;
@@ -22,6 +23,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.KeyStroke;
 import models.sprites.Base;
 import models.sprites.Keyboard;
 import models.sprites.Virus;
@@ -33,7 +35,7 @@ public class GameView extends View {
     private Base base;
 
     private Wave currentWave;
-
+    private Shell shell;
     private GameStatus gameStatus;
 
     private final int B_WIDTH = 1300;
@@ -80,7 +82,7 @@ public class GameView extends View {
         keyboard = new Keyboard(37, 275);
 
         this.gameStatus = GameStatus.getInstance();
-
+        this.shell= new Shell();
         this.heartImage = ImageUtilities.loadImageFromPath(HEART_IMAGE_PATH);
         this.healthBarImage = ImageUtilities.loadImageFromPath(HEALTH_BAR_IMAGE_PATH);
         this.healthBordersImage = ImageUtilities.loadImageFromPath(HEALTH_BORDERS_IMAGE_PATH);
@@ -236,18 +238,20 @@ public class GameView extends View {
 
         int width = healthBarImage.getWidth(this) * base.getCurrentHealth() / base.getTotalHealth();
         
-        System.out.println("width: " + base.getCurrentHealth() / base.getTotalHealth());
-        System.out.println("baseCurrentHelath: " + base.getCurrentHealth() + "baseTotalHelath: " + base.getTotalHealth());
-
         g.drawImage(healthBarImage, BASE_SPAN_X + HEART_SPAN_X, BASE_SPAN_Y, width, healthBarImage.getHeight(this), this);
-
+        
         g.drawImage(bitcoinImage, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X, BASE_SPAN_Y, this);
-
+        drawFormattedString(g, this.shell.getText(), base.getX() + 200, base.getY() + 130, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
+        
         String multiplier = "x" + gameStatus.getMultiplier();
         drawFormattedString(g, multiplier, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X - 10, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT.deriveFont((float) 18));
         String bitcoins = String.valueOf(gameStatus.getBitcoins());
         drawFormattedString(g, bitcoins, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X + 15, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
 
+    }
+
+    public Shell getShell() {
+        return shell;
     }
 
     public Keyboard getKeyboard() {

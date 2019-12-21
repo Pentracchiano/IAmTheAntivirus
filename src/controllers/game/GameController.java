@@ -27,7 +27,7 @@ public class GameController extends Controller implements Runnable {
 
     private final Keyboard keyboard;
     private final Base base;
-
+    private Shell shell;
     private final Thread gameLoop;
     private final Thread graphicsUpdater;
 
@@ -51,7 +51,7 @@ public class GameController extends Controller implements Runnable {
         int leftLimit = keyboard.getKey('1').getX();
         int rightLimit = keyboard.getKey('P').getX() + keyboard.getKey('P').getWidth() - leftLimit;
         this.waveManager = new WaveManager(leftLimit, rightLimit, view.getHeight());
-
+        this.shell = view.getShell();
         this.gameLoop = new Thread(this);
         this.graphicsUpdater = new Thread(new ViewUpdater(view, GRAPHICS_DELAY_MS));
 
@@ -93,7 +93,7 @@ public class GameController extends Controller implements Runnable {
                 synchronized (wave) {
                     updateWave(timeCount);
                     checkBaseCollision();
-                    if(Thread.currentThread().isInterrupted()) {
+                    if (Thread.currentThread().isInterrupted()) {
                         return;
                     }
                 }
@@ -242,6 +242,21 @@ public class GameController extends Controller implements Runnable {
             @Override
             public void keyPressed(KeyEvent e) {
                 int keyCode = e.getKeyCode();
+
+                if ((char) keyCode == '\\') {
+                    shell.setFocusable(true);
+                    return;
+                }
+                if (shell.isFocusable()) {
+                    if (keyCode == 10) {
+                        shell.setFocusable(false);
+                        shell.launchCommand();
+                        return;
+                    }
+                    shell.digitcommands((char) keyCode);
+                    return;
+                }
+
                 try {
                     keyboard.press((char) keyCode);
                     checKeyCollision(keyboard.getKey((char) keyCode));
@@ -263,6 +278,7 @@ public class GameController extends Controller implements Runnable {
         });
     }
 
+
     private void updateStats() {
         for (Stat s : stats) {
             if (s.getId() == "health") {
@@ -282,7 +298,7 @@ public class GameController extends Controller implements Runnable {
         gameLoop.interrupt();
         IAmTheAntivirus appInstance = IAmTheAntivirus.getGameInstance();
         appInstance.setMusicOn(false);
-        
+
         IAmTheAntivirus.getGameInstance().displayGameOverMenu();
     }
 
