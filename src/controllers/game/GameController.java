@@ -99,6 +99,13 @@ public class GameController extends Controller implements Runnable {
                 synchronized (wave) {
                     updateWave(timeCount);
                     checkBaseCollision();
+                    // maybe the GameStatus().isInGame() may updated by another thread
+                    // so is not sufficient to do this.
+                    if(!GameStatus.getInstance().isInGame()) {
+                        // the game ended
+                        // so I have to kill this thread. return is sufficient.
+                        return;
+                    }
                 }
                 
                 timeDiff = System.currentTimeMillis() - beforeTime;
@@ -196,8 +203,6 @@ public class GameController extends Controller implements Runnable {
         }
 
         if (base.isInfected()) {
-            gameStatus.setInGame(false);
-            backgroundMusic.setRunning(false);
             this.gameEnded();
         }
     }
@@ -294,6 +299,11 @@ public class GameController extends Controller implements Runnable {
     }
 
     private void gameEnded() {
+        gameStatus.setInGame(false);
+        backgroundMusic.setRunning(false);
+        backgroundMusicThread.interrupt();
+        graphicsUpdater.interrupt();
+        
         IAmTheAntivirus.getGameInstance().displayGameOverMenu();
     }
 

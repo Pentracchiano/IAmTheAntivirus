@@ -12,6 +12,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
+import models.GameStatus;
 /**
  *
  * @author marta
@@ -46,9 +47,11 @@ public class BackgroundMusic implements Runnable  {
     }
     
     @Override 
-    public void run (){
-        while(true){    
-            if(running){
+    public void run () {
+        // this not work
+        // this thread is not killed
+        while(GameStatus.getInstance().isInGame()){    
+            if(running && GameStatus.getInstance().isInGame()) {
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
                 //clip.start();
             } else {
