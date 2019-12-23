@@ -6,6 +6,7 @@
 package controllers.game;
 
 
+import java.awt.event.KeyEvent;
 import java.util.Set;
 import javax.swing.JLabel;
 import models.sprites.behaviors.Command;
@@ -48,6 +49,7 @@ public class Shell extends JLabel{
         this.digitedCommand = "";
     }
     
+    
     public String getDigitedCommand() {
         return digitedCommand;
     }
@@ -57,7 +59,12 @@ public class Shell extends JLabel{
     }
 
     public void digitcommands(char c){
-        this.digitedCommand+=c;
+        if((int)c == 8 || (int)c==127){
+            this.digitedCommand=this.digitedCommand.substring(0, this.digitedCommand.length()-1);  
+        }
+        else
+            this.digitedCommand+=c;
+        System.out.println((int)c+" "+c);
         this.setText(DEFAULT_STRING + digitedCommand);
     }
     

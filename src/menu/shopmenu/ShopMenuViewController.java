@@ -150,6 +150,7 @@ public class ShopMenuViewController extends javax.swing.JPanel {
         setLayout(null);
 
         nextWaveButton.setText("Start next Wave!");
+        nextWaveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nextWaveButton.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 nextWaveButtonFocusGained(evt);
@@ -164,10 +165,10 @@ public class ShopMenuViewController extends javax.swing.JPanel {
             }
         });
         add(nextWaveButton);
-        nextWaveButton.setBounds(360, 640, 640, 90);
+        nextWaveButton.setBounds(310, 620, 640, 90);
 
         shelfPanel.setOpaque(false);
-        shelfPanel.setLayout(new java.awt.GridLayout());
+        shelfPanel.setLayout(new java.awt.GridLayout(1, 0));
         add(shelfPanel);
         shelfPanel.setBounds(0, 190, 1300, 430);
 
