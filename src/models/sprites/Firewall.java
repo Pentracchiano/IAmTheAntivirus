@@ -27,7 +27,7 @@ public class Firewall extends Sprite implements ActionListener, Command{
     private static final String FIREWALL_IMAGE_PATH = PARENT_IMAGE_PATH+"0.png";
     private final int COOL_DOWN = 10*1000;
     private final int DELAY = 200;
-    private Timer timer;
+    private final Timer timer;
     private Iterator animation;
     private final String name = "FIREWALL";
     private boolean active;
@@ -103,7 +103,7 @@ public class Firewall extends Sprite implements ActionListener, Command{
     public void actionPerformed(ActionEvent e) {
         if(GameStatus.getInstance().isInWave()){
             coolDown-=DELAY;
-            System.out.println("Cool down: "+coolDown);
+            //System.out.println("Cool down: "+coolDown);
         }
         startFirewall();
         

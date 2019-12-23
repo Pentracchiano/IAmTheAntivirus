@@ -60,12 +60,14 @@ public class GameView extends View {
     private static final String HEALTH_BORDERS_IMAGE_PATH = "src/resources/health_bar_borders_green_150_30.png";
     private static final String ENEMY_IMAGE_PATH = "src/resources/enemy_40.png";
     private static final String BITCOIN_IMAGE_PATH = "src/resources/bitcoin.png";
+    private static final String FLAME_IMAGE_PATH = "src/resources/flame.png";
 
     private Image heartImage;
     private Image healthBarImage;
     private Image healthBordersImage;
     private Image enemyImage;
     private Image bitcoinImage;
+    private Image flame;
     
     private Set<Command> commands;
 
@@ -99,7 +101,7 @@ public class GameView extends View {
         this.healthBordersImage = ImageUtilities.loadImageFromPath(HEALTH_BORDERS_IMAGE_PATH);
         this.enemyImage = ImageUtilities.loadImageFromPath(ENEMY_IMAGE_PATH);
         this.bitcoinImage = ImageUtilities.loadImageFromPath(BITCOIN_IMAGE_PATH).getScaledInstance(30, -1, Image.SCALE_DEFAULT);
-        
+        this.flame = ImageUtilities.loadImageFromPath(FLAME_IMAGE_PATH);
     }
 
     @Override
@@ -262,7 +264,8 @@ public class GameView extends View {
         drawFormattedString(g, multiplier, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X - 10, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT.deriveFont((float) 18));
         String bitcoins = String.valueOf(gameStatus.getBitcoins());
         drawFormattedString(g, bitcoins, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X + 15, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
-
+        if(!firewall.isInCoolDown())
+            g.drawImage(flame,850, 85, this);
     }
     
     public void drawFirewall(Graphics g){
