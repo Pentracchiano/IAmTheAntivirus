@@ -22,7 +22,7 @@ public class GameStatus {
     private boolean inWave;
     private boolean inShop;
     private boolean inWaveTransition;
-    private List<Stat> stats = new ArrayList<>();
+    private final List<Stat> stats = new ArrayList<>();
     
     
     // the number of the current wave
@@ -70,7 +70,7 @@ public class GameStatus {
         this.stats.add(new Stat("attack","Attack",DEFAULT_COST,DEFAULT_ATTACK,"Next attack value: "));
     }
 
-    public List<Stat> getStats() {
+    public synchronized List<Stat> getStats() {
         return stats;
     }
     
@@ -162,15 +162,15 @@ public class GameStatus {
         this.inWaveTransition = waveTransition;
     }
 
-    public boolean isInShop() {
+    public synchronized boolean isInShop() {
         return inShop;
     }
 
-    public void setInShop(boolean inShop) {
+    public synchronized void setInShop(boolean inShop) {
         this.inShop = inShop;
     }
 
-    public int getDEFAULT_MAX_HEALTH() {
+    public synchronized int getDefaultMaxHealth() {
         return DEFAULT_MAX_HEALTH;
     }
 
