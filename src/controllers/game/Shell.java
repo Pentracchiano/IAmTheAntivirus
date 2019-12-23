@@ -5,7 +5,10 @@
  */
 package controllers.game;
 
+
+import java.util.Set;
 import javax.swing.JLabel;
+import models.sprites.behaviors.Command;
 
 /**
  *
@@ -14,20 +17,33 @@ import javax.swing.JLabel;
 public class Shell extends JLabel{
     private String digitedCommand="";
     private final String DEFAULT_STRING= ":/" ;
-    //private Map<String,Command> commands;
+    private final Set<Command> commands;
 
-    public Shell() {
+    public Shell(Set<Command> commands) {
         this.setFocusable(false);
         this.setText(DEFAULT_STRING);
+        this.commands = commands;
+        
     }
+    
+   
     
     public void launchCommand(){
         /*
         if digitedCommand
         */
-        if(digitedCommand.equals("FIREWALL")){
-            System.out.println("Firewall");
+        for(Command c : commands){
+            if(digitedCommand.equals(c.getName())){
+                c.launch();
+                setDefault();
+                return;
+            }
         }
+        setDefault();
+        
+    }
+    
+    private void setDefault(){
         this.setText(DEFAULT_STRING);
         this.digitedCommand = "";
     }

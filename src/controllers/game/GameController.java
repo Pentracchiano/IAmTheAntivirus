@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import models.shop.Stat;
+import models.sprites.Firewall;
 import models.sprites.Keyboard.Key;
 import utilities.ThreadUtilities;
 import views.game.GameView;
@@ -27,6 +28,7 @@ public class GameController extends Controller implements Runnable {
 
     private final Keyboard keyboard;
     private final Base base;
+    private final Firewall firewall;
     private Shell shell;
     private final Thread gameLoop;
     private final Thread graphicsUpdater;
@@ -34,6 +36,7 @@ public class GameController extends Controller implements Runnable {
     private final static int GAME_DELAY_MS = 20;
     private final static int GRAPHICS_DELAY_MS = 20;
     private final static int WAVE_DELAY_MS = 3000;
+    
 
     private final GameStatus gameStatus;
 
@@ -47,6 +50,7 @@ public class GameController extends Controller implements Runnable {
 
         this.keyboard = view.getKeyboard();
         this.base = view.getBase();
+        this.firewall = view.getFirewall();
         this.gameStatus = GameStatus.getInstance();
         int leftLimit = keyboard.getKey('1').getX();
         int rightLimit = keyboard.getKey('P').getX() + keyboard.getKey('P').getWidth() - leftLimit;
@@ -57,6 +61,7 @@ public class GameController extends Controller implements Runnable {
 
         this.stats = gameStatus.getStats();
         this.updateStats();
+        
 
         this.initListeners();
     }
@@ -92,6 +97,7 @@ public class GameController extends Controller implements Runnable {
                 // spawn and move
                 synchronized (wave) {
                     updateWave(timeCount);
+                    checkFirewallCollision();
                     checkBaseCollision();
                     if (Thread.currentThread().isInterrupted()) {
                         return;
@@ -194,6 +200,28 @@ public class GameController extends Controller implements Runnable {
             this.gameEnded();
         }
     }
+    
+    private void checkFirewallCollision(){
+        
+        if(!firewall.isActive())
+            return;
+        synchronized (this.wave) {
+            Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
+            boolean missedViruses = true;
+            for (Virus virus : aliveSpawnedViruses) {
+                if (checkCollision(firewall.getBounds(), virus.getBounds())) {
+                    
+                    
+                    virus.damage(virus.getCurrentHealth());
+                    gameStatus.incrementConsecutiveHits();
+                    missedViruses = false;
+                }
+            }
+            if (missedViruses) {
+                //gameStatus.resetConsecutiveHits();
+            }
+        }
+    }
 
     private void checKeyCollision(Key key) {
         synchronized (this.wave) {
@@ -251,6 +279,8 @@ public class GameController extends Controller implements Runnable {
                     if (keyCode == 10) {
                         shell.setFocusable(false);
                         shell.launchCommand();
+                        
+                        
                         return;
                     }
                     shell.digitcommands((char) keyCode);

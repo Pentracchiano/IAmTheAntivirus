@@ -20,19 +20,24 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.KeyStroke;
 import models.sprites.Base;
+import models.sprites.Firewall;
 import models.sprites.Keyboard;
 import models.sprites.Virus;
+import models.sprites.behaviors.Command;
 import utilities.ImageUtilities;
 
 public class GameView extends View {
 
     private Keyboard keyboard;
     private Base base;
+    private Firewall firewall;
 
     private Wave currentWave;
     private Shell shell;
@@ -61,12 +66,15 @@ public class GameView extends View {
     private Image healthBordersImage;
     private Image enemyImage;
     private Image bitcoinImage;
+    
+    private Set<Command> commands;
 
     public GameView() {
         initView();
     }
 
     private void initView() {
+        commands = new HashSet<>();
         base = new Base(0, 0, GameStatus.getInstance().getDEFAULT_MAX_HEALTH());
 
         setBackground(Color.GRAY);
@@ -80,14 +88,18 @@ public class GameView extends View {
         setPreferredSize(dimension);
 
         keyboard = new Keyboard(37, 275);
+        firewall = new Firewall(37,20);
+        
+        commands.add(firewall);
 
         this.gameStatus = GameStatus.getInstance();
-        this.shell= new Shell();
+        this.shell= new Shell(commands);
         this.heartImage = ImageUtilities.loadImageFromPath(HEART_IMAGE_PATH);
         this.healthBarImage = ImageUtilities.loadImageFromPath(HEALTH_BAR_IMAGE_PATH);
         this.healthBordersImage = ImageUtilities.loadImageFromPath(HEALTH_BORDERS_IMAGE_PATH);
         this.enemyImage = ImageUtilities.loadImageFromPath(ENEMY_IMAGE_PATH);
         this.bitcoinImage = ImageUtilities.loadImageFromPath(BITCOIN_IMAGE_PATH).getScaledInstance(30, -1, Image.SCALE_DEFAULT);
+        
     }
 
     @Override
@@ -102,12 +114,13 @@ public class GameView extends View {
         g.drawImage(backgroundImage, 0, 0, this);
 
         drawKeyboard(g);
+        
 
         // the draws must be called in this order, otherwise the base will cover other drawings
         synchronized (base) {
             drawBase(g);
         }
-
+        
         if (currentWave != null) {
             if (!gameStatus.isInWaveTransition()) {
                 synchronized (currentWave) {
@@ -115,6 +128,8 @@ public class GameView extends View {
                 }
             }
         }
+        drawFirewall(g);
+        
         drawWaveStatus(g);
         Toolkit.getDefaultToolkit().sync();
     }
@@ -249,6 +264,12 @@ public class GameView extends View {
         drawFormattedString(g, bitcoins, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X + 15, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
 
     }
+    
+    public void drawFirewall(Graphics g){
+        
+        g.drawImage(firewall.getImage(), firewall.getX(), firewall.getY(), this);
+            
+    }
 
     public Shell getShell() {
         return shell;
@@ -260,6 +281,11 @@ public class GameView extends View {
 
     public Base getBase() {
         return base;
+        
+    }
+    
+    public Firewall getFirewall(){
+        return firewall;
     }
 
     @Override
