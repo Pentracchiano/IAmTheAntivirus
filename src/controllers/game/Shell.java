@@ -64,7 +64,7 @@ public class Shell extends JLabel{
         }
         else
             this.digitedCommand+=c;
-        System.out.println((int)c+" "+c);
+        //System.out.println((int)c+" "+c);
         this.setText(DEFAULT_STRING + digitedCommand);
     }
     
