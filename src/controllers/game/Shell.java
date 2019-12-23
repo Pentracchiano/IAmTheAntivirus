@@ -40,8 +40,7 @@ public class Shell extends JLabel{
                 return;
             }
         }
-        setDefault();
-        
+        setDefault();   
     }
     
     private void setDefault(){
