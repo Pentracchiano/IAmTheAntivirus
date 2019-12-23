@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import utilities.ImageUtilities;
 import javax.swing.Timer;
+import models.GameStatus;
 import models.sprites.behaviors.Command;
 
 /**
@@ -24,21 +25,24 @@ public class Firewall extends Sprite implements ActionListener, Command{
     private List<Image> animationFirewall;
     private final static String PARENT_IMAGE_PATH = "src/resources/command/firewall/";
     private static final String FIREWALL_IMAGE_PATH = PARENT_IMAGE_PATH+"0.png";
+    private final int COOL_DOWN = 10*1000;
+    private final int DELAY = 200;
     private Timer timer;
     private Iterator animation;
     private final String name = "FIREWALL";
     private boolean active;
+    private int coolDown;
     
     public Firewall(int x, int y){
         super(x,y,FIREWALL_IMAGE_PATH);
-        timer = new Timer(200,this);
-        
+        timer = new Timer(DELAY,this);
         initFirewall();
         
     }
     
     private void initFirewall(){
         active = false;
+        coolDown = 0;
         animationFirewall = new LinkedList<>();
         Image image0 = ImageUtilities.loadImageFromPath(PARENT_IMAGE_PATH + "0.png");
         Image image1 = ImageUtilities.loadImageFromPath(PARENT_IMAGE_PATH + "1.png");
@@ -63,37 +67,45 @@ public class Firewall extends Sprite implements ActionListener, Command{
     
     @Override
     public void launch(){
+        if(isInCoolDown())
+            return;
         animation = animationFirewall.iterator();
         active = true;
+        coolDown = COOL_DOWN;
         timer.start();
      
     }
     
+    @Override
     public boolean isActive(){
         return active;
     }
+    
+    @Override
+    public boolean isInCoolDown(){
+      return coolDown>0;  
+    }
    
-    private void startFirewall(){
-        
-        
+    private void startFirewall(){   
         if(animation.hasNext()){
             Image i = (Image)animation.next();
             setImage(i);
-            //System.out.println(i);
-        }else{
-            active = false;
-            timer.stop();
-            
-           
+            return;
         }
         
+        active = false; 
+        if(!isInCoolDown())
+            timer.stop();
+                
     }
-    
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(GameStatus.getInstance().isInWave()){
+            coolDown-=DELAY;
+            System.out.println("Cool down: "+coolDown);
+        }
         startFirewall();
-        
         
     }
         

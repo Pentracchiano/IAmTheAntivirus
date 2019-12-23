@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.KeyStroke;
 import menu.AbstractMenuViewController;
+import menu.MusicButton;
 import menu.RetroButton;
 import utilities.ImageUtilities;
 
@@ -56,6 +57,8 @@ public class MainMenuViewController extends AbstractMenuViewController {
                 this.titleLabel.getPreferredSize().width,
                 this.titleLabel.getPreferredSize().height);
         
+        // this makes the music button reflect the actual state of the music
+        musicButton.setSelected(IAmTheAntivirus.getGameInstance().isMusicDisabled());
         
     }
   
@@ -219,10 +222,10 @@ public class MainMenuViewController extends AbstractMenuViewController {
 
     private void musicButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_musicButtonActionPerformed
         IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
-        if (musicButton.isSelected()){         
-            gameApplication.setMusicOn(false);
-        } else {          
-            gameApplication.setMusicOn(true);
+        if (musicButton.isSelected()){
+            gameApplication.setMusicDisabled(true);
+        } else {
+            gameApplication.setMusicDisabled(false);
         }
     }//GEN-LAST:event_musicButtonActionPerformed
 

@@ -5,7 +5,7 @@
  */
 package menu.gameovermenu;
 
-import com.sun.glass.events.KeyEvent;
+
 import controllers.IAmTheAntivirus;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,6 +13,7 @@ import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.KeyStroke;

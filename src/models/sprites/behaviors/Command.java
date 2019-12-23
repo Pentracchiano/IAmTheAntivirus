@@ -13,5 +13,7 @@ public interface Command {
     
     public String getName();
     public void launch();
+    public boolean isActive();
+    public boolean isInCoolDown();
     
 }
