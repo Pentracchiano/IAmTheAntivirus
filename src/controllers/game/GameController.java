@@ -267,11 +267,13 @@ public class GameController extends Controller implements Runnable {
         });
 
         view.addKeyListener(new KeyAdapter() {
+           
             @Override
             public void keyPressed(KeyEvent e) {
+                
                 int keyCode = e.getKeyCode();
-
-                if ((char) keyCode == '\\') {
+                
+                if ((char) keyCode == '\\' && gameStatus.isInWave()) {
                     shell.setFocusable(true);
                     return;
                 }
@@ -286,24 +288,22 @@ public class GameController extends Controller implements Runnable {
                     shell.digitcommands((char) keyCode);
                     return;
                 }
-
-                try {
-                    keyboard.press((char) keyCode);
-                    checKeyCollision(keyboard.getKey((char) keyCode));
-                } catch (KeyNotFoundException knfe) {
-
+                if(gameStatus.isInWave()){
+                    try {
+                        keyboard.press((char) keyCode);
+                        checKeyCollision(keyboard.getKey((char) keyCode));
+                    } catch (KeyNotFoundException knfe) { }
                 }
-
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 int keyCode = e.getKeyCode();
+                
                 try {
                     keyboard.release((char) keyCode);
-                } catch (KeyNotFoundException knfe) {
-
-                }
+                } catch (KeyNotFoundException knfe) {}
+                
             }
         });
     }

@@ -23,8 +23,7 @@ public class Shell extends JLabel{
     public Shell(Set<Command> commands) {
         this.setFocusable(false);
         this.setText(DEFAULT_STRING);
-        this.commands = commands;
-        
+        this.commands = commands;    
     }
     
    

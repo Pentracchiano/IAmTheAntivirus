@@ -141,7 +141,7 @@ public class GameView extends View {
         int y;
 
         if (gameStatus.isInWaveTransition()) {
-            drawFormattedString(g, "Loading new wave...", base.getX() + 540, base.getY() + 40, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
+            drawFormattedString(g, "Loading new wave...", base.getX() + 550, base.getY() + 40, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
             return;
         }
 
