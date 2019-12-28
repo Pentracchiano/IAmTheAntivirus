@@ -25,6 +25,7 @@ public class FocusTraversalKeysUtilities {
         Set<KeyStroke> backwardKeys = new HashSet<>();
         backwardKeys.add(KeyStroke.getKeyStroke("UP"));
         
+       
         c.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, forwardKeys);
         c.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, backwardKeys);
     }
