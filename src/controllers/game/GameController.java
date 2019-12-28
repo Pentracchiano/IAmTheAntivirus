@@ -198,6 +198,7 @@ public class GameController extends Controller implements Runnable {
         }
 
         if (base.isInfected()) {
+            //if (gameStatus.)
             this.gameEnded();
         }
     }

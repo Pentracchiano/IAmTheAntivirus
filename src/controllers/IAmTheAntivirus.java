@@ -35,6 +35,7 @@ public class IAmTheAntivirus {
     private GameView gameView;
     private GameController gameController;
     private ShopMenuViewController shopMenu;
+    private HighScoresMenuViewController highscoresMenu;
     //HO MODIFICATO currentMenu da final a non final
     private AbstractMenuViewController currentMenu;
     private static IAmTheAntivirus gameApplication;
@@ -106,7 +107,8 @@ public class IAmTheAntivirus {
             frame.pack();
             frame.setLocationRelativeTo(null);
             currentMenu.requestFocusInWindow();
-
+            
+            highscoresMenu = new HighScoresMenuViewController(panelDimension);
         });
     }
     
@@ -115,7 +117,7 @@ public class IAmTheAntivirus {
             if (currentMenu != null) {
                 frame.remove(currentMenu);
             }
-            currentMenu = new HighScoresMenuViewController(panelDimension);
+            currentMenu = highscoresMenu;
             frame.add(currentMenu);
             frame.pack();
             frame.setLocationRelativeTo(null);

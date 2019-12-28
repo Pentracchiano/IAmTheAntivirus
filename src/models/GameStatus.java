@@ -23,7 +23,7 @@ public class GameStatus {
     private boolean inShop;
     private boolean inWaveTransition;
     private final List<Stat> stats = new ArrayList<>();
-    
+    private List<String> highscores = new ArrayList<>();
     
     // the number of the current wave
     private int currentWaveNumber;
@@ -64,7 +64,6 @@ public class GameStatus {
         this.inShop = false;
         this.inWaveTransition = false;
         this.currentWaveNumber = 0;
-        
         
         this.stats.add(new Stat("health","Health",DEFAULT_COST,DEFAULT_MAX_HEALTH,"Next max health value: "));
         this.stats.add(new Stat("attack","Attack",DEFAULT_COST,DEFAULT_ATTACK,"Next attack value: "));

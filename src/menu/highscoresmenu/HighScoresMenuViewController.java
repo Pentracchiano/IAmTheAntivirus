@@ -7,6 +7,9 @@ package menu.highscoresmenu;
 
 import controllers.IAmTheAntivirus;
 import java.awt.Dimension;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -23,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
 import menu.AbstractMenuViewController;
+import menu.RetroButton;
 
 /**
  *
@@ -35,7 +39,7 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
      */
     
     private static final int HIGHSCORES_NUMBER = 5;
-    private static final String DEFAULT_NAME = "- - - - -";
+    private static final String DEFAULT_NAME = "-----";
     private static final String DEFAULT_SCORE = "00000";
     private static final String HIGHSCORES_FILE_PATH = "src/resources/highscores/highscores.txt";
     private List<JLabel> nameLabelList;
@@ -46,8 +50,9 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         super(preferredSize);
         
         initComponents();
+        initButton();
         initLists();
-        
+        laodHighscores();
         
     }
      
@@ -75,13 +80,19 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         score4Label = new javax.swing.JLabel();
 
         highScoresMenu.setBackground(new java.awt.Color(0, 0, 0));
+        highScoresMenu.setPreferredSize(new java.awt.Dimension(1300, 747));
         highScoresMenu.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 highScoresMenuAncestorAdded(evt);
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+        });
+        highScoresMenu.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                highScoresMenuFocusGained(evt);
             }
         });
 
@@ -95,6 +106,11 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         backToMainMenuButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backToMainMenuButtonActionPerformed(evt);
+            }
+        });
+        backToMainMenuButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                backToMainMenuButtonKeyPressed(evt);
             }
         });
 
@@ -167,7 +183,7 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         highScoresMenuLayout.setHorizontalGroup(
             highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(highScoresMenuLayout.createSequentialGroup()
-                .addContainerGap(428, Short.MAX_VALUE)
+                .addGap(437, 437, 437)
                 .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, highScoresMenuLayout.createSequentialGroup()
                         .addComponent(name1Label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -179,25 +195,24 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
                         .addComponent(score0Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, highScoresMenuLayout.createSequentialGroup()
                         .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(name4Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(name2Label, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, highScoresMenuLayout.createSequentialGroup()
+                            .addGroup(highScoresMenuLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(name3Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(name4Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(name3Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(18, 18, Short.MAX_VALUE)
                         .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(score4Label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(score3Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(score2Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(513, 513, 513))
+                .addGap(437, 437, 437))
             .addGroup(highScoresMenuLayout.createSequentialGroup()
                 .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(highScoresMenuLayout.createSequentialGroup()
                         .addGap(38, 38, 38)
                         .addComponent(backToMainMenuButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(highScoresMenuLayout.createSequentialGroup()
-                        .addGap(0, 0, 0)
-                        .addComponent(highScoresLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 1300, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(highScoresLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 1300, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         highScoresMenuLayout.setVerticalGroup(
@@ -243,38 +258,27 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(highScoresMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(highScoresMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void highScoresMenuAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_highScoresMenuAncestorAdded
-        try {
-            InputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream(HIGHSCORES_FILE_PATH)));
-            Scanner in = new Scanner(stream);
-            int i = 0;    
-            while(i < HIGHSCORES_NUMBER){
-                if(in.hasNext()){
-                    nameLabelList.get(i).setText(in.next());
-                    scoreLabelList.get(i).setText(in.next());
-                }
-                else{
-                    nameLabelList.get(i).setText(DEFAULT_NAME);
-                    scoreLabelList.get(i).setText(DEFAULT_SCORE);
-                }
-                i++;
-            }
-            in.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(HighScoresMenuViewController.class.getName()).log(Level.SEVERE, null, ex);
-        };
-        
     }//GEN-LAST:event_highScoresMenuAncestorAdded
-
+    
     private void backToMainMenuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backToMainMenuButtonActionPerformed
         IAmTheAntivirus gameController = IAmTheAntivirus.getGameInstance();
         gameController.displayMainMenu();
     }//GEN-LAST:event_backToMainMenuButtonActionPerformed
+
+    private void highScoresMenuFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_highScoresMenuFocusGained
+        this.backToMainMenuButton.requestFocusInWindow();
+    }//GEN-LAST:event_highScoresMenuFocusGained
+
+    private void backToMainMenuButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_backToMainMenuButtonKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            backToMainMenuButtonActionPerformed(null);
+        }
+    }//GEN-LAST:event_backToMainMenuButtonKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private menu.RetroButton backToMainMenuButton;
@@ -306,5 +310,45 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         scoreLabelList.add(score3Label);
         scoreLabelList.add(score4Label);
      }
+
+    private void laodHighscores() {
+        try {
+            InputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream(HIGHSCORES_FILE_PATH)));
+            Scanner in = new Scanner(stream);
+            int i = 0;    
+            while(i < HIGHSCORES_NUMBER){
+                if(in.hasNext()){
+                    nameLabelList.get(i).setText(in.next());
+                    scoreLabelList.get(i).setText(in.next());
+                }
+                else{
+                    nameLabelList.get(i).setText(DEFAULT_NAME);
+                    scoreLabelList.get(i).setText(DEFAULT_SCORE);
+                }
+                i++;
+            }
+            in.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(HighScoresMenuViewController.class.getName()).log(Level.SEVERE, null, ex);
+        };
+        
+    }
+
+    private void initButton() {
+            final FocusListener buttonFocusHandler = new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                RetroButton target = (RetroButton) e.getSource();
+                target.toggleColors();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                RetroButton target = (RetroButton) e.getSource();
+                target.toggleColors();}
+        };
+        
+        this.backToMainMenuButton.addFocusListener(buttonFocusHandler);
+    }
     
 }
