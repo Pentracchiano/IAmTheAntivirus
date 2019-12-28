@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
@@ -73,6 +74,7 @@ public class GameView extends View {
     private Set<Command> commands;
 
     public GameView() {
+        this.setLayout(new GridLayout());
         initView();
     }
 

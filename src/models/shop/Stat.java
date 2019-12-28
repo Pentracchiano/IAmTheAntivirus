@@ -15,6 +15,7 @@ public class Stat {
     private String id;
     private int cost;
     private String description;
+    private static final int MAX_CAP = 999999;
 
     public String getDescription() {
         return description;
@@ -34,7 +35,8 @@ public class Stat {
     }
     
     public void increase(int value){
-        this.value += value;
+        int next = this.check_max_cap(this.value += value);
+        this.value = next;
     }
 
     public int getValue() {
@@ -50,11 +52,12 @@ public class Stat {
     }
     
     public int getNextValue(){
-        return value*2;
+        return this.check_max_cap(value*2);
+        
     }
     
     public int getNextCost(){
-        return cost*2;
+        return this.check_max_cap(cost*2);
     }
 
     public String getName() {
@@ -74,5 +77,11 @@ public class Stat {
         this.value = this.getNextValue();
     }
     
+    private int check_max_cap(int value){
+        if( value > MAX_CAP )
+            return MAX_CAP;
+        else
+            return value;
+    }
     
 }

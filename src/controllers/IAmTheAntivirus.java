@@ -92,7 +92,7 @@ public class IAmTheAntivirus {
             frame.setLocationRelativeTo(null);
             gameView.requestFocusInWindow();
 
-            shopMenu = new ShopMenuViewController();
+            shopMenu = new ShopMenuViewController(panelDimension);
         });
     }
 
@@ -139,8 +139,9 @@ public class IAmTheAntivirus {
     public void openShopMenu() {
         GameStatus.getInstance().setInShop(true);
         EventQueue.invokeLater(() -> {
-            shopMenu.setVisible(true);
+            
             gameView.add(shopMenu);
+            shopMenu.setVisible(true);
 
         });
     }
