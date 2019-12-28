@@ -52,7 +52,8 @@ public class ShopMenuViewController extends AbstractMenuViewController {
      */
     public ShopMenuViewController( Dimension preferredSize ) {
         super(preferredSize);
-
+        
+        this.setFocusCycleRoot(true);
         initComponents();
         initItems();
         FocusTraversalKeysUtilities.changeFocusTraversalKeys(this);
@@ -206,6 +207,11 @@ public class ShopMenuViewController extends AbstractMenuViewController {
                 nextWaveButtonActionPerformed(evt);
             }
         });
+        nextWaveButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                nextWaveButtonKeyPressed(evt);
+            }
+        });
         add(nextWaveButton);
         nextWaveButton.setBounds(310, 620, 640, 90);
 
@@ -254,6 +260,12 @@ public class ShopMenuViewController extends AbstractMenuViewController {
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
         this.items.get(0).getPlusButton().requestFocusInWindow();
     }//GEN-LAST:event_formFocusGained
+
+    private void nextWaveButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nextWaveButtonKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            nextWaveButtonActionPerformed(null);
+        }
+    }//GEN-LAST:event_nextWaveButtonKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel moneyLabel;

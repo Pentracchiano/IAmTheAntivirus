@@ -124,11 +124,11 @@ public class ShopItemView extends javax.swing.JPanel {
         costLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         costLabel.setText("500");
 
-        descriptionLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        descriptionLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         descriptionLabel.setForeground(new java.awt.Color(255, 255, 255));
         descriptionLabel.setText("Increase your max health to:");
 
-        nextValueLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        nextValueLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         nextValueLabel.setForeground(java.awt.Color.green);
         nextValueLabel.setText("50");
 
