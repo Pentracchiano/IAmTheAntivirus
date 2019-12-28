@@ -66,8 +66,8 @@ public class GameStatus {
         this.currentWaveNumber = 0;
         
         
-        this.stats.add(new Stat("health","Max Health",0,DEFAULT_MAX_HEALTH,"Next max health value: "));
-        this.stats.add(new Stat("attack","Attack",0,DEFAULT_ATTACK,"Next attack value: "));
+        this.stats.add(new Stat("health","Health",DEFAULT_COST,DEFAULT_MAX_HEALTH,"Next max health value: "));
+        this.stats.add(new Stat("attack","Attack",DEFAULT_COST,DEFAULT_ATTACK,"Next attack value: "));
     }
 
     public synchronized List<Stat> getStats() {

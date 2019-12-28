@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import menu.AbstractMenuViewController;
 import menu.RetroButton;
 import models.GameStatus;
 import models.shop.Stat;
@@ -35,7 +36,7 @@ import utilities.FocusTraversalKeysUtilities;
  *
  * @author gabri
  */
-public class ShopMenuViewController extends javax.swing.JPanel {
+public class ShopMenuViewController extends AbstractMenuViewController {
 
     private List<ShopItemView> items = new ArrayList<>();
     private GameStatus gameStatus = GameStatus.getInstance();
@@ -49,8 +50,8 @@ public class ShopMenuViewController extends javax.swing.JPanel {
     /**
      * Creates new form ShopMenuViewController
      */
-    public ShopMenuViewController() {
-        this.setPreferredSize(new Dimension(1300, 747));
+    public ShopMenuViewController( Dimension preferredSize ) {
+        super(preferredSize);
 
         initComponents();
         initItems();

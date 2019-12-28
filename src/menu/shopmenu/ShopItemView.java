@@ -40,6 +40,7 @@ public class ShopItemView extends javax.swing.JPanel {
         this.descriptionLabel.setText(stat.getDescription());
         this.nextValueLabel.setText(Integer.toString(stat.getNextValue()));
         this.nameLabel.setText(stat.getName());
+        this.nameLabel.setFont(new Font("Minecraft", Font.PLAIN, 30));
         this.bitcoinImage = ImageUtilities.loadImageFromPath(BITCOIN_IMAGE_PATH).getScaledInstance(30, -1, Image.SCALE_DEFAULT);
         this.costLabel.setIcon(new ImageIcon(bitcoinImage));
     }

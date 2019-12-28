@@ -121,7 +121,8 @@ public class GameController extends Controller implements Runnable {
             // wave transition
 
             gameStatus.setInWaveTransition(true);
-
+            
+            gameStatus.addBitcoinsAndScore(1);
             IAmTheAntivirus.getGameInstance().openShopMenu();
 
             /*
@@ -312,7 +313,9 @@ public class GameController extends Controller implements Runnable {
     private void updateStats() {
         for (Stat s : stats) {
             if (s.getId() == "health") {
+                int difference = this.base.getTotalHealth() - this.base.getCurrentHealth();
                 this.base.setTotalHealth(s.getValue());
+                this.base.setCurrentHealth(this.base.getTotalHealth()-difference);
             }
             if (s.getId() == "attack") {
                 for (Key k : this.keyboard.getKeys()) {
