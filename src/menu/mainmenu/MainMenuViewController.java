@@ -76,7 +76,9 @@ public class MainMenuViewController extends AbstractMenuViewController {
     
     private void initRetroButtons(){
         this.setButtonBounds(playGameButton,0);
-        this.setButtonBounds(exitGameButton,exitGameButton.getPreferredSize().height+30);
+        this.setButtonBounds(highScoresButton, highScoresButton.getPreferredSize().height+30);
+        this.setButtonBounds(exitGameButton,exitGameButton.getPreferredSize().height+56+30+30);
+        
         
         final FocusListener buttonFocusHandler = new FocusListener() {
             @Override
@@ -93,13 +95,14 @@ public class MainMenuViewController extends AbstractMenuViewController {
         
         playGameButton.addFocusListener(buttonFocusHandler);
         exitGameButton.addFocusListener(buttonFocusHandler);
+        highScoresButton.addFocusListener(buttonFocusHandler);
     
     }
     
     // needed to place the label relatively to the image and the mainmenu preferredsize
     private void setButtonBounds( JButton button, int padding ){
                 
-        int buttonWidth = button.getPreferredSize().width;
+        int buttonWidth = (int)(button.getPreferredSize().width);
         int buttonHeight = button.getPreferredSize().height;
         
         int x0 = (int)(IMAGE_SCREEN_TOP_LEFT_X_SCREEN_RATIO * this.getPreferredSize().width);
@@ -134,6 +137,7 @@ public class MainMenuViewController extends AbstractMenuViewController {
         titleLabel = new javax.swing.JLabel();
         playGameButton = new menu.RetroButton();
         musicButton = new menu.MusicButton();
+        highScoresButton = new menu.RetroButton();
 
         setOpaque(false);
         addFocusListener(new java.awt.event.FocusAdapter() {
@@ -157,7 +161,7 @@ public class MainMenuViewController extends AbstractMenuViewController {
             }
         });
         add(exitGameButton);
-        exitGameButton.setBounds(250, 310, 250, 56);
+        exitGameButton.setBounds(250, 390, 300, 56);
 
         titleLabel.setBackground(java.awt.Color.black);
         titleLabel.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 80));
@@ -169,7 +173,8 @@ public class MainMenuViewController extends AbstractMenuViewController {
 
         playGameButton.setBackground(new java.awt.Color(4, 55, 98));
         playGameButton.setText("play");
-        playGameButton.setPreferredSize(new java.awt.Dimension(205, 56));
+        playGameButton.setMaximumSize(new java.awt.Dimension(100, 56));
+        playGameButton.setPreferredSize(new java.awt.Dimension(230, 56));
         playGameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 playGameButtonActionPerformed(evt);
@@ -181,7 +186,7 @@ public class MainMenuViewController extends AbstractMenuViewController {
             }
         });
         add(playGameButton);
-        playGameButton.setBounds(250, 250, 250, 56);
+        playGameButton.setBounds(250, 250, 300, 56);
 
         musicButton.setText("musicButton2");
         musicButton.setActionCommand("musicButton");
@@ -192,6 +197,22 @@ public class MainMenuViewController extends AbstractMenuViewController {
         });
         add(musicButton);
         musicButton.setBounds(40, 590, 70, 70);
+
+        highScoresButton.setBackground(new java.awt.Color(4, 55, 98));
+        highScoresButton.setText("high scores");
+        highScoresButton.setPreferredSize(new java.awt.Dimension(270, 56));
+        highScoresButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                highScoresButtonActionPerformed(evt);
+            }
+        });
+        highScoresButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                highScoresButtonKeyPressed(evt);
+            }
+        });
+        add(highScoresButton);
+        highScoresButton.setBounds(250, 320, 300, 56);
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitGameButtonActionPerformed
@@ -229,9 +250,21 @@ public class MainMenuViewController extends AbstractMenuViewController {
         }
     }//GEN-LAST:event_musicButtonActionPerformed
 
+    private void highScoresButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_highScoresButtonActionPerformed
+        IAmTheAntivirus gameApplication = IAmTheAntivirus.getGameInstance();
+        gameApplication.displayHighScoresMenu();
+    }//GEN-LAST:event_highScoresButtonActionPerformed
+
+    private void highScoresButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_highScoresButtonKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            highScoresButtonActionPerformed(null);
+        }
+    }//GEN-LAST:event_highScoresButtonKeyPressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private menu.RetroButton exitGameButton;
+    private menu.RetroButton highScoresButton;
     private menu.MusicButton musicButton;
     private menu.RetroButton playGameButton;
     private javax.swing.JLabel titleLabel;

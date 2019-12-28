@@ -16,16 +16,20 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import menu.RetroButton;
 import models.GameStatus;
 import models.shop.Stat;
 import utilities.ImageUtilities;
+import utilities.FocusTraversalKeysUtilities;
 
 /**
  *
@@ -38,6 +42,9 @@ public class ShopMenuViewController extends javax.swing.JPanel {
 
     private String imagePath = "src/resources/shopBackground.jpg";
     private Image image;
+    
+    private Image bitcoinImage;
+    private static final String BITCOIN_IMAGE_PATH = "src/resources/bitcoin.png";
 
     /**
      * Creates new form ShopMenuViewController
@@ -47,11 +54,14 @@ public class ShopMenuViewController extends javax.swing.JPanel {
 
         initComponents();
         initItems();
-
+        FocusTraversalKeysUtilities.changeFocusTraversalKeys(this);
         this.image = ImageUtilities.loadImageFromPath(imagePath);
 
         this.titleLabel.setFont(new Font("Minecraft", Font.BOLD, 72));
         this.moneyLabel.setFont(new Font("Minecraft", Font.BOLD, 32));
+        
+        this.bitcoinImage = ImageUtilities.loadImageFromPath(BITCOIN_IMAGE_PATH).getScaledInstance(35, -1, Image.SCALE_DEFAULT);
+        this.moneyLabel.setIcon(new ImageIcon(bitcoinImage));
         this.updateMoneyLabel();
 
         this.addButtonListener();
@@ -84,11 +94,37 @@ public class ShopMenuViewController extends javax.swing.JPanel {
                 JPanel shelf = (JPanel) shopItem.getParent();
                 ShopMenuViewController shop = (ShopMenuViewController) shelf.getParent();
                 shop.buyItem(shopItem);
+            }            
+        };
+        
+        final KeyListener buttonKeyHandler = new KeyListener(){
+            
+            @Override
+            public void keyPressed(KeyEvent evt) {
+                if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+                    RetroButton target = (RetroButton) evt.getSource();
+
+                    ShopItemView shopItem = (ShopItemView) target.getParent();
+                    JPanel shelf = (JPanel) shopItem.getParent();
+                    ShopMenuViewController shop = (ShopMenuViewController) shelf.getParent();
+                    shop.buyItem(shopItem);
+                }
+            }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                
             }
         };
 
         for (ShopItemView s : items) {
             s.getPlusButton().addActionListener(buttonActionHandler);
+            s.getPlusButton().addKeyListener(buttonKeyHandler);
         }
 
     }
@@ -116,9 +152,9 @@ public class ShopMenuViewController extends javax.swing.JPanel {
     }
 
     @Override
-    public void paintComponents(Graphics g) {
-        super.paintComponents(g);
-        g.drawImage(image, 0, 0, this.getPreferredSize().width, this.getPreferredSize().height, null);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), null);
     }
 
     /**
@@ -145,6 +181,11 @@ public class ShopMenuViewController extends javax.swing.JPanel {
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
                 formAncestorRemoved(evt);
+            }
+        });
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
             }
         });
         setLayout(null);
@@ -189,8 +230,9 @@ public class ShopMenuViewController extends javax.swing.JPanel {
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
         this.updateMoneyLabel();
+        this.requestFocusInWindow();
     }//GEN-LAST:event_formAncestorAdded
-
+    
     private void nextWaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextWaveButtonActionPerformed
         IAmTheAntivirus iata = IAmTheAntivirus.getGameInstance();
         iata.closeShopMenu();
@@ -207,6 +249,10 @@ public class ShopMenuViewController extends javax.swing.JPanel {
     private void formAncestorRemoved(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorRemoved
         // TODO add your handling code here:
     }//GEN-LAST:event_formAncestorRemoved
+
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+        this.items.get(0).getPlusButton().requestFocusInWindow();
+    }//GEN-LAST:event_formFocusGained
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel moneyLabel;

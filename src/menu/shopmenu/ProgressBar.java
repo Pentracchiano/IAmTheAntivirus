@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -19,6 +21,7 @@ public class ProgressBar extends javax.swing.JPanel {
 
     private Color cellBorderColor = Color.white;
     private Color cellFillColor = Color.green;
+    private List<Color> cellFillColors = new LinkedList<>();
     private int maxProgression = 10;
     private int currentProgression = 3;
     private final int CELL_SPAN = 10;
@@ -30,6 +33,12 @@ public class ProgressBar extends javax.swing.JPanel {
      * Creates new form progressBar
      */
     public ProgressBar() {
+        
+        cellFillColors.add(Color.MAGENTA);
+        cellFillColors.add(Color.green);
+        cellFillColors.add(Color.ORANGE);
+                
+        
         initComponents();
         
     }
@@ -43,14 +52,16 @@ public class ProgressBar extends javax.swing.JPanel {
         int currX = 0;
         int currY = 0;
                 
+        
+        this.fillCells(g2d);
+        this.paintLayout(g2d);
+    }
+    
+    protected void paintLayout(Graphics2D g2d){
+        int currX = 0;
+        int currY = 0;
+                
         for( int i = 1; i <= maxProgression; i++ ){
-            
-            if( i <= currentProgression )
-            {
-                g2d.setColor(cellFillColor);
-                g2d.fillRect(currX, currY, this.getWidth()/maxProgression - CELL_SPAN, this.getHeight());
-            }
-            
             
             g2d.setStroke(new BasicStroke(stroke_size));
             g2d.setColor(cellBorderColor);
@@ -60,10 +71,32 @@ public class ProgressBar extends javax.swing.JPanel {
         }
     }
     
+    protected void fillCells(Graphics2D g2d){
+        int currX = 0;
+        int currY = 0;
+        
+        int usedColors = currentProgression/maxProgression;
+        int lastFilledCells = currentProgression % maxProgression;
+        
+        Color backColor = cellFillColors.get((usedColors)%cellFillColors.size());
+        Color frontColor = cellFillColors.get((usedColors+1)%cellFillColors.size());
+        
+        g2d.setColor(frontColor);
+        
+        for( int i = 1; i <= maxProgression && i <= currentProgression; i++ ){
+            
+            if( i > lastFilledCells )
+                g2d.setColor(backColor);
+            
+            g2d.fillRect(currX, currY, this.getWidth()/maxProgression - CELL_SPAN, this.getHeight());
+            
+                        
+            currX += this.getWidth()/maxProgression;
+        }
+    }
+    
     public void increaseProgression(){
         this.currentProgression += 1;
-        if( this.currentProgression > this.maxProgression )
-            this.currentProgression = this.maxProgression;
         this.repaint();
     }
     

@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import views.game.GameView;
 import menu.AbstractMenuViewController;
 import menu.gameovermenu.GameOverViewController;
+import menu.highscoresmenu.HighScoresMenuViewController;
 import menu.mainmenu.MainMenuViewController;
 import menu.shopmenu.ShopMenuViewController;
 import models.GameStatus;
@@ -101,6 +102,20 @@ public class IAmTheAntivirus {
                 frame.remove(currentMenu);
             }
             currentMenu = new MainMenuViewController(panelDimension);
+            frame.add(currentMenu);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            currentMenu.requestFocusInWindow();
+
+        });
+    }
+    
+    public void displayHighScoresMenu(){
+        EventQueue.invokeLater(() -> {
+            if (currentMenu != null) {
+                frame.remove(currentMenu);
+            }
+            currentMenu = new HighScoresMenuViewController(panelDimension);
             frame.add(currentMenu);
             frame.pack();
             frame.setLocationRelativeTo(null);
