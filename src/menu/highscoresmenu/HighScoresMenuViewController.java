@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import menu.AbstractMenuViewController;
 import menu.RetroButton;
+import utilities.FocusTraversalKeysUtilities;
 
 /**
  *
@@ -53,7 +54,6 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         initButton();
         initLists();
         laodHighscores();
-        
     }
      
     /**
@@ -263,6 +263,7 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
     }// </editor-fold>//GEN-END:initComponents
 
     private void highScoresMenuAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_highScoresMenuAncestorAdded
+        this.requestFocusInWindow();
     }//GEN-LAST:event_highScoresMenuAncestorAdded
     
     private void backToMainMenuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backToMainMenuButtonActionPerformed
