@@ -19,6 +19,7 @@ import java.util.Set;
 import javax.swing.KeyStroke;
 import menu.AbstractMenuViewController;
 import menu.RetroButton;
+import utilities.FocusTraversalKeysUtilities;
 import utilities.FontUtilities;
 
 /**
@@ -54,7 +55,7 @@ public class GameOverViewController extends AbstractMenuViewController {
         
        
         initRetroButtons();
-        changeFocusTraversalKeys();
+        FocusTraversalKeysUtilities.changeFocusTraversalKeys(this);
        
        
     }
@@ -79,19 +80,6 @@ public class GameOverViewController extends AbstractMenuViewController {
         
   
     }
-    
-    private void changeFocusTraversalKeys() {
-        Set<KeyStroke> forwardKeys = new HashSet<>();
-        forwardKeys.add(KeyStroke.getKeyStroke("DOWN"));
-        forwardKeys.add(KeyStroke.getKeyStroke("TAB"));
-        
-        Set<KeyStroke> backwardKeys = new HashSet<>();
-        backwardKeys.add(KeyStroke.getKeyStroke("UP"));
-        
-        this.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, forwardKeys);
-        this.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, backwardKeys);
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

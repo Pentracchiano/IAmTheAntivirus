@@ -20,6 +20,7 @@ import javax.swing.KeyStroke;
 import menu.AbstractMenuViewController;
 import menu.MusicButton;
 import menu.RetroButton;
+import utilities.FocusTraversalKeysUtilities;
 import utilities.ImageUtilities;
 
 /**
@@ -49,7 +50,7 @@ public class MainMenuViewController extends AbstractMenuViewController {
         initComponents();
        
         initRetroButtons();
-        changeFocusTraversalKeys();
+        FocusTraversalKeysUtilities.changeFocusTraversalKeys(this);
         
         // needed to place the label relatively to the image and the mainmenu preferredsize
         this.titleLabel.setBounds((this.getPreferredSize().width - this.titleLabel.getPreferredSize().width) / 2,
@@ -60,18 +61,6 @@ public class MainMenuViewController extends AbstractMenuViewController {
         // this makes the music button reflect the actual state of the music
         musicButton.setSelected(IAmTheAntivirus.getGameInstance().isMusicDisabled());
         
-    }
-  
-    private void changeFocusTraversalKeys() {
-        Set<KeyStroke> forwardKeys = new HashSet<>();
-        forwardKeys.add(KeyStroke.getKeyStroke("DOWN"));
-        forwardKeys.add(KeyStroke.getKeyStroke("TAB"));
-        
-        Set<KeyStroke> backwardKeys = new HashSet<>();
-        backwardKeys.add(KeyStroke.getKeyStroke("UP"));
-        
-        this.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, forwardKeys);
-        this.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, backwardKeys);
     }
     
     private void initRetroButtons(){

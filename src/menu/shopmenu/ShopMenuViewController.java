@@ -52,7 +52,8 @@ public class ShopMenuViewController extends AbstractMenuViewController {
      */
     public ShopMenuViewController( Dimension preferredSize ) {
         super(preferredSize);
-
+        
+        this.setFocusCycleRoot(true);
         initComponents();
         initItems();
         FocusTraversalKeysUtilities.changeFocusTraversalKeys(this);
