@@ -67,7 +67,7 @@ public class GameView extends View {
     }
 
     private void initView() {
-        base = new Base(0, 0, GameStatus.getInstance().getDEFAULT_MAX_HEALTH());
+        base = new Base(0, 0, GameStatus.getInstance().getDefaultMaxHealth());
 
         setBackground(Color.GRAY);
         try {

@@ -40,16 +40,17 @@ public class IAmTheAntivirus {
     private static final String FONT_MENU_PATH = "src/resources/fonts/Minecraft.ttf";
     private final Dimension panelDimension = new GameView().getPanelDimension();
     private boolean musicOn = false;
+    private boolean musicDisabled = false;
     private final BackgroundMusic backgroundMusic = new BackgroundMusic("src/resources/music/backgroundMusic.wav");
-    
+
     private IAmTheAntivirus() {
         FontUtilities.registerFont(FONT_MENU_PATH);
-       
+
         frame = new JFrame();
-        
-        initFrame();    
+
+        initFrame();
     }
-    
+
     /**
      * The only way to obtain an instance of the IAmTheAntivirus (so, the game
      * app class) is to call this method: it always returns the same instance as
@@ -61,7 +62,7 @@ public class IAmTheAntivirus {
         if (IAmTheAntivirus.gameApplication == null) {
             IAmTheAntivirus.gameApplication = new IAmTheAntivirus();
         }
-        
+
         return IAmTheAntivirus.gameApplication;
     }
 
@@ -89,25 +90,26 @@ public class IAmTheAntivirus {
             frame.pack();
             frame.setLocationRelativeTo(null);
             gameView.requestFocusInWindow();
-            
+
             shopMenu = new ShopMenuViewController();
         });
     }
-    
-    public void displayMainMenu(){
+
+    public void displayMainMenu() {
         EventQueue.invokeLater(() -> {
-            if(currentMenu!=null)
+            if (currentMenu != null) {
                 frame.remove(currentMenu);
+            }
             currentMenu = new MainMenuViewController(panelDimension);
             frame.add(currentMenu);
             frame.pack();
             frame.setLocationRelativeTo(null);
             currentMenu.requestFocusInWindow();
-            
+
         });
     }
 
-    public void displayGameOverMenu(){
+    public void displayGameOverMenu() {
         GameStatus.disposeInstance();
         EventQueue.invokeLater(() -> {
             frame.remove(gameView);
@@ -118,27 +120,27 @@ public class IAmTheAntivirus {
             currentMenu.requestFocusInWindow();
         });
     }
-    
-    public void openShopMenu(){
+
+    public void openShopMenu() {
         GameStatus.getInstance().setInShop(true);
         EventQueue.invokeLater(() -> {
             shopMenu.setVisible(true);
             gameView.add(shopMenu);
-            
+
         });
     }
-    
-    public void closeShopMenu(){
+
+    public void closeShopMenu() {
         GameStatus.getInstance().setInShop(false);
         EventQueue.invokeLater(() -> {
             shopMenu.setVisible(false);
             gameView.remove(shopMenu);
         });
     }
-    
+
     /**
      * This method closes the application: do any clean up here if needed.
-     * 
+     *
      */
     public void closeGame() {
         EventQueue.invokeLater(() -> {
@@ -152,20 +154,46 @@ public class IAmTheAntivirus {
         frame.setTitle("IAmTheAntivirus");
         // this method has to be called after add() and before setLocationRelativeTo()
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        displayMainMenu();       
-        
+        displayMainMenu();
+
     }
 
-    public boolean getMusicOn (){
+    public boolean getMusicOn() {
         return musicOn;
     }
-    
-    public void setMusicOn (boolean musicOn){
-        this.musicOn = musicOn;
-        
-        backgroundMusic.setRunning(musicOn);
+
+    public boolean isMusicDisabled() {
+        return musicDisabled;
     }
-    
+
+    /**
+     * Disables the music in the game.
+     * Subsequent calls to {@link #setMusicOn(boolean)} will fail, and the music will be turned off
+     * if it is currently playing.
+     * @param musicDisabled 
+     */
+    public void setMusicDisabled(boolean musicDisabled) {
+        this.musicDisabled = musicDisabled;
+        
+        // stop the music if it was playing.
+        if(musicDisabled && musicOn) {
+            setMusicOn(false);
+        }
+    }
+
+    /**
+     * This method has no effect if the music is disabled.
+     * Refer to {@link #setMusicDisabled(boolean)} and {@link #isMusicDisabled()} for changing the music disabled state.
+     * @param musicOn 
+     */
+    public void setMusicOn(boolean musicOn) {
+        if (!musicDisabled) {
+            this.musicOn = musicOn;
+
+            backgroundMusic.setRunning(musicOn);
+        }
+    }
+
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             IAmTheAntivirus application = IAmTheAntivirus.getGameInstance();
