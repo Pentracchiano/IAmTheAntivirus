@@ -6,8 +6,6 @@
 package menu.shopmenu;
 
 import controllers.IAmTheAntivirus;
-import controllers.game.GameController;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -15,12 +13,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import menu.RetroButton;
 import models.GameStatus;
@@ -33,11 +27,11 @@ import utilities.ImageUtilities;
  */
 public class ShopMenuViewController extends javax.swing.JPanel {
 
-    private List<ShopItemView> items = new ArrayList<>();
-    private GameStatus gameStatus = GameStatus.getInstance();
+    private final List<ShopItemView> items = new ArrayList<>();
+    private final GameStatus gameStatus = GameStatus.getInstance();
 
-    private String imagePath = "src/resources/shopBackground.jpg";
-    private Image image;
+    private final String imagePath = "src/resources/shopBackground.jpg";
+    private final Image image;
 
     /**
      * Creates new form ShopMenuViewController
@@ -66,7 +60,7 @@ public class ShopMenuViewController extends javax.swing.JPanel {
         }
 
         for (ShopItemView s : items) {
-            System.out.println(s.getPreferredSize());
+            // System.out.println(s.getPreferredSize());
             s.setSize(s.getPreferredSize());
             this.shelfPanel.add(s);
             s.setVisible(true);

@@ -236,8 +236,8 @@ public class GameView extends View {
 
         int width = healthBarImage.getWidth(this) * base.getCurrentHealth() / base.getTotalHealth();
         
-        System.out.println("width: " + base.getCurrentHealth() / base.getTotalHealth());
-        System.out.println("baseCurrentHelath: " + base.getCurrentHealth() + "baseTotalHelath: " + base.getTotalHealth());
+        // System.out.println("width: " + base.getCurrentHealth() / base.getTotalHealth());
+        // System.out.println("baseCurrentHelath: " + base.getCurrentHealth() + "baseTotalHelath: " + base.getTotalHealth());
 
         g.drawImage(healthBarImage, BASE_SPAN_X + HEART_SPAN_X, BASE_SPAN_Y, width, healthBarImage.getHeight(this), this);
 

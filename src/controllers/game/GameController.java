@@ -113,7 +113,6 @@ public class GameController extends Controller implements Runnable {
                 timeCount++;
             }
             // wave transition
-
             gameStatus.setInWaveTransition(true);
 
             IAmTheAntivirus.getGameInstance().openShopMenu();

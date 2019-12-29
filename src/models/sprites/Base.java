@@ -36,12 +36,10 @@ public class Base extends Sprite implements Damageable{
     }
 
     public void setCurrentHealth(int health) {
-        System.out.println("setCurrentHealth");
         this.currentHealth = health;
     }
     
     public void setTotalHealth(int health) {
-        System.out.println("setTotalHealth");
         this.totalHealth = health;
     }
     

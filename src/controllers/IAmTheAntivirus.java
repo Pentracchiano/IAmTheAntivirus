@@ -33,6 +33,7 @@ public class IAmTheAntivirus {
     private final JFrame frame;
     private GameView gameView;
     private GameController gameController;
+    
     private ShopMenuViewController shopMenu;
     //HO MODIFICATO currentMenu da final a non final
     private AbstractMenuViewController currentMenu;
