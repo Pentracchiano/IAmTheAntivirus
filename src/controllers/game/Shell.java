@@ -33,7 +33,7 @@ public class Shell extends Component{
         if digitedCommand
         */
         for(Command c : gamestatus.getCommands()){
-            System.out.println(c.getName());
+            
             if(this.getDigitedCommand().equals(c.getName())){
                 c.launch();
                 setDefault();
@@ -51,7 +51,6 @@ public class Shell extends Component{
     
     
     public synchronized String getDigitedCommand() {
-        System.out.println(this.digitedCommand.substring(2));
         return this.digitedCommand.substring(2);
     }
 
