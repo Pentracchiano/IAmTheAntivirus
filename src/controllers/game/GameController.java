@@ -198,8 +198,11 @@ public class GameController extends Controller implements Runnable {
         }
 
         if (base.isInfected()) {
-            //if (gameStatus.)
-            this.gameEnded();
+//            if (Integer.parseInt(gameStatus.getHighscores().get(4).split(";",0)[1]) > gameStatus.getScore()){
+                this.gameEnded();
+//            }else{
+//                this.gameEndedWithHighscores();
+//            }
         }
     }
     
@@ -333,7 +336,23 @@ public class GameController extends Controller implements Runnable {
         IAmTheAntivirus appInstance = IAmTheAntivirus.getGameInstance();
         appInstance.setMusicOn(false);
 
-        IAmTheAntivirus.getGameInstance().displayGameOverMenu();
+        System.out.println(Integer.parseInt(gameStatus.getHighscores().get(4).split(";",0)[1]) + " : " + gameStatus.getScore());
+        
+        if (Integer.parseInt(gameStatus.getHighscores().get(4).split(";",0)[1]) < gameStatus.getScore()){
+            
+            appInstance.openSetHighScoresMenu();
+            
+        }else{
+            IAmTheAntivirus.getGameInstance().displayGameOverMenu();
+        }
     }
 
+//    private void gameEndedWithHighscores() {
+//        gameStatus.setInGame(false);
+//        graphicsUpdater.interrupt();
+//        gameLoop.interrupt();
+//        IAmTheAntivirus appInstance = IAmTheAntivirus.getGameInstance();
+//        appInstance.setMusicOn(false);
+//        
+//        IAmTheAntivirus.getGameInstance().displaySetHighScoresMenu();    }
 }

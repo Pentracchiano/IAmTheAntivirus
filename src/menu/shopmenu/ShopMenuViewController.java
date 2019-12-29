@@ -78,7 +78,6 @@ public class ShopMenuViewController extends AbstractMenuViewController {
         }
 
         for (ShopItemView s : items) {
-            //System.out.println(s.getPreferredSize());
             s.setSize(s.getPreferredSize());
             this.shelfPanel.add(s);
             s.setVisible(true);
@@ -146,7 +145,7 @@ public class ShopMenuViewController extends AbstractMenuViewController {
 
             }
         });
-
+        
     }
 
     public void updateMoneyLabel() {

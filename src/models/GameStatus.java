@@ -7,6 +7,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+import menu.highscoresmenu.HighScoresMenuViewController;
 import models.shop.Stat;
 
 /**
@@ -21,6 +22,7 @@ public class GameStatus {
     private boolean inGame;
     private boolean inWave;
     private boolean inShop;
+    private boolean inHighScore;
     private boolean inWaveTransition;
     private final List<Stat> stats = new ArrayList<>();
     private List<String> highscores = new ArrayList<>();
@@ -67,13 +69,16 @@ public class GameStatus {
         
         this.stats.add(new Stat("health","Health",DEFAULT_COST,DEFAULT_MAX_HEALTH,"Next max health value: "));
         this.stats.add(new Stat("attack","Attack",DEFAULT_COST,DEFAULT_ATTACK,"Next attack value: "));
+        
+        for(int i = 0; i < 5; i++){
+            this.highscores.add("-----;000");
+        }
     }
 
     public synchronized List<Stat> getStats() {
         return stats;
     }
     
-
     public synchronized static GameStatus getInstance() {
         if(GameStatus.instance == null) {
             instance = new GameStatus();       
@@ -173,6 +178,17 @@ public class GameStatus {
         return DEFAULT_MAX_HEALTH;
     }
 
+    public synchronized List<String> getHighscores() {
+        return highscores;
+    }
+
+    public synchronized void setHighscores(int i, String name, String score) {
+        this.highscores.set(i, name + ";" + score);
+    }
+
+
+    
+    
     @Override
     public String toString() {
         return "GameStatus{" + "inGame=" + inGame + ", inWave=" + inWave + ", inShop=" + inShop + ", inWaveTransition=" + inWaveTransition + ", stats=" + stats + ", currentWaveNumber=" + currentWaveNumber + ", score=" + score + ", bitcoins=" + bitcoins + ", multiplier=" + multiplier + ", MAX_MULTIPLIER=" + MAX_MULTIPLIER + ", consecutiveHits=" + consecutiveHits + ", HITS_PER_MULTIPLIER=" + HITS_PER_MULTIPLIER + '}';

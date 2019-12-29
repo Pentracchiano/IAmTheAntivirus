@@ -16,6 +16,7 @@ import views.game.GameView;
 import menu.AbstractMenuViewController;
 import menu.gameovermenu.GameOverViewController;
 import menu.highscoresmenu.HighScoresMenuViewController;
+import menu.highscoresmenu.SetHighScoresMenuViewController;
 import menu.mainmenu.MainMenuViewController;
 import menu.shopmenu.ShopMenuViewController;
 import models.GameStatus;
@@ -35,6 +36,7 @@ public class IAmTheAntivirus {
     private GameView gameView;
     private GameController gameController;
     private ShopMenuViewController shopMenu;
+    private SetHighScoresMenuViewController setHighScoresMenu;
     private HighScoresMenuViewController highscoresMenu;
     //HO MODIFICATO currentMenu da final a non final
     private AbstractMenuViewController currentMenu;
@@ -92,7 +94,7 @@ public class IAmTheAntivirus {
             frame.pack();
             frame.setLocationRelativeTo(null);
             gameView.requestFocusInWindow();
-
+            highscoresMenu = new HighScoresMenuViewController(panelDimension);
             shopMenu = new ShopMenuViewController(panelDimension);
         });
     }
@@ -107,7 +109,6 @@ public class IAmTheAntivirus {
             frame.pack();
             frame.setLocationRelativeTo(null);
             currentMenu.requestFocusInWindow();
-            
             highscoresMenu = new HighScoresMenuViewController(panelDimension);
         });
     }
@@ -138,6 +139,30 @@ public class IAmTheAntivirus {
         });
     }
 
+    public void openSetHighScoresMenu() {
+        
+        Dimension dimension = new Dimension(366, 536);
+        
+        EventQueue.invokeLater(() -> {
+            
+            setHighScoresMenu = new SetHighScoresMenuViewController(dimension);
+            gameView.add(setHighScoresMenu);
+            setHighScoresMenu.setVisible(true);
+            
+        });
+    }
+    
+    public void closeSetHighScoresMenu() {
+        
+        EventQueue.invokeLater(() -> {
+            
+            gameView.remove(setHighScoresMenu);
+            setHighScoresMenu.setVisible(false);
+            displayGameOverMenu();
+            
+        });
+    }
+    
     public void openShopMenu() {
         GameStatus.getInstance().setInShop(true);
         EventQueue.invokeLater(() -> {

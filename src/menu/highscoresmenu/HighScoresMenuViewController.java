@@ -7,18 +7,15 @@ package menu.highscoresmenu;
 
 import controllers.IAmTheAntivirus;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
-import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,7 +24,7 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import menu.AbstractMenuViewController;
 import menu.RetroButton;
-import utilities.FocusTraversalKeysUtilities;
+import models.GameStatus;
 
 /**
  *
@@ -43,6 +40,7 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
     private static final String DEFAULT_NAME = "-----";
     private static final String DEFAULT_SCORE = "00000";
     private static final String HIGHSCORES_FILE_PATH = "src/resources/highscores/highscores.txt";
+    private GameStatus gameStatus = GameStatus.getInstance();
     private List<JLabel> nameLabelList;
     private List<JLabel> scoreLabelList;
 
@@ -53,7 +51,9 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         initComponents();
         initButton();
         initLists();
-        laodHighscores();
+        loadHighScores();
+        setTextLabelHighScores();
+        
     }
      
     /**
@@ -312,19 +312,17 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         scoreLabelList.add(score4Label);
      }
 
-    private void laodHighscores() {
+    private void loadHighScores() {
         try {
             InputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream(HIGHSCORES_FILE_PATH)));
             Scanner in = new Scanner(stream);
             int i = 0;    
             while(i < HIGHSCORES_NUMBER){
                 if(in.hasNext()){
-                    nameLabelList.get(i).setText(in.next());
-                    scoreLabelList.get(i).setText(in.next());
+                    gameStatus.setHighscores(i, in.next(), in.next());
                 }
                 else{
-                    nameLabelList.get(i).setText(DEFAULT_NAME);
-                    scoreLabelList.get(i).setText(DEFAULT_SCORE);
+                    gameStatus.setHighscores(i, DEFAULT_NAME, DEFAULT_SCORE);
                 }
                 i++;
             }
@@ -335,6 +333,16 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         
     }
 
+    private void setTextLabelHighScores() {
+        EventQueue.invokeLater(() -> {
+        for(int i = 0; i < HIGHSCORES_NUMBER; i++){
+            String[] values = gameStatus.getHighscores().get(i).split(";");
+            nameLabelList.get(i).setText(values[0]);
+            scoreLabelList.get(i).setText(values[1]);
+        }
+        });
+    }
+    
     private void initButton() {
             final FocusListener buttonFocusHandler = new FocusListener() {
             @Override

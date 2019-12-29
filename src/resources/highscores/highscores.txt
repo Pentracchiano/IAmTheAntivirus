@@ -1,3 +1,5 @@
-MANU  999999
-GABRY 5000
-PENTR 3
+darmi 2000
+manu3 460
+darmi 200
+manu 142
+ 41
