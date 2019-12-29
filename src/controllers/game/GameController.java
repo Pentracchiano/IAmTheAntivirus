@@ -278,7 +278,6 @@ public class GameController extends Controller implements Runnable {
             public void keyPressed(KeyEvent e) {
                 
                 int keyCode = e.getKeyCode();
-                
                 if ((char) keyCode == '\\' && gameStatus.isInWave()) {
                     shell.setFocusable(true);
                     return;

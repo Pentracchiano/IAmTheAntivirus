@@ -60,7 +60,11 @@ public class Shell extends Component{
 
     public synchronized void digitcommands(char c){
         if((int)c == 8 || (int)c==127){
+            if(this.digitedCommand.length() > 2){
             this.digitedCommand=this.digitedCommand.substring(0, this.digitedCommand.length()-1);  
+            } else {
+                return;
+            }
         }
         else
             this.digitedCommand+=c;
