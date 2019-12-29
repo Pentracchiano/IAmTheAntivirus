@@ -75,6 +75,7 @@ public class GameController extends Controller implements Runnable {
         IAmTheAntivirus.getGameInstance().setMusicOn(true);
 
         while (gameStatus.isInGame() && !Thread.currentThread().isInterrupted()) {
+            refreshKeyboard();
             timeCount = 0; // counts the number of cycles
 
             // set wave
@@ -345,6 +346,11 @@ public class GameController extends Controller implements Runnable {
         }
     }
 
+private void refreshKeyboard(){
+    for(Key k : keyboard.getKeys()){
+        keyboard.release(k.getId());
+    }
+}
 //    private void gameEndedWithHighscores() {
 //        gameStatus.setInGame(false);
 //        graphicsUpdater.interrupt();
