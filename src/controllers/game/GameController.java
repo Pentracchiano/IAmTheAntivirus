@@ -121,7 +121,8 @@ public class GameController extends Controller implements Runnable {
             // wave transition
 
             gameStatus.setInWaveTransition(true);
-
+            
+            gameStatus.addBitcoinsAndScore(1);
             IAmTheAntivirus.getGameInstance().openShopMenu();
 
             /*
@@ -197,7 +198,11 @@ public class GameController extends Controller implements Runnable {
         }
 
         if (base.isInfected()) {
-            this.gameEnded();
+//            if (Integer.parseInt(gameStatus.getHighscores().get(4).split(";",0)[1]) > gameStatus.getScore()){
+                this.gameEnded();
+//            }else{
+//                this.gameEndedWithHighscores();
+//            }
         }
     }
     
@@ -312,7 +317,9 @@ public class GameController extends Controller implements Runnable {
     private void updateStats() {
         for (Stat s : stats) {
             if (s.getId() == "health") {
+                int difference = this.base.getTotalHealth() - this.base.getCurrentHealth();
                 this.base.setTotalHealth(s.getValue());
+                this.base.setCurrentHealth(this.base.getTotalHealth()-difference);
             }
             if (s.getId() == "attack") {
                 for (Key k : this.keyboard.getKeys()) {
@@ -328,8 +335,22 @@ public class GameController extends Controller implements Runnable {
         gameLoop.interrupt();
         IAmTheAntivirus appInstance = IAmTheAntivirus.getGameInstance();
         appInstance.setMusicOn(false);
-
-        IAmTheAntivirus.getGameInstance().displayGameOverMenu();
+        
+        if (Integer.parseInt(gameStatus.getHighscores().get(4).split(";",0)[1]) < gameStatus.getScore()){
+            
+            appInstance.openSetHighScoresMenu();
+            
+        }else{
+            IAmTheAntivirus.getGameInstance().displayGameOverMenu();
+        }
     }
 
+//    private void gameEndedWithHighscores() {
+//        gameStatus.setInGame(false);
+//        graphicsUpdater.interrupt();
+//        gameLoop.interrupt();
+//        IAmTheAntivirus appInstance = IAmTheAntivirus.getGameInstance();
+//        appInstance.setMusicOn(false);
+//        
+//        IAmTheAntivirus.getGameInstance().displaySetHighScoresMenu();    }
 }

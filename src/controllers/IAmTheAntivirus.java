@@ -15,6 +15,8 @@ import javax.swing.JFrame;
 import views.game.GameView;
 import menu.AbstractMenuViewController;
 import menu.gameovermenu.GameOverViewController;
+import menu.highscoresmenu.HighScoresMenuViewController;
+import menu.highscoresmenu.SetHighScoresMenuViewController;
 import menu.mainmenu.MainMenuViewController;
 import menu.shopmenu.ShopMenuViewController;
 import models.GameStatus;
@@ -34,6 +36,8 @@ public class IAmTheAntivirus {
     private GameView gameView;
     private GameController gameController;
     private ShopMenuViewController shopMenu;
+    private SetHighScoresMenuViewController setHighScoresMenu;
+    private HighScoresMenuViewController highscoresMenu;
     //HO MODIFICATO currentMenu da final a non final
     private AbstractMenuViewController currentMenu;
     private static IAmTheAntivirus gameApplication;
@@ -90,8 +94,8 @@ public class IAmTheAntivirus {
             frame.pack();
             frame.setLocationRelativeTo(null);
             gameView.requestFocusInWindow();
-
-            shopMenu = new ShopMenuViewController();
+            highscoresMenu = new HighScoresMenuViewController(panelDimension);
+            shopMenu = new ShopMenuViewController(panelDimension);
         });
     }
 
@@ -101,6 +105,20 @@ public class IAmTheAntivirus {
                 frame.remove(currentMenu);
             }
             currentMenu = new MainMenuViewController(panelDimension);
+            frame.add(currentMenu);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            currentMenu.requestFocusInWindow();
+            highscoresMenu = new HighScoresMenuViewController(panelDimension);
+        });
+    }
+    
+    public void displayHighScoresMenu(){
+        EventQueue.invokeLater(() -> {
+            if (currentMenu != null) {
+                frame.remove(currentMenu);
+            }
+            currentMenu = highscoresMenu;
             frame.add(currentMenu);
             frame.pack();
             frame.setLocationRelativeTo(null);
@@ -121,11 +139,34 @@ public class IAmTheAntivirus {
         });
     }
 
+    public void openSetHighScoresMenu() {
+        
+        EventQueue.invokeLater(() -> {
+            
+            setHighScoresMenu = new SetHighScoresMenuViewController(panelDimension);
+            gameView.add(setHighScoresMenu);
+            setHighScoresMenu.setVisible(true);
+            
+        });
+    }
+    
+    public void closeSetHighScoresMenu() {
+        
+        EventQueue.invokeLater(() -> {
+            
+            gameView.remove(setHighScoresMenu);
+            setHighScoresMenu.setVisible(false);
+            displayGameOverMenu();
+            
+        });
+    }
+    
     public void openShopMenu() {
         GameStatus.getInstance().setInShop(true);
         EventQueue.invokeLater(() -> {
-            shopMenu.setVisible(true);
+            
             gameView.add(shopMenu);
+            shopMenu.setVisible(true);
 
         });
     }

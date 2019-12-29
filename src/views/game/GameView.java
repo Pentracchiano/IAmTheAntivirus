@@ -14,7 +14,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -71,11 +73,14 @@ public class GameView extends View {
     private Set<Command> commands;
 
     public GameView() {
+        this.setLayout(new GridLayout());
         initView();
     }
 
     private void initView() {
         commands = GameStatus.getInstance().getCommands();
+
+
         base = new Base(0, 0, GameStatus.getInstance().getDefaultMaxHealth());
 
         setBackground(Color.GRAY);

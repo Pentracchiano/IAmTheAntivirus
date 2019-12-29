@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import menu.highscoresmenu.HighScoresMenuViewController;
 import models.shop.Stat;
 import models.sprites.behaviors.Command;
 
@@ -24,9 +25,10 @@ public class GameStatus {
     private boolean inGame;
     private boolean inWave;
     private boolean inShop;
+    private boolean inHighScore;
     private boolean inWaveTransition;
     private final List<Stat> stats = new ArrayList<>();
-    
+    private List<String> highscores = new ArrayList<>();
     
     // the number of the current wave
     private int currentWaveNumber;
@@ -68,10 +70,16 @@ public class GameStatus {
         this.inShop = false;
         this.inWaveTransition = false;
         this.currentWaveNumber = 0;
+
         commands = new HashSet<>();
-        
-        this.stats.add(new Stat("health","Max Health",DEFAULT_COST,DEFAULT_MAX_HEALTH,"Next max health value: "));
+   
+        this.stats.add(new Stat("health","Health",DEFAULT_COST,DEFAULT_MAX_HEALTH,"Next max health value: "));
+
         this.stats.add(new Stat("attack","Attack",DEFAULT_COST,DEFAULT_ATTACK,"Next attack value: "));
+        
+        for(int i = 0; i < 5; i++){
+            this.highscores.add("-----;000");
+        }
     }
 
     public synchronized List<Stat> getStats() {
@@ -85,6 +93,7 @@ public class GameStatus {
     public synchronized void addCommand(Command command){
         this.commands.add(command);
     }
+
 
     public synchronized static GameStatus getInstance() {
         if(GameStatus.instance == null) {
@@ -185,6 +194,17 @@ public class GameStatus {
         return DEFAULT_MAX_HEALTH;
     }
 
+    public synchronized List<String> getHighscores() {
+        return highscores;
+    }
+
+    public synchronized void setHighscores(int i, String name, String score) {
+        this.highscores.set(i, name + ";" + score);
+    }
+
+
+    
+    
     @Override
     public String toString() {
         return "GameStatus{" + "inGame=" + inGame + ", inWave=" + inWave + ", inShop=" + inShop + ", inWaveTransition=" + inWaveTransition + ", stats=" + stats + ", currentWaveNumber=" + currentWaveNumber + ", score=" + score + ", bitcoins=" + bitcoins + ", multiplier=" + multiplier + ", MAX_MULTIPLIER=" + MAX_MULTIPLIER + ", consecutiveHits=" + consecutiveHits + ", HITS_PER_MULTIPLIER=" + HITS_PER_MULTIPLIER + '}';

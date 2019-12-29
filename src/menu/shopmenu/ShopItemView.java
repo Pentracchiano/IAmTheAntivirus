@@ -7,9 +7,14 @@ package menu.shopmenu;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import menu.RetroButton;
 import models.shop.Stat;
+import utilities.ImageUtilities;
 
 /**
  *
@@ -24,6 +29,10 @@ public class ShopItemView extends javax.swing.JPanel {
     private String name;
     private Stat stat;
     
+    private Image bitcoinImage;
+    
+    private static final String BITCOIN_IMAGE_PATH = "src/resources/bitcoin.png";
+    
     public ShopItemView(Stat stat) {
         initComponents();
         this.stat = stat;
@@ -31,6 +40,9 @@ public class ShopItemView extends javax.swing.JPanel {
         this.descriptionLabel.setText(stat.getDescription());
         this.nextValueLabel.setText(Integer.toString(stat.getNextValue()));
         this.nameLabel.setText(stat.getName());
+        this.nameLabel.setFont(new Font("Minecraft", Font.PLAIN, 30));
+        this.bitcoinImage = ImageUtilities.loadImageFromPath(BITCOIN_IMAGE_PATH).getScaledInstance(30, -1, Image.SCALE_DEFAULT);
+        this.costLabel.setIcon(new ImageIcon(bitcoinImage));
     }
 
     public Stat getStat() {
@@ -80,6 +92,12 @@ public class ShopItemView extends javax.swing.JPanel {
         this.progressBar.increaseProgression();
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+    }
+    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -103,13 +121,14 @@ public class ShopItemView extends javax.swing.JPanel {
 
         costLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         costLabel.setForeground(new java.awt.Color(255, 204, 0));
+        costLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         costLabel.setText("500");
 
-        descriptionLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        descriptionLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         descriptionLabel.setForeground(new java.awt.Color(255, 255, 255));
         descriptionLabel.setText("Increase your max health to:");
 
-        nextValueLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        nextValueLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         nextValueLabel.setForeground(java.awt.Color.green);
         nextValueLabel.setText("50");
 
@@ -147,17 +166,18 @@ public class ShopItemView extends javax.swing.JPanel {
                 .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(descriptionLabel)
+                        .addGap(5, 5, 5)
+                        .addComponent(nextValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
                         .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(9, 9, 9)
                         .addComponent(plusButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(descriptionLabel)
-                        .addGap(5, 5, 5)
-                        .addComponent(nextValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(89, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,7 +190,7 @@ public class ShopItemView extends javax.swing.JPanel {
                     .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(plusButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(9, 9, 9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(nextValueLabel)))

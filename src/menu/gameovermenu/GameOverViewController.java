@@ -16,9 +16,12 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.JDialog;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import menu.AbstractMenuViewController;
 import menu.RetroButton;
+import utilities.FocusTraversalKeysUtilities;
 import utilities.FontUtilities;
 
 /**
@@ -54,9 +57,8 @@ public class GameOverViewController extends AbstractMenuViewController {
         
        
         initRetroButtons();
-        changeFocusTraversalKeys();
-       
-       
+        FocusTraversalKeysUtilities.changeFocusTraversalKeys(this);
+        
     }
     
     private void initRetroButtons(){
@@ -79,19 +81,6 @@ public class GameOverViewController extends AbstractMenuViewController {
         
   
     }
-    
-    private void changeFocusTraversalKeys() {
-        Set<KeyStroke> forwardKeys = new HashSet<>();
-        forwardKeys.add(KeyStroke.getKeyStroke("DOWN"));
-        forwardKeys.add(KeyStroke.getKeyStroke("TAB"));
-        
-        Set<KeyStroke> backwardKeys = new HashSet<>();
-        backwardKeys.add(KeyStroke.getKeyStroke("UP"));
-        
-        this.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, forwardKeys);
-        this.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, backwardKeys);
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -101,10 +90,34 @@ public class GameOverViewController extends AbstractMenuViewController {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDialog1 = new javax.swing.JDialog();
+        jDialog2 = new javax.swing.JDialog();
         subTitle = new javax.swing.JLabel();
         retryButton = new menu.RetroButton();
         title = new javax.swing.JLabel();
         backToMainMenuButton = new menu.RetroButton();
+
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
+        jDialog1.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jDialog2Layout = new javax.swing.GroupLayout(jDialog2.getContentPane());
+        jDialog2.getContentPane().setLayout(jDialog2Layout);
+        jDialog2Layout.setHorizontalGroup(
+            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jDialog2Layout.setVerticalGroup(
+            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
 
         setBackground(new java.awt.Color(0, 0, 255));
         addFocusListener(new java.awt.event.FocusAdapter() {
@@ -172,8 +185,7 @@ public class GameOverViewController extends AbstractMenuViewController {
     }// </editor-fold>//GEN-END:initComponents
 
     private void retryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_retryButtonActionPerformed
-       
-
+  
     }//GEN-LAST:event_retryButtonActionPerformed
 
     private void backToMainMenuButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_backToMainMenuButtonKeyPressed
@@ -197,6 +209,8 @@ public class GameOverViewController extends AbstractMenuViewController {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private menu.RetroButton backToMainMenuButton;
+    private javax.swing.JDialog jDialog1;
+    private javax.swing.JDialog jDialog2;
     private menu.RetroButton retryButton;
     private javax.swing.JLabel subTitle;
     private javax.swing.JLabel title;
