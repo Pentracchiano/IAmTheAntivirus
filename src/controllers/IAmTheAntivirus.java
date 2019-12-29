@@ -141,11 +141,9 @@ public class IAmTheAntivirus {
 
     public void openSetHighScoresMenu() {
         
-        Dimension dimension = new Dimension(366, 536);
-        
         EventQueue.invokeLater(() -> {
             
-            setHighScoresMenu = new SetHighScoresMenuViewController(dimension);
+            setHighScoresMenu = new SetHighScoresMenuViewController(panelDimension);
             gameView.add(setHighScoresMenu);
             setHighScoresMenu.setVisible(true);
             
