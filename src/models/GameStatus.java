@@ -6,8 +6,11 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import models.shop.Stat;
+import models.sprites.behaviors.Command;
 
 /**
  *
@@ -57,6 +60,7 @@ public class GameStatus {
     private final int DEFAULT_MAX_HEALTH = 20;
     private final int DEFAULT_ATTACK = 10;
     private final int DEFAULT_COST = 50;
+    private Set<Command> commands;
 
     private GameStatus() {
         this.inGame = false;
@@ -64,7 +68,7 @@ public class GameStatus {
         this.inShop = false;
         this.inWaveTransition = false;
         this.currentWaveNumber = 0;
-        
+        commands = new HashSet<>();
         
         this.stats.add(new Stat("health","Max Health",DEFAULT_COST,DEFAULT_MAX_HEALTH,"Next max health value: "));
         this.stats.add(new Stat("attack","Attack",DEFAULT_COST,DEFAULT_ATTACK,"Next attack value: "));
@@ -73,7 +77,14 @@ public class GameStatus {
     public synchronized List<Stat> getStats() {
         return stats;
     }
+
+    public synchronized Set<Command> getCommands() {
+        return commands;
+    }
     
+    public synchronized void addCommand(Command command){
+        this.commands.add(command);
+    }
 
     public synchronized static GameStatus getInstance() {
         if(GameStatus.instance == null) {

@@ -20,15 +20,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.KeyStroke;
 import models.sprites.Base;
 import models.sprites.Firewall;
 import models.sprites.Keyboard;
+import models.sprites.Sprite;
 import models.sprites.Virus;
 import models.sprites.behaviors.Command;
 import utilities.ImageUtilities;
@@ -76,7 +75,7 @@ public class GameView extends View {
     }
 
     private void initView() {
-        commands = new HashSet<>();
+        commands = GameStatus.getInstance().getCommands();
         base = new Base(0, 0, GameStatus.getInstance().getDefaultMaxHealth());
 
         setBackground(Color.GRAY);
@@ -92,7 +91,7 @@ public class GameView extends View {
         keyboard = new Keyboard(37, 275);
         firewall = new Firewall(37,20);
         
-        commands.add(firewall);
+        GameStatus.getInstance().addCommand(firewall);
 
         this.gameStatus = GameStatus.getInstance();
         this.shell= new Shell(commands);
@@ -130,7 +129,7 @@ public class GameView extends View {
                 }
             }
         }
-        drawFirewall(g);
+        drawCommands(g);
         
         drawWaveStatus(g);
         Toolkit.getDefaultToolkit().sync();
@@ -268,11 +267,15 @@ public class GameView extends View {
             g.drawImage(flame,850, 85, this);
     }
     
-    public void drawFirewall(Graphics g){
+    public void drawCommands(Graphics g){
         
-        g.drawImage(firewall.getImage(), firewall.getX(), firewall.getY(), this);
-            
+        for(Command c: gameStatus.getCommands()){
+            Sprite command = (Sprite) c;
+          g.drawImage(command.getImage(), command.getX(), command.getY(), this);
+        }
     }
+    
+
 
     public Shell getShell() {
         return shell;
