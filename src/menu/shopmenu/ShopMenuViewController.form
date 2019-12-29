@@ -33,6 +33,7 @@
     <Component class="menu.RetroButton" name="nextWaveButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Start next Wave!"/>
+        <Property name="horizontalTextPosition" type="int" value="0"/>
       </Properties>
       <Events>
         <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="nextWaveButtonFocusGained"/>
@@ -41,7 +42,7 @@
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="360" y="640" width="640" height="90"/>
+          <AbsoluteConstraints x="310" y="620" width="640" height="90"/>
         </Constraint>
       </Constraints>
     </Component>
