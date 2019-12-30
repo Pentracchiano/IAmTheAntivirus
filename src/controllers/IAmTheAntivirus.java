@@ -35,6 +35,7 @@ public class IAmTheAntivirus {
     private final JFrame frame;
     private GameView gameView;
     private GameController gameController;
+    
     private ShopMenuViewController shopMenu;
     private SetHighScoresMenuViewController setHighScoresMenu;
     private HighScoresMenuViewController highscoresMenu;

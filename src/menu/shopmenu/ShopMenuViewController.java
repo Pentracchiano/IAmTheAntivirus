@@ -6,8 +6,6 @@
 package menu.shopmenu;
 
 import controllers.IAmTheAntivirus;
-import controllers.game.GameController;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -19,7 +17,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
@@ -38,14 +35,16 @@ import utilities.FocusTraversalKeysUtilities;
  */
 public class ShopMenuViewController extends AbstractMenuViewController {
 
-    private List<ShopItemView> items = new ArrayList<>();
-    private GameStatus gameStatus = GameStatus.getInstance();
+    private final List<ShopItemView> items = new ArrayList<>();
+    private final GameStatus gameStatus = GameStatus.getInstance();
+
 
     private String imagePath = "src/resources/shopBackground.jpg";
     private Image image;
     
     private Image bitcoinImage;
     private static final String BITCOIN_IMAGE_PATH = "src/resources/bitcoin.png";
+
 
     /**
      * Creates new form ShopMenuViewController
@@ -78,6 +77,7 @@ public class ShopMenuViewController extends AbstractMenuViewController {
         }
 
         for (ShopItemView s : items) {
+
             s.setSize(s.getPreferredSize());
             this.shelfPanel.add(s);
             s.setVisible(true);

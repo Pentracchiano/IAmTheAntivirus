@@ -120,7 +120,6 @@ public class GameController extends Controller implements Runnable {
                 timeCount++;
             }
             // wave transition
-
             gameStatus.setInWaveTransition(true);
             
             gameStatus.addBitcoinsAndScore(1);
