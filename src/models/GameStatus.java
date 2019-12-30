@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import menu.highscoresmenu.HighScoresMenuViewController;
 import models.shop.Stat;
 import models.sprites.behaviors.Command;
 
@@ -25,10 +24,9 @@ public class GameStatus {
     private boolean inGame;
     private boolean inWave;
     private boolean inShop;
-    private boolean inHighScore;
     private boolean inWaveTransition;
     private final List<Stat> stats = new ArrayList<>();
-    private List<String> highscores = new ArrayList<>();
+    private final List<String> highscores = new ArrayList<>();
     
     // the number of the current wave
     private int currentWaveNumber;
@@ -59,10 +57,27 @@ public class GameStatus {
     private int consecutiveHits = 0;
     public final int HITS_PER_MULTIPLIER = 3;
     
-    private final int DEFAULT_MAX_HEALTH = 50;
-    private final int DEFAULT_ATTACK = 10;
-    private final int DEFAULT_COST = 50;
-    private Set<Command> commands;
+    private final static int BASE_MAX_HEALTH = 40;
+    private final static int BASE_ATTACK = 15;
+    
+    private final static int BASE_COST = 150;
+    private final static double COST_MULTIPLIER = 1.8;
+    
+    // The multipliers are used to balance the differences between the attributes.
+    // For example, a set fo standard value for the attributes is:
+    // health = 25, attack = 5, speed = 1
+    // all the attributes have the same importance, so, when the difficulty, the value and the growth of the attributes are evaluated, the values have to be balanced.
+    // So for the difficulty, each attribute si multiplied for the inverse of the value of the corresponding multiplier.
+    // For example the speed is multiplied by 5 and the health by 2
+    // In this way the attributes are more balanced.
+    
+    // thiese multipliers are also used for deciding the price of an item in the shop
+    public final static double VIRUS_HEALTH_MULTIPLIER = 0.5;
+    public final static double ENEMY_ATTACK_MULTIPLIER = 0.3;
+    public final static double VIRUS_SPEED_MULTIPLIER = 0.1;
+    
+    
+    private final Set<Command> commands;
 
     private GameStatus() {
         this.inGame = false;
@@ -73,9 +88,9 @@ public class GameStatus {
 
         commands = new HashSet<>();
    
-        this.stats.add(new Stat("health","Health",DEFAULT_COST,DEFAULT_MAX_HEALTH,"Next max health value: "));
+        this.stats.add(new Stat("health", "Health", "Next max health value: ", BASE_MAX_HEALTH, BASE_COST, ENEMY_ATTACK_MULTIPLIER, COST_MULTIPLIER));
 
-        this.stats.add(new Stat("attack","Attack",DEFAULT_COST,DEFAULT_ATTACK,"Next attack value: "));
+        this.stats.add(new Stat("attack", "Attack", "Next attack value: ", BASE_ATTACK, BASE_COST, VIRUS_HEALTH_MULTIPLIER, COST_MULTIPLIER));
         
         for(int i = 0; i < 5; i++){
             this.highscores.add("-----;000");
@@ -191,7 +206,7 @@ public class GameStatus {
     }
 
     public synchronized int getDefaultMaxHealth() {
-        return DEFAULT_MAX_HEALTH;
+        return BASE_MAX_HEALTH;
     }
 
     public synchronized List<String> getHighscores() {

@@ -19,7 +19,6 @@ import behaviors.UpwardDirectionGenerator;
  */
 public class Worm extends Virus {
     private static final String DEFAULT_IMAGE_PATH = "src/resources/worm_50.png";
-    private static final int BASE_BITCOINS_VALUE = Virus.BASE_BITCOINS_VALUE * 5;
     
     private static final int BASE_TOTAL_HEALTH = 50;
     private static final int BASE_ATTACK = 5;
@@ -34,20 +33,12 @@ public class Worm extends Virus {
      */
     public Worm(int x, int y, int level) {
         super(x, y, DEFAULT_IMAGE_PATH, BASE_TOTAL_HEALTH, BASE_SPEED, BASE_ATTACK, level, new UpwardDirectionGenerator());
-        this.setBitcoinsValue(BASE_BITCOINS_VALUE); // maybe base * level in the future
     }
     
     @Override
     public String toString() {
         return "Worm: " + super.toString();
-    }
-
-    @Override
-    public int getBaseBitcoinsValue() {
-        return BASE_BITCOINS_VALUE;
-    }
-    
-    
+    }   
     
 }
 
