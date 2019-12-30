@@ -20,7 +20,7 @@ public class Shell extends Component{
     private final String DEFAULT_STRING= ":/" ;
     private GameStatus gamestatus;
 
-    public Shell(Set<Command> commands) {
+    public Shell() {
         this.setFocusable(false);
         this.setText(DEFAULT_STRING);
         this.gamestatus = GameStatus.getInstance() ;    

@@ -99,7 +99,7 @@ public class GameView extends View {
         GameStatus.getInstance().addCommand(firewall);
 
         this.gameStatus = GameStatus.getInstance();
-        this.shell= new Shell(commands);
+        this.shell= new Shell();
         this.heartImage = ImageUtilities.loadImageFromPath(HEART_IMAGE_PATH);
         this.healthBarImage = ImageUtilities.loadImageFromPath(HEALTH_BAR_IMAGE_PATH);
         this.healthBordersImage = ImageUtilities.loadImageFromPath(HEALTH_BORDERS_IMAGE_PATH);
