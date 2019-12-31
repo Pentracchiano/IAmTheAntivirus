@@ -12,9 +12,11 @@ import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import models.shop.Stat;
+import models.sprites.BaseHealer;
 import models.sprites.Firewall;
 import models.sprites.Keyboard.Key;
 import utilities.ThreadUtilities;
@@ -36,12 +38,16 @@ public class GameController extends Controller implements Runnable {
     private final static int GAME_DELAY_MS = 20;
     private final static int GRAPHICS_DELAY_MS = 20;
     private final static int WAVE_DELAY_MS = 3000;
-    
+    //time counts, not milliseconds. 250*20 = 5000 ms = 5s
+    private final static int HEALER_DELAY_TC = 250;
 
     private final GameStatus gameStatus;
 
     private final WaveManager waveManager;
     private Wave wave;
+    private final BaseHealerManager baseHealerManager;
+    private BaseHealer baseHealer;
+    private final ReentrantLock baseHealerLock;
 
     private List<Stat> stats;
 
@@ -55,13 +61,14 @@ public class GameController extends Controller implements Runnable {
         int leftLimit = keyboard.getKey('1').getX();
         int rightLimit = keyboard.getKey('P').getX() + keyboard.getKey('P').getWidth() - leftLimit;
         this.waveManager = new WaveManager(leftLimit, rightLimit, view.getHeight());
+        this.baseHealerManager = new BaseHealerManager();
         this.shell = view.getShell();
         this.gameLoop = new Thread(this);
         this.graphicsUpdater = new Thread(new ViewUpdater(view, GRAPHICS_DELAY_MS));
+        this.baseHealerLock = view.getBaseHealerLock();
 
         this.stats = gameStatus.getStats();
         this.updateStats();
-        
 
         this.initListeners();
     }
@@ -97,9 +104,15 @@ public class GameController extends Controller implements Runnable {
 
                 // spawn and move
                 synchronized (wave) {
-                    updateWave(timeCount);
-                    checkFirewallCollision();
-                    checkBaseCollision();
+                    baseHealerLock.lock();
+                    try {
+                        updateWave(timeCount);
+                        updateBaseHealer(timeCount);
+                        checkFirewallCollision();
+                        checkBaseCollision();
+                    } finally {
+                        baseHealerLock.unlock();
+                    }
                     if (Thread.currentThread().isInterrupted()) {
                         return;
                     }
@@ -121,7 +134,7 @@ public class GameController extends Controller implements Runnable {
             }
             // wave transition
             gameStatus.setInWaveTransition(true);
-            
+
             gameStatus.addBitcoinsAndScore(1);
             IAmTheAntivirus.getGameInstance().openShopMenu();
 
@@ -141,6 +154,28 @@ public class GameController extends Controller implements Runnable {
             ThreadUtilities.sleep(WAVE_DELAY_MS);
 
             gameStatus.setInWaveTransition(false);
+        }
+    }
+
+    private void updateBaseHealer(int timeCount) {
+        //System.out.println("Updating base healer"); //DEBUG
+        if (baseHealer == null) {
+            //try to get one, if it's time to
+            if (timeCount > 0 && (timeCount % HEALER_DELAY_TC) == 0) {
+                baseHealer = baseHealerManager.getBaseHealer(keyboard.getBounds());
+                // DEBUG
+                if (baseHealer != null) {
+                    System.out.println("BaseHealer creato");
+                }
+                // END DEBUG
+                GameView gameView = (GameView) this.view;
+                gameView.setBaseHealer(baseHealer);
+            }
+        } else {
+            //and healer is already in game, so move it
+
+            baseHealer.move(keyboard.getBounds());
+
         }
     }
 
@@ -197,26 +232,35 @@ public class GameController extends Controller implements Runnable {
             }
         }
 
+        if (baseHealer != null) {
+            if (checkCollision(baseBounds, baseHealer.getBounds())) {
+                baseHealer.heal(base);
+                baseHealer = null;
+                GameView gameView = (GameView) this.view;
+                gameView.setBaseHealer(null);
+            }
+        }
+
         if (base.isInfected()) {
 //            if (Integer.parseInt(gameStatus.getHighscores().get(4).split(";",0)[1]) > gameStatus.getScore()){
-                this.gameEnded();
+            this.gameEnded();
 //            }else{
 //                this.gameEndedWithHighscores();
 //            }
         }
     }
-    
-    private void checkFirewallCollision(){
-        
-        if(!firewall.isActive())
+
+    private void checkFirewallCollision() {
+
+        if (!firewall.isActive()) {
             return;
+        }
         synchronized (this.wave) {
             Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
             boolean missedViruses = true;
             for (Virus virus : aliveSpawnedViruses) {
                 if (checkCollision(firewall.getBounds(), virus.getBounds())) {
-                    
-                    
+
                     virus.damage(virus.getCurrentHealth());
                     gameStatus.incrementConsecutiveHits();
                     missedViruses = false;
@@ -224,6 +268,18 @@ public class GameController extends Controller implements Runnable {
             }
             if (missedViruses) {
                 //gameStatus.resetConsecutiveHits();
+            }
+        }
+
+        if (this.baseHealer != null) {
+            //it's surely alive, because this method is called after updateHealer method
+            System.out.println("Detecting firewall collision"); //DEBUG
+            if (checkCollision(firewall.getBounds(), baseHealer.getBounds())) {
+                //it's been killed, so the base must be damaged
+                base.damage(baseHealer.getAttack());
+                baseHealer = null;
+                GameView gameView = (GameView) this.view;
+                gameView.setBaseHealer(null);
             }
         }
     }
@@ -241,6 +297,19 @@ public class GameController extends Controller implements Runnable {
             }
             if (missedViruses) {
                 gameStatus.resetConsecutiveHits();
+            }
+        }
+        if (baseHealer != null) {
+            baseHealerLock.lock();
+            try {
+                if (checkCollision(key.getBounds(), baseHealer.getBounds())) {
+                    base.damage(baseHealer.getAttack());
+                    baseHealer = null;
+                    GameView gameView = (GameView) this.view;
+                    gameView.setBaseHealer(null);
+                }
+            } finally {
+                baseHealerLock.unlock();
             }
         }
     }
@@ -272,10 +341,10 @@ public class GameController extends Controller implements Runnable {
         });
 
         view.addKeyListener(new KeyAdapter() {
-           
+
             @Override
             public void keyPressed(KeyEvent e) {
-                
+
                 int keyCode = e.getKeyCode();
                 if ((char) keyCode == '\\' && gameStatus.isInWave()) {
                     shell.setFocusable(true);
@@ -285,40 +354,40 @@ public class GameController extends Controller implements Runnable {
                     if (keyCode == 10) {
                         shell.setFocusable(false);
                         shell.launchCommand();
-                        
-                        
+
                         return;
                     }
                     shell.digitcommands((char) keyCode);
                     return;
                 }
-                if(gameStatus.isInWave()){
+                if (gameStatus.isInWave()) {
                     try {
                         keyboard.press((char) keyCode);
                         checKeyCollision(keyboard.getKey((char) keyCode));
-                    } catch (KeyNotFoundException knfe) { }
+                    } catch (KeyNotFoundException knfe) {
+                    }
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 int keyCode = e.getKeyCode();
-                
+
                 try {
                     keyboard.release((char) keyCode);
-                } catch (KeyNotFoundException knfe) {}
-                
+                } catch (KeyNotFoundException knfe) {
+                }
+
             }
         });
     }
-
 
     private void updateStats() {
         for (Stat s : stats) {
             if (s.getId() == "health") {
                 int difference = this.base.getTotalHealth() - this.base.getCurrentHealth();
                 this.base.setTotalHealth(s.getValue());
-                this.base.setCurrentHealth(this.base.getTotalHealth()-difference);
+                this.base.setCurrentHealth(this.base.getTotalHealth() - difference);
             }
             if (s.getId() == "attack") {
                 for (Key k : this.keyboard.getKeys()) {
@@ -334,21 +403,21 @@ public class GameController extends Controller implements Runnable {
         gameLoop.interrupt();
         IAmTheAntivirus appInstance = IAmTheAntivirus.getGameInstance();
         appInstance.setMusicOn(false);
-        
-        if (Integer.parseInt(gameStatus.getHighscores().get(4).split(";",0)[1]) < gameStatus.getScore()){
-            
+
+        if (Integer.parseInt(gameStatus.getHighscores().get(4).split(";", 0)[1]) < gameStatus.getScore()) {
+
             appInstance.openSetHighScoresMenu();
-            
-        }else{
+
+        } else {
             IAmTheAntivirus.getGameInstance().displayGameOverMenu();
         }
     }
 
-private void refreshKeyboard(){
-    for(Key k : keyboard.getKeys()){
-        keyboard.release(k.getId());
+    private void refreshKeyboard() {
+        for (Key k : keyboard.getKeys()) {
+            keyboard.release(k.getId());
+        }
     }
-}
 //    private void gameEndedWithHighscores() {
 //        gameStatus.setInGame(false);
 //        graphicsUpdater.interrupt();

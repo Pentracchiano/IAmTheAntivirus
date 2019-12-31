@@ -23,10 +23,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import models.sprites.Base;
+import models.sprites.BaseHealer;
 import models.sprites.Firewall;
 import models.sprites.Keyboard;
 import models.sprites.Sprite;
@@ -69,8 +71,11 @@ public class GameView extends View {
     private Image enemyImage;
     private Image bitcoinImage;
     private Image flame;
-    
+
     private Set<Command> commands;
+
+    private ReentrantLock baseHealerLock;
+    private BaseHealer baseHealer;
 
     public GameView() {
         this.setLayout(new GridLayout());
@@ -80,6 +85,7 @@ public class GameView extends View {
     private void initView() {
         commands = GameStatus.getInstance().getCommands();
 
+        baseHealerLock = new ReentrantLock();
 
         base = new Base(0, 0, GameStatus.getInstance().getDefaultMaxHealth());
 
@@ -94,12 +100,12 @@ public class GameView extends View {
         setPreferredSize(dimension);
 
         keyboard = new Keyboard(37, 275);
-        firewall = new Firewall(37,20);
-        
+        firewall = new Firewall(37, 20);
+
         GameStatus.getInstance().addCommand(firewall);
 
         this.gameStatus = GameStatus.getInstance();
-        this.shell= new Shell();
+        this.shell = new Shell();
         this.heartImage = ImageUtilities.loadImageFromPath(HEART_IMAGE_PATH);
         this.healthBarImage = ImageUtilities.loadImageFromPath(HEALTH_BAR_IMAGE_PATH);
         this.healthBordersImage = ImageUtilities.loadImageFromPath(HEALTH_BORDERS_IMAGE_PATH);
@@ -120,13 +126,12 @@ public class GameView extends View {
         g.drawImage(backgroundImage, 0, 0, this);
 
         drawKeyboard(g);
-        
 
         // the draws must be called in this order, otherwise the base will cover other drawings
         synchronized (base) {
             drawBase(g);
         }
-        
+
         if (currentWave != null) {
             if (!gameStatus.isInWaveTransition()) {
                 synchronized (currentWave) {
@@ -134,10 +139,26 @@ public class GameView extends View {
                 }
             }
         }
+
+        baseHealerLock.lock();
+        try {
+            // need to check for null value after acquiring the lock, otherwise
+            // the other thread could, in the meanwhile, nullify the object
+            if (baseHealer != null) {
+                drawBaseHealer(g);
+            }
+        } finally {
+            baseHealerLock.unlock();
+        }
+
         drawCommands(g);
-        
+
         drawWaveStatus(g);
         Toolkit.getDefaultToolkit().sync();
+    }
+
+    private void drawBaseHealer(Graphics g) {
+        g.drawImage(baseHealer.getImage(), baseHealer.getX(), baseHealer.getY(), this);
     }
 
     private void drawWaveStatus(Graphics g) {
@@ -258,29 +279,28 @@ public class GameView extends View {
         g.drawImage(healthBordersImage, BASE_SPAN_X + HEART_SPAN_X, BASE_SPAN_Y, this);
 
         int width = healthBarImage.getWidth(this) * base.getCurrentHealth() / base.getTotalHealth();
-        
+
         g.drawImage(healthBarImage, BASE_SPAN_X + HEART_SPAN_X, BASE_SPAN_Y, width, healthBarImage.getHeight(this), this);
-        
+
         g.drawImage(bitcoinImage, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X, BASE_SPAN_Y, this);
         drawFormattedString(g, this.shell.getText(), base.getX() + 200, base.getY() + 130, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
-        
+
         String multiplier = "x" + gameStatus.getMultiplier();
         drawFormattedString(g, multiplier, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X - 10, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT.deriveFont((float) 18));
         String bitcoins = String.valueOf(gameStatus.getBitcoins());
         drawFormattedString(g, bitcoins, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X + 15, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
-        if(!firewall.isInCoolDown())
-            g.drawImage(flame,850, 85, this);
-    }
-    
-    public void drawCommands(Graphics g){
-        
-        for(Command c: gameStatus.getCommands()){
-            Sprite command = (Sprite) c;
-          g.drawImage(command.getImage(), command.getX(), command.getY(), this);
+        if (!firewall.isInCoolDown()) {
+            g.drawImage(flame, 850, 85, this);
         }
     }
-    
 
+    public void drawCommands(Graphics g) {
+
+        for (Command c : gameStatus.getCommands()) {
+            Sprite command = (Sprite) c;
+            g.drawImage(command.getImage(), command.getX(), command.getY(), this);
+        }
+    }
 
     public Shell getShell() {
         return shell;
@@ -292,11 +312,19 @@ public class GameView extends View {
 
     public Base getBase() {
         return base;
-        
+
     }
-    
-    public Firewall getFirewall(){
+
+    public Firewall getFirewall() {
         return firewall;
+    }
+
+    public ReentrantLock getBaseHealerLock() {
+        return baseHealerLock;
+    }
+
+    public void setBaseHealer(BaseHealer baseHealer) {
+        this.baseHealer = baseHealer;
     }
 
     @Override

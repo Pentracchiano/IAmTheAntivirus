@@ -5,13 +5,14 @@
  */
 package models.sprites;
 
+import models.sprites.behaviors.Curable;
 import models.sprites.behaviors.Damageable;
 
 /**
  *
  * @author Gerardo
  */
-public class Base extends Sprite implements Damageable{
+public class Base extends Sprite implements Damageable, Curable{
     private int totalHealth;
     private int currentHealth;
     private static final String DEFAULT_IMAGE_PATH = "src/resources/base.png";
@@ -27,6 +28,7 @@ public class Base extends Sprite implements Damageable{
         this.currentHealth = totalHealth;
     }
 
+    @Override
     public int getCurrentHealth() {
         return currentHealth;
     }
@@ -36,6 +38,7 @@ public class Base extends Sprite implements Damageable{
     }
 
 
+    @Override
     public void setCurrentHealth(int health) {
         this.currentHealth = health;
     }
