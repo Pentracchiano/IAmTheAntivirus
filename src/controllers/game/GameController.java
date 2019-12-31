@@ -75,7 +75,8 @@ public class GameController extends Controller implements Runnable {
         IAmTheAntivirus.getGameInstance().setMusicOn(true);
 
         while (gameStatus.isInGame() && !Thread.currentThread().isInterrupted()) {
-            refreshKeyboard();
+            
+            
             timeCount = 0; // counts the number of cycles
 
             // set wave
@@ -121,7 +122,7 @@ public class GameController extends Controller implements Runnable {
             }
             // wave transition
             gameStatus.setInWaveTransition(true);
-            
+            refreshKeyboard();
             gameStatus.addBitcoinsAndScore(1);
             IAmTheAntivirus.getGameInstance().openShopMenu();
 
