@@ -38,19 +38,32 @@ public class GameController extends Controller implements Runnable {
     private final static int GAME_DELAY_MS = 20;
     private final static int GRAPHICS_DELAY_MS = 20;
     private final static int WAVE_DELAY_MS = 3000;
+    /*
+    * The interval, in time counts, that passes between two subsequent attempts
+    * to create a BaseHealer.
+    */
     //time counts, not milliseconds. 350*20 = 7000 ms = 7s
     private final static int HEALER_DELAY_TC = 350;
+    private final BaseHealerManager baseHealerManager;
+    private BaseHealer baseHealer;
+    /*
+    * Lock for synchronizing concurrent access to the BaseHealer between this
+    * controller and the GameView.
+    * Since the healer is nullified when it reaches the base or it's killed, an
+    * auxiliary lock is needed to syncrhonize on it, to avoid 
+    * NullPointerException on synchronized(healer) calls, because the healer 
+    * could be nullified inside the block, so on exiting the block, and then
+    * releasing the lock, if the healer has been nullified, we could get an
+    * exception.
+    */
+    private final ReentrantLock baseHealerLock;
+    private int maxWaveHealth;
 
     private final GameStatus gameStatus;
 
     private final WaveManager waveManager;
     private Wave wave;
-
-    private final BaseHealerManager baseHealerManager;
-    private BaseHealer baseHealer;
-    private final ReentrantLock baseHealerLock;
-    private int maxWaveHealth;
-
+    
     private List<Stat> stats;
 
     public GameController(GameView view) throws KeyNotFoundException {
@@ -86,9 +99,13 @@ public class GameController extends Controller implements Runnable {
         while (gameStatus.isInGame() && !Thread.currentThread().isInterrupted()) {
             refreshKeyboard();
             timeCount = 0; // counts the number of cycles
-
+            
+            /* 
+            * Get the max health of the base for the current wave, needed for
+            * the creation of the BaseHealer.
+            */
             this.maxWaveHealth = base.getTotalHealth();
-            System.out.println("health: " + this.maxWaveHealth); // DEBUG
+            //System.out.println("health: " + this.maxWaveHealth); // DEBUG
 
             // set wave
             gameStatus.setCurrentWaveNumber(gameStatus.getCurrentWaveNumber() + 1);
@@ -140,8 +157,11 @@ public class GameController extends Controller implements Runnable {
             // wave transition
             gameStatus.setInWaveTransition(true);
 
-            // remove eventually spawned base healers (otherwise they will 
-            // persist through waves
+            /*
+            * remove eventually spawned base healers that have neither been
+            * kill nor have reached the base (otherwise they will persist 
+            * through waves).
+            */
             baseHealer = null;
             nullifyHealerInView();
 
@@ -170,26 +190,27 @@ public class GameController extends Controller implements Runnable {
     private void updateBaseHealer(int timeCount) {
         //System.out.println("Updating base healer"); //DEBUG
         if (baseHealer == null) {
-            //try to get one, if it's time to
+            //try to get one, if it's time to (attempts to get a BaseHeaeler
+            //every HEALER_DELAY_TC time counts.
             if (timeCount > 0 && (timeCount % HEALER_DELAY_TC) == 0) {
                 baseHealer = baseHealerManager.getBaseHealer(keyboard.getBounds());
-                // DEBUG
                 if (baseHealer != null) {
                     // maxWaveHealth it's surely set because the call to this function
                     // is executed only after the wave is started (the inner while
                     // in the game loop)
                     baseHealer.setMaxHealth(this.maxWaveHealth);
-                    System.out.println("BaseHealer creato");
+                    System.out.println("BaseHealer creato"); // DEBUG
                 }
-                // END DEBUG
                 nullifyHealerInView();
             }
         } else {
-            //and healer is already in game, so move it
+            //an healer is already in game, so move it
             baseHealer.move(keyboard.getBounds());
         }
     }
-
+    
+    // Nullifies the healer field in the GameView instance, in order to make
+    // it disappear from the screen.
     private void nullifyHealerInView() {
         GameView gameView = (GameView) this.view;
         gameView.setBaseHealer(baseHealer);
