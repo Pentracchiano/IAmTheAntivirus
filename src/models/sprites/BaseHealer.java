@@ -26,6 +26,7 @@ public class BaseHealer extends Sprite implements Healer, Movable{
     private final int ATTACK_MULTIPLIER = 5;
     private final DirectionGenerator directionGenerator;
     private int speed;
+    private int maxHealth;
 
     public BaseHealer(int x, int y, DirectionGenerator directionGenerator, int speed) {
         super(x, y, DEFAULT_IMAGE_PATH);
@@ -37,10 +38,24 @@ public class BaseHealer extends Sprite implements Healer, Movable{
     public int getAttack(){
         return ATTACK_MULTIPLIER * GAME_STATUS.getCurrentWaveNumber();
     }
+    
+    public int getMaxHealth(){
+        return this.maxHealth;
+    }
+    
+    public void setMaxHealth(int maxHealth){
+        this.maxHealth = maxHealth;
+    }
 
     @Override
     public void heal(Curable toHeal) {
-        toHeal.setCurrentHealth(toHeal.getCurrentHealth() + HEALING_MULTIPLIER * GAME_STATUS.getCurrentWaveNumber());
+        int healthIncrement = HEALING_MULTIPLIER * GAME_STATUS.getCurrentWaveNumber();
+        int partialHealth = toHeal.getCurrentHealth() + healthIncrement;
+        int newHealth = partialHealth < this.maxHealth ? partialHealth : this.maxHealth;
+        
+        System.out.println("healer - new health: " + newHealth);
+        
+        toHeal.setCurrentHealth(newHealth);
     }
 
     @Override

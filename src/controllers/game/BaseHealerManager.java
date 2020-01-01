@@ -30,8 +30,8 @@ public class BaseHealerManager {
         if (guess >= healerProbability){
             return null;
         }
-        //Alla 20esima wave diventa speed = 1. Più è bassa la velocità, più è difficile evitarlo.
-        int healerSpeed = (int) (currentWaveNumber < 20 ? floor(20/currentWaveNumber) : 1); 
+        //Alla 14esima wave diventa speed = 1. Più è bassa la velocità, più è difficile evitarlo.
+        int healerSpeed = (int) (currentWaveNumber < 14 ? floor(14/currentWaveNumber) : 1); 
         BaseHealer retVal = new BaseHealer(0, 0, new ObliqueDirectionGenerator(), healerSpeed);
         //externalBoundaries.getX() + externalBoundaries.getWidth() - externalBoundaries.getX() - retVal.getWidth()
         int xLimit = (int) (externalBoundaries.getWidth() - retVal.getWidth());
