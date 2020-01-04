@@ -213,19 +213,17 @@ public class GameController extends Controller implements Runnable {
             return;
         synchronized (this.wave) {
             Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
-            boolean missedViruses = true;
+            
             for (Virus virus : aliveSpawnedViruses) {
                 if (checkCollision(firewall.getBounds(), virus.getBounds())) {
                     
                     
                     virus.damage(virus.getCurrentHealth());
                     gameStatus.incrementConsecutiveHits();
-                    missedViruses = false;
+                   
                 }
             }
-            if (missedViruses) {
-                //gameStatus.resetConsecutiveHits();
-            }
+
         }
     }
 
