@@ -28,7 +28,6 @@ public class Base extends Sprite implements Damageable, Curable{
         this.currentHealth = totalHealth;
     }
 
-    @Override
     public int getCurrentHealth() {
         return currentHealth;
     }
@@ -37,8 +36,6 @@ public class Base extends Sprite implements Damageable, Curable{
         return totalHealth;
     }
 
-
-    @Override
     public void setCurrentHealth(int health) {
         this.currentHealth = health;
     }
@@ -58,6 +55,13 @@ public class Base extends Sprite implements Damageable, Curable{
     
     public boolean isInfected(){
         return this.currentHealth == 0;
+    }
+    
+    @Override
+    public void heal(int health){
+        int healedValue = this.getCurrentHealth() + health;
+        int newValue = healedValue < this.getTotalHealth() ? healedValue : this.getTotalHealth();
+        this.setCurrentHealth(newValue);
     }
 
     @Override

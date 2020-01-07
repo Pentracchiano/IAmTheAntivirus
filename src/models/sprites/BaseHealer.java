@@ -9,7 +9,6 @@ import behaviors.Direction;
 import behaviors.DirectionGenerator;
 import java.awt.Rectangle;
 import models.GameStatus;
-import models.sprites.behaviors.Curable;
 import models.sprites.behaviors.Healer;
 import models.sprites.behaviors.Movable;
 
@@ -29,7 +28,7 @@ public class BaseHealer extends Sprite implements Healer, Movable {
 
     private final static String DEFAULT_IMAGE_PATH = "src/resources/healer_heart48.png";
     private final GameStatus GAME_STATUS;
-    private final int HEALING_MULTIPLIER = 10;
+    private final double HEALING_MULTIPLIER = 0.15;
     private final int ATTACK_MULTIPLIER = 5;
     private final DirectionGenerator directionGenerator;
     private final int speed;
@@ -44,11 +43,12 @@ public class BaseHealer extends Sprite implements Healer, Movable {
      * how the healer moves across the field.
      * @param speed The speed of the healer.
      */
-    public BaseHealer(int x, int y, DirectionGenerator directionGenerator, int speed) {
+    public BaseHealer(int x, int y, DirectionGenerator directionGenerator, int speed, int maxHealth) {
         super(x, y, DEFAULT_IMAGE_PATH);
         GAME_STATUS = GameStatus.getInstance();
         this.directionGenerator = directionGenerator;
         this.speed = speed;
+        this.maxHealth = maxHealth;
     }
 
     public int getAttack() {
@@ -76,14 +76,8 @@ public class BaseHealer extends Sprite implements Healer, Movable {
      * @param toHeal The {@link Base} instance the healer must work on.
      */
     @Override
-    public void heal(Curable toHeal) {
-        int healthIncrement = HEALING_MULTIPLIER * GAME_STATUS.getCurrentWaveNumber();
-        int partialHealth = toHeal.getCurrentHealth() + healthIncrement;
-        int newHealth = partialHealth < this.maxHealth ? partialHealth : this.maxHealth;
-
-        System.out.println("healer - new health: " + newHealth);
-
-        toHeal.setCurrentHealth(newHealth);
+    public int getHealth() {
+        return (int) (this.maxHealth*this.HEALING_MULTIPLIER);
     }
 
     @Override
@@ -100,7 +94,7 @@ public class BaseHealer extends Sprite implements Healer, Movable {
      */
     @Override
     public void move(Rectangle externalBounds) {
-        Direction direction = directionGenerator.getDirection(this.getBounds(), externalBounds, HEALING_MULTIPLIER);
+        Direction direction = directionGenerator.getDirection(this.getBounds(), externalBounds, this.speed);
 
         if (direction != null) {
             setX(getX() + speed * direction.getX());

@@ -7,6 +7,7 @@ package controllers.game;
 
 import java.awt.Rectangle;
 import models.GameStatus;
+import models.sprites.Base;
 import models.sprites.BaseHealer;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,8 @@ public class BaseHealerManagerTest {
 
     @Before
     public void setUp() {
-        this.instance = new BaseHealerManager();
+        Base base = new Base(0, 0, 50);
+        this.instance = new BaseHealerManager(base);
     }
 
     /**

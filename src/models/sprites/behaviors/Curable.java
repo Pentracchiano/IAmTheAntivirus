@@ -12,6 +12,5 @@ package models.sprites.behaviors;
  * @author Francesco
  */
 public interface Curable {
-    public int getCurrentHealth();
-    public void setCurrentHealth(int health);
+    public void heal(int health);
 }
