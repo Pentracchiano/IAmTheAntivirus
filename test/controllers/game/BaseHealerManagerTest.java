@@ -34,7 +34,7 @@ public class BaseHealerManagerTest {
      * Test of getBaseHealer method, of class BaseHealerManager.
      * Checks if the spawning point of the created BaseHealer respects the 
      * provided boundaries. Cannot check for the respect of the game rules in 
-     * setting of speed, because speed attribute in BaseHealer is private and
+     * setting the speed, because speed attribute in BaseHealer is private and
      * has no getter.
      */
     @Test

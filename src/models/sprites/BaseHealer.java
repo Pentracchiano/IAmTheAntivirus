@@ -32,8 +32,8 @@ public class BaseHealer extends Sprite implements Healer, Movable {
     private final int ATTACK_MULTIPLIER = 5;
     private final DirectionGenerator directionGenerator;
     private final int speed;
-    // Maximum health of the base. Needed to avoid to restore it to a value that
-    // is greater that what it was at the beginning of the wave.
+    // Maximum health of the base. Needed in the computation of the health
+    // increment.
     private int maxHealth;
 
     /**
@@ -42,6 +42,8 @@ public class BaseHealer extends Sprite implements Healer, Movable {
      * @param directionGenerator The {@link DirectionGenerator} that determines
      * how the healer moves across the field.
      * @param speed The speed of the healer.
+     * @param maxHealth The maximum health of the base, for the wave in which
+     * this healer is created.
      */
     public BaseHealer(int x, int y, DirectionGenerator directionGenerator, int speed, int maxHealth) {
         super(x, y, DEFAULT_IMAGE_PATH);
@@ -65,15 +67,11 @@ public class BaseHealer extends Sprite implements Healer, Movable {
 
     /**
      * The method that actually heals the base. The healing process consists in
-     * adding to the health of the base a quantity that is obtained by
-     * multiplying a suited multiplier for the number of the current wave, in
-     * order to compute an health increment that makes the healing "useful",
-     * according to the difficulty (e.g. enemies' attack power) of the current
-     * wave. The health increment applied never causes the health of the base to
-     * reach a value greater than its maximum possible value, set at the
-     * beginning of the wave.
-     *
-     * @param toHeal The {@link Base} instance the healer must work on.
+     * returning a value that must be added to the current health of the base.
+     * This value is computed as a certain percentage of the maximum health of
+     * the base for the current wave.
+     * 
+     * @return An health increment for the base.
      */
     @Override
     public int getHealth() {
