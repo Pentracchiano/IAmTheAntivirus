@@ -18,5 +18,5 @@ public interface Healer {
      * 
      * @param toHeal the Curable to heal.
      */
-    public void heal(Curable toHeal);
+    public int getHealth();
 }

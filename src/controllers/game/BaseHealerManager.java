@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 import static java.lang.Math.floor;
 import java.util.Random;
 import models.GameStatus;
+import models.sprites.Base;
 import models.sprites.BaseHealer;
 
 /**
@@ -19,6 +20,12 @@ import models.sprites.BaseHealer;
  * @author Francesco
  */
 public class BaseHealerManager {
+    
+    private Base base;
+    
+    public BaseHealerManager(Base base){
+        this.base = base;
+    }
 
     /**
      * This methods manages the stochastic creation of a {@link BaseHealer}. The
@@ -51,7 +58,7 @@ public class BaseHealerManager {
          */
         int healerSpeed = (int) (currentWaveNumber < 14 ? floor(14 / currentWaveNumber) : 1);
         // Create the healer with a trivial spawning point.
-        BaseHealer retVal = new BaseHealer(0, 0, new ObliqueDirectionGenerator(), healerSpeed);
+        BaseHealer retVal = new BaseHealer(0, 0, new ObliqueDirectionGenerator(), healerSpeed, base.getTotalHealth());
         /*
         * The x-axis coordinate of the spawning point is a random interger 
         * between the x coordinate of the beginning of the given boundaries, and the x
