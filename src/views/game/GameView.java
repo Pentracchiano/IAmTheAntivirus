@@ -82,7 +82,8 @@ public class GameView extends View {
     }
 
     private void initView() {
-        commands = GameStatus.getInstance().getCommands();
+        this.gameStatus = GameStatus.getInstance();
+        commands = gameStatus.getCommands();
 
         baseHealerLock = new ReentrantLock();
 
@@ -99,12 +100,14 @@ public class GameView extends View {
         setPreferredSize(dimension);
 
         keyboard = new Keyboard(37, 275);
+
         firewall = new Firewall(37, 20);
 
         GameStatus.getInstance().addCommand(firewall);
 
         this.gameStatus = GameStatus.getInstance();
         this.shell = new Shell();
+
         this.heartImage = ImageUtilities.loadImageFromPath(HEART_IMAGE_PATH);
         this.healthBarImage = ImageUtilities.loadImageFromPath(HEALTH_BAR_IMAGE_PATH);
         this.healthBordersImage = ImageUtilities.loadImageFromPath(HEALTH_BORDERS_IMAGE_PATH);
@@ -190,7 +193,10 @@ public class GameView extends View {
         int aliveSpawnedVirusesSize;
         int remainingVirusesSize;
         int waveSize;
-
+        final int ENEMY_X_SPAN = base.getX() + 710;
+        final int ENEMY_Y_SPAN = base.getY() + 15;
+        
+        
         if (currentWave == null) {
             aliveSpawnedVirusesSize = 0;
             waveSize = 0;
@@ -202,8 +208,8 @@ public class GameView extends View {
             remainingVirusesSize = currentWave.getVirusesToSpawnSize() + aliveSpawnedVirusesSize;
         }
 
-        x = base.getX() + 710;
-        y = base.getY() + 15;
+        x = ENEMY_X_SPAN;
+        y = ENEMY_Y_SPAN;
         g.drawImage(enemyImage, x, y, this);
 
         x += enemyImage.getWidth(this) + 10;

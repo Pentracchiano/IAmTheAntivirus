@@ -8,6 +8,8 @@ package models.sprites;
 
 import java.awt.Image;
 import static java.lang.Math.ceil;
+import models.GameStatus;
+import models.sprites.behaviors.Valuable;
 
 /**
  * Enemy is a Sprite that can attack the base.
@@ -15,15 +17,13 @@ import static java.lang.Math.ceil;
  * 
  * @author ccarratu
  */
-public abstract class Enemy extends Sprite {
+public abstract class Enemy extends Sprite implements Valuable {
     private final int BASE_ATTACK;
     
     private final int ATTACK;
     private final int LEVEL;
     
     private int difficulty;
-    
-    private final double ATTACK_MULTIPLIER = 0.3; 
    
     /**
      * Creates a new enemy with the specified position, attributes, level and image.
@@ -39,7 +39,7 @@ public abstract class Enemy extends Sprite {
         
         this.BASE_ATTACK = baseAttack;
         this.LEVEL = level;
-        this.ATTACK = BASE_ATTACK + (int) (this.BASE_ATTACK * (this.LEVEL-1) * this.ATTACK_MULTIPLIER);
+        this.ATTACK = BASE_ATTACK + (int) (this.BASE_ATTACK * (this.LEVEL-1) * GameStatus.ENEMY_ATTACK_MULTIPLIER);
         initEnemy();
     }
     
@@ -56,12 +56,12 @@ public abstract class Enemy extends Sprite {
         
         this.BASE_ATTACK = baseAttack;
         this.LEVEL = level;
-        this.ATTACK = BASE_ATTACK + (int) (this.BASE_ATTACK * (this.LEVEL-1) * this.ATTACK_MULTIPLIER);
+        this.ATTACK = BASE_ATTACK + (int) (this.BASE_ATTACK * (this.LEVEL-1) * GameStatus.ENEMY_ATTACK_MULTIPLIER);
         initEnemy();
     }
     
     private void initEnemy() {
-        this.difficulty =  (int) ceil(this.ATTACK * (1 / this.ATTACK_MULTIPLIER));
+        this.difficulty =  (int) ceil(this.ATTACK * (1 / GameStatus.ENEMY_ATTACK_MULTIPLIER));
     }
 
     public void setDifficulty(int difficulty) {
@@ -79,17 +79,18 @@ public abstract class Enemy extends Sprite {
     public int getDifficulty() {
         return difficulty;
     }
+    
+    @Override
+    public int getValue() {
+        return difficulty / 10;
+    }
 
     public int getLevel() {
         return LEVEL;
     }
 
-    public double getAttackMultiplier() {
-        return ATTACK_MULTIPLIER;
-    }
-
     @Override
     public String toString() {
-        return super.toString() + ", attack=" + ATTACK + ", baseAttack=" + BASE_ATTACK + ", difficulty=" + difficulty + ", level=" + LEVEL + ", levelMultiplier=" + ATTACK_MULTIPLIER;
+        return super.toString() + ", attack=" + ATTACK + ", baseAttack=" + BASE_ATTACK + ", difficulty=" + difficulty + ", level=" + LEVEL + ", levelMultiplier=";
     }
 }

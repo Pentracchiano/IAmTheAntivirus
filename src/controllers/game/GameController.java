@@ -97,7 +97,8 @@ public class GameController extends Controller implements Runnable {
         IAmTheAntivirus.getGameInstance().setMusicOn(true);
 
         while (gameStatus.isInGame() && !Thread.currentThread().isInterrupted()) {
-            refreshKeyboard();
+            
+            
             timeCount = 0; // counts the number of cycles
             
             /* 
@@ -110,6 +111,12 @@ public class GameController extends Controller implements Runnable {
             // set wave
             gameStatus.setCurrentWaveNumber(gameStatus.getCurrentWaveNumber() + 1);
             wave = waveManager.getWave(gameStatus.getCurrentWaveNumber());
+            
+            //
+            for (int i = 1; i <= 100; i++) {
+                waveManager.getWave(i);
+            }
+            
             GameView gameView = (GameView) view;
             gameView.setCurrentWave(wave);
 
@@ -165,7 +172,9 @@ public class GameController extends Controller implements Runnable {
             baseHealer = null;
             nullifyHealerInView();
 
+            refreshKeyboard();
             gameStatus.addBitcoinsAndScore(1);
+
             IAmTheAntivirus.getGameInstance().openShopMenu();
 
             /*
@@ -230,7 +239,7 @@ public class GameController extends Controller implements Runnable {
             if (!v.isAlive()) {
                 it.remove();
 
-                gameStatus.addBitcoinsAndScore(v.getBitcoinsValue() * gameStatus.getMultiplier());
+                gameStatus.addBitcoinsAndScore(v.getValue() * gameStatus.getMultiplier());
             } else {
                 v.move(keyboard.getBounds());
             }
@@ -293,18 +302,16 @@ public class GameController extends Controller implements Runnable {
         }
         synchronized (this.wave) {
             Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
-            boolean missedViruses = true;
+            
             for (Virus virus : aliveSpawnedViruses) {
                 if (checkCollision(firewall.getBounds(), virus.getBounds())) {
 
                     virus.damage(virus.getCurrentHealth());
                     gameStatus.incrementConsecutiveHits();
-                    missedViruses = false;
+                   
                 }
             }
-            if (missedViruses) {
-                //gameStatus.resetConsecutiveHits();
-            }
+
         }
 
         if (this.baseHealer != null) {

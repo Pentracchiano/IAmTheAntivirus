@@ -161,8 +161,9 @@ public class WaveManager {
             double delayCoeff = (double) (WaveManager.MIN_DELAY - 2 * WaveManager.MAX_DELAY + relativeDelay) /  (double) (WaveManager.MIN_DELAY - WaveManager.MAX_DELAY);
             
             waveDifficulty += (int) ceil(virus.getDifficulty() * delayCoeff);
+            
         }
-
+        
         return new Wave(virusesToSpawn);
     }
     
