@@ -16,7 +16,7 @@ import models.sprites.behaviors.Command;
  */
 public class Shell extends Component{
     private String digitedCommand="";
-    private final String DEFAULT_STRING= ":/" ;
+    private final String DEFAULT_STRING= "c:\\" ;
     private GameStatus gamestatus;
 
     public Shell() {
@@ -54,13 +54,13 @@ public class Shell extends Component{
     
     
     public synchronized String getDigitedCommand() {
-        return this.digitedCommand.substring(2);
+        return this.digitedCommand.substring(this.DEFAULT_STRING.length());
     }
 
 
     public synchronized void digitcommands(char c){
         if((int)c == 8 || (int)c==127){
-            if(this.digitedCommand.length() > 2){
+            if(this.digitedCommand.length() > this.DEFAULT_STRING.length()){
             this.digitedCommand=this.digitedCommand.substring(0, this.digitedCommand.length()-1);  
             } else {
                 return;
