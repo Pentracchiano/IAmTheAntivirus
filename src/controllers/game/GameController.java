@@ -309,7 +309,6 @@ public class GameController extends Controller implements Runnable {
 
         if (this.baseHealer != null) {
             //it's surely alive, because this method is called after updateHealer method
-            System.out.println("Detecting firewall collision"); //DEBUG
             if (checkCollision(firewall.getBounds(), baseHealer.getBounds())) {
                 //it's been killed, so the base must be damaged
                 base.damage(baseHealer.getAttack());
