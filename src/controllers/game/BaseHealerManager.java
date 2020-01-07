@@ -22,6 +22,8 @@ import models.sprites.BaseHealer;
 public class BaseHealerManager {
     
     private Base base;
+    private int maxSpeed = 20;
+    private int minSpeed = 5;
     
     public BaseHealerManager(Base base){
         this.base = base;
@@ -56,7 +58,8 @@ public class BaseHealerManager {
          * At 14th wave speed = 1. The quicker the healer is, the harder is to
          * avoid to kill it.
          */
-        int healerSpeed = (int) (currentWaveNumber < 14 ? floor(14 / currentWaveNumber) : 1);
+        int speed = (int) floor(maxSpeed / currentWaveNumber);
+        int healerSpeed = (int) (speed < minSpeed ? minSpeed : speed);
         // Create the healer with a trivial spawning point.
         BaseHealer retVal = new BaseHealer(0, 0, new ObliqueDirectionGenerator(), healerSpeed, base.getTotalHealth());
         /*
