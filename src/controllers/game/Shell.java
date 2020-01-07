@@ -7,7 +7,6 @@ package controllers.game;
 
 
 import java.awt.Component;
-import java.util.Set;
 import models.GameStatus;
 import models.sprites.behaviors.Command;
 
@@ -26,7 +25,11 @@ public class Shell extends Component{
         this.gamestatus = GameStatus.getInstance() ;    
     }
     
-   
+    /**
+     * This method looks if the string digited in the
+     * shell is a command, if yes it launch it.
+     * Then set the default string
+     */
     
     public synchronized void launchCommand(){
         /*
@@ -54,9 +57,6 @@ public class Shell extends Component{
         return this.digitedCommand.substring(2);
     }
 
-    public synchronized void setDigitedCommand(String digitedCommand) {
-        this.digitedCommand = digitedCommand;
-    }
 
     public synchronized void digitcommands(char c){
         if((int)c == 8 || (int)c==127){

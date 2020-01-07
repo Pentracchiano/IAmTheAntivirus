@@ -75,7 +75,8 @@ public class GameController extends Controller implements Runnable {
         IAmTheAntivirus.getGameInstance().setMusicOn(true);
 
         while (gameStatus.isInGame() && !Thread.currentThread().isInterrupted()) {
-            refreshKeyboard();
+            
+            
             timeCount = 0; // counts the number of cycles
 
             // set wave
@@ -127,11 +128,10 @@ public class GameController extends Controller implements Runnable {
             }
             // wave transition
             gameStatus.setInWaveTransition(true);
-            
-            if(gameStatus.getBitcoins() == 0) {
-                gameStatus.addBitcoinsAndScore(1);
-            }
-            
+
+            refreshKeyboard();
+            gameStatus.addBitcoinsAndScore(1);
+
             IAmTheAntivirus.getGameInstance().openShopMenu();
 
             /*
@@ -221,19 +221,17 @@ public class GameController extends Controller implements Runnable {
             return;
         synchronized (this.wave) {
             Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
-            boolean missedViruses = true;
+            
             for (Virus virus : aliveSpawnedViruses) {
                 if (checkCollision(firewall.getBounds(), virus.getBounds())) {
                     
                     
                     virus.damage(virus.getCurrentHealth());
                     gameStatus.incrementConsecutiveHits();
-                    missedViruses = false;
+                   
                 }
             }
-            if (missedViruses) {
-                //gameStatus.resetConsecutiveHits();
-            }
+
         }
     }
 

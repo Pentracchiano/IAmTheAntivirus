@@ -163,9 +163,6 @@ public class WaveManager {
             waveDifficulty += (int) ceil(virus.getDifficulty() * delayCoeff);
             
         }
-
-        //
-        System.out.println("wave difficulty = " + waveDifficulty);
         
         return new Wave(virusesToSpawn);
     }
