@@ -7,16 +7,19 @@ package models.sprites.behaviors;
 
 /**
  * An interface representing game elements that can restore a {@link Curable}'s
- * health.
+ * life-related property.
  * 
  * @author Francesco
  */
 public interface Healer {
     /**
-     * The method that applies the health-restoring process of this healer to
-     * the received Curable.
+     * This method computes an integer value related to the health of a 
+     * {@link Curable} and returns it. This value can represent, for example,
+     * an increment for the value of the health, or a new value for it.
+     * The specific meaning depends on the specific class implementing this 
+     * interface.
      * 
-     * @param toHeal the Curable to heal.
+     * @return An integer related to the health of a {@link Curable}.
      */
-    public void heal(Curable toHeal);
+    public int getHealth();
 }

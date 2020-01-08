@@ -7,6 +7,7 @@ package controllers.game;
 
 import java.awt.Rectangle;
 import models.GameStatus;
+import models.sprites.Base;
 import models.sprites.BaseHealer;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,14 +26,15 @@ public class BaseHealerManagerTest {
 
     @Before
     public void setUp() {
-        this.instance = new BaseHealerManager();
+        Base base = new Base(0, 0, 50);
+        this.instance = new BaseHealerManager(base);
     }
 
     /**
      * Test of getBaseHealer method, of class BaseHealerManager.
      * Checks if the spawning point of the created BaseHealer respects the 
      * provided boundaries. Cannot check for the respect of the game rules in 
-     * setting of speed, because speed attribute in BaseHealer is private and
+     * setting the speed, because speed attribute in BaseHealer is private and
      * has no getter.
      */
     @Test
