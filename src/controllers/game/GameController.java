@@ -76,7 +76,7 @@ public class GameController extends Controller implements Runnable {
         int leftLimit = keyboard.getKey('1').getX();
         int rightLimit = keyboard.getKey('P').getX() + keyboard.getKey('P').getWidth() - leftLimit;
         this.waveManager = new WaveManager(leftLimit, rightLimit, view.getHeight());
-        this.baseHealerManager = new BaseHealerManager();
+        this.baseHealerManager = new BaseHealerManager(this.base);
         this.shell = view.getShell();
         this.gameLoop = new Thread(this);
         this.graphicsUpdater = new Thread(new ViewUpdater(view, GRAPHICS_DELAY_MS));
@@ -280,7 +280,7 @@ public class GameController extends Controller implements Runnable {
 
         if (baseHealer != null) {
             if (checkCollision(baseBounds, baseHealer.getBounds())) {
-                baseHealer.heal(base);
+                base.heal(baseHealer.getHealth());
                 baseHealer = null;
                 nullifyHealerInView();
             }

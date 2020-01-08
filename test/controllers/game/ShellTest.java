@@ -35,7 +35,7 @@ public class ShellTest {
     public void testLaunchCommand() {
         shell.setText("FIREWALL");
         shell.launchCommand();
-        assertEquals("The shell is not empty",shell.getText(),":/");
+        assertEquals("The shell is not empty", shell.getText(), "c:\\");
     }
 
 
@@ -45,9 +45,9 @@ public class ShellTest {
     @Test
     public void testDigitcommands() {
        shell.digitcommands('F');
-       assertEquals("The shell does not read the input properly", shell.getText(),":/F");
+       assertEquals("The shell does not read the input properly", shell.getText(), "c:\\F");
        shell.digitcommands((char) 8);
-       assertEquals("The shell does not delete characters", shell.getText(), ":/");
+       assertEquals("The shell does not delete characters", shell.getText(), "c:\\");
        
     }
 
@@ -58,7 +58,7 @@ public class ShellTest {
     public void testSetText() {
        String s = new String("Try");
        shell.setText(s);
-       assertEquals("The shell is not empty",shell.getText(),":/Try");
+       assertEquals("The shell is not empty",shell.getText(), "c:\\Try");
     }
 
 
