@@ -9,6 +9,14 @@ import controllers.game.GameController;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.WindowEvent;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -35,7 +43,7 @@ public class IAmTheAntivirus {
     private final JFrame frame;
     private GameView gameView;
     private GameController gameController;
-    
+    private final List<String> highscores = new ArrayList<>(HIGHSCORES_NUMBER);
     private ShopMenuViewController shopMenu;
     private SetHighScoresMenuViewController setHighScoresMenu;
     private HighScoresMenuViewController highscoresMenu;
@@ -43,6 +51,10 @@ public class IAmTheAntivirus {
     private AbstractMenuViewController currentMenu;
     private static IAmTheAntivirus gameApplication;
     private static final String FONT_MENU_PATH = "src/resources/fonts/Minecraft.ttf";
+    public static final int HIGHSCORES_NUMBER = 5;
+    public static final String DEFAULT_NAME = "---";
+    public static final String DEFAULT_SCORE = "000";
+    public static final String HIGHSCORES_FILE_PATH = "src/resources/highscores/highscores.txt";
     private final Dimension panelDimension = new GameView().getPanelDimension();
     private boolean musicOn = false;
     private boolean musicDisabled = false;
@@ -50,9 +62,8 @@ public class IAmTheAntivirus {
 
     private IAmTheAntivirus() {
         FontUtilities.registerFont(FONT_MENU_PATH);
-
         frame = new JFrame();
-
+        loadHighScores();
         initFrame();
     }
 
@@ -79,7 +90,7 @@ public class IAmTheAntivirus {
      * from the Game over screen, and not only from the main menu.
      *
      * We decided to do this here and not put getters and setters of the frame
-     * in order to define the behaviors of the class clearly.
+     * in order to define the behaviours of the class clearly.
      */
     public void startGame() {
         EventQueue.invokeLater(() -> {
@@ -95,7 +106,6 @@ public class IAmTheAntivirus {
             frame.pack();
             frame.setLocationRelativeTo(null);
             gameView.requestFocusInWindow();
-            highscoresMenu = new HighScoresMenuViewController(panelDimension);
             shopMenu = new ShopMenuViewController(panelDimension);
         });
     }
@@ -111,6 +121,7 @@ public class IAmTheAntivirus {
             frame.setLocationRelativeTo(null);
             currentMenu.requestFocusInWindow();
             highscoresMenu = new HighScoresMenuViewController(panelDimension);
+
         });
     }
     
@@ -208,6 +219,35 @@ public class IAmTheAntivirus {
         return musicDisabled;
     }
 
+    private void loadHighScores() {
+        try {
+            InputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream(HIGHSCORES_FILE_PATH)));
+            Scanner in = new Scanner(stream);
+            int i = 0;    
+            while(i < HIGHSCORES_NUMBER){
+                if(in.hasNext()){
+                    this.setHighscores(in.next(), in.next());
+                }
+                else{
+                    this.setHighscores(DEFAULT_NAME, DEFAULT_SCORE);
+                }
+                i++;
+            }
+            in.close();
+        } catch (FileNotFoundException ex) {
+            
+        };
+        
+    }
+    
+    public synchronized List<String> getHighscores() {
+        return highscores;
+    }
+
+    public synchronized void setHighscores(String name, String score) {
+        this.highscores.add(name + ";" + score);
+    }
+    
     /**
      * Disables the music in the game.
      * Subsequent calls to {@link #setMusicOn(boolean)} will fail, and the music will be turned off

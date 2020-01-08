@@ -11,20 +11,11 @@ import java.awt.EventQueue;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JLabel;
 import menu.AbstractMenuViewController;
 import menu.RetroButton;
-import models.GameStatus;
 
 /**
  *
@@ -35,23 +26,15 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
     /**
      * Creates new form HighScoresMenuViewController
      */
-    
-    private static final int HIGHSCORES_NUMBER = 5;
-    private static final String DEFAULT_NAME = "-----";
-    private static final String DEFAULT_SCORE = "00000";
-    private static final String HIGHSCORES_FILE_PATH = "src/resources/highscores/highscores.txt";
-    private GameStatus gameStatus = GameStatus.getInstance();
     private List<JLabel> nameLabelList;
     private List<JLabel> scoreLabelList;
-
-    
+    private IAmTheAntivirus gameInstance = IAmTheAntivirus.getGameInstance();
     public HighScoresMenuViewController(Dimension preferredSize) {
         super(preferredSize);
         
         initComponents();
         initButton();
         initLists();
-        loadHighScores();
         setTextLabelHighScores();
         
     }
@@ -95,12 +78,15 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
                 highScoresMenuFocusGained(evt);
             }
         });
+        highScoresMenu.setLayout(null);
 
         name0Label.setBackground(new java.awt.Color(0, 0, 0));
         name0Label.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 45));
         name0Label.setForeground(java.awt.Color.white);
         name0Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         name0Label.setText("NAME");
+        highScoresMenu.add(name0Label);
+        name0Label.setBounds(437, 156, 207, 56);
 
         backToMainMenuButton.setText("Back to main-menu");
         backToMainMenuButton.addActionListener(new java.awt.event.ActionListener() {
@@ -113,35 +99,47 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
                 backToMainMenuButtonKeyPressed(evt);
             }
         });
+        highScoresMenu.add(backToMainMenuButton);
+        backToMainMenuButton.setBounds(38, 650, 510, 56);
 
         name1Label.setBackground(new java.awt.Color(0, 0, 0));
         name1Label.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 45));
         name1Label.setForeground(new java.awt.Color(255, 255, 255));
         name1Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         name1Label.setText("NAME");
+        highScoresMenu.add(name1Label);
+        name1Label.setBounds(437, 257, 207, 56);
 
         name3Label.setBackground(new java.awt.Color(0, 0, 0));
         name3Label.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 45));
         name3Label.setForeground(new java.awt.Color(255, 255, 255));
         name3Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         name3Label.setText("NAME");
+        highScoresMenu.add(name3Label);
+        name3Label.setBounds(437, 459, 207, 56);
 
         name4Label.setBackground(new java.awt.Color(0, 0, 0));
         name4Label.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 45));
         name4Label.setForeground(new java.awt.Color(255, 255, 255));
         name4Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         name4Label.setText("NAME");
+        highScoresMenu.add(name4Label);
+        name4Label.setBounds(437, 560, 207, 56);
 
         name2Label.setBackground(new java.awt.Color(0, 0, 0));
         name2Label.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 45));
         name2Label.setForeground(new java.awt.Color(255, 255, 255));
         name2Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         name2Label.setText("NAME");
+        highScoresMenu.add(name2Label);
+        name2Label.setBounds(437, 358, 207, 56);
 
         highScoresLabel.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 60));
         highScoresLabel.setForeground(java.awt.Color.orange);
         highScoresLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         highScoresLabel.setText("HIGH SCORES");
+        highScoresMenu.add(highScoresLabel);
+        highScoresLabel.setBounds(0, 13, 1300, 93);
 
         score0Label.setBackground(new java.awt.Color(0, 0, 0));
         score0Label.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 45
@@ -149,6 +147,8 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         score0Label.setForeground(java.awt.Color.orange);
         score0Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         score0Label.setText("0");
+        highScoresMenu.add(score0Label);
+        score0Label.setBounds(662, 156, 207, 56);
 
         score1Label.setBackground(new java.awt.Color(0, 0, 0));
         score1Label.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 45
@@ -156,6 +156,8 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         score1Label.setForeground(java.awt.Color.orange);
         score1Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         score1Label.setText("0");
+        highScoresMenu.add(score1Label);
+        score1Label.setBounds(662, 257, 207, 56);
 
         score2Label.setBackground(new java.awt.Color(0, 0, 0));
         score2Label.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 45
@@ -163,6 +165,8 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         score2Label.setForeground(java.awt.Color.orange);
         score2Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         score2Label.setText("0");
+        highScoresMenu.add(score2Label);
+        score2Label.setBounds(662, 358, 207, 56);
 
         score3Label.setBackground(new java.awt.Color(0, 0, 0));
         score3Label.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 45
@@ -170,6 +174,8 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         score3Label.setForeground(java.awt.Color.orange);
         score3Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         score3Label.setText("0");
+        highScoresMenu.add(score3Label);
+        score3Label.setBounds(662, 459, 207, 56);
 
         score4Label.setBackground(new java.awt.Color(0, 0, 0));
         score4Label.setFont(new java.awt.Font("Minecraft", java.awt.Font.BOLD, 45
@@ -177,73 +183,8 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         score4Label.setForeground(java.awt.Color.orange);
         score4Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         score4Label.setText("0");
-
-        javax.swing.GroupLayout highScoresMenuLayout = new javax.swing.GroupLayout(highScoresMenu);
-        highScoresMenu.setLayout(highScoresMenuLayout);
-        highScoresMenuLayout.setHorizontalGroup(
-            highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(highScoresMenuLayout.createSequentialGroup()
-                .addGap(437, 437, 437)
-                .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, highScoresMenuLayout.createSequentialGroup()
-                        .addComponent(name1Label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(score1Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(highScoresMenuLayout.createSequentialGroup()
-                        .addComponent(name0Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(score0Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, highScoresMenuLayout.createSequentialGroup()
-                        .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(name2Label, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(highScoresMenuLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(name4Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(name3Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(18, 18, Short.MAX_VALUE)
-                        .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(score4Label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(score3Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(score2Label, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(437, 437, 437))
-            .addGroup(highScoresMenuLayout.createSequentialGroup()
-                .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(highScoresMenuLayout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addComponent(backToMainMenuButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(highScoresLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 1300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        highScoresMenuLayout.setVerticalGroup(
-            highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, highScoresMenuLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(highScoresLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
-                .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(name0Label, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(score0Label, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45)
-                .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(name1Label, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(score1Label, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45)
-                .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(name2Label, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(score2Label, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45)
-                .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(name3Label, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(score3Label, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45)
-                .addGroup(highScoresMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(name4Label, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(score4Label, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
-                .addComponent(backToMainMenuButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41))
-        );
+        highScoresMenu.add(score4Label);
+        score4Label.setBounds(662, 560, 207, 56);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -310,33 +251,12 @@ public class HighScoresMenuViewController extends AbstractMenuViewController  {
         scoreLabelList.add(score2Label);
         scoreLabelList.add(score3Label);
         scoreLabelList.add(score4Label);
-     }
-
-    private void loadHighScores() {
-        try {
-            InputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream(HIGHSCORES_FILE_PATH)));
-            Scanner in = new Scanner(stream);
-            int i = 0;    
-            while(i < HIGHSCORES_NUMBER){
-                if(in.hasNext()){
-                    gameStatus.setHighscores(i, in.next(), in.next());
-                }
-                else{
-                    gameStatus.setHighscores(i, DEFAULT_NAME, DEFAULT_SCORE);
-                }
-                i++;
-            }
-            in.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(HighScoresMenuViewController.class.getName()).log(Level.SEVERE, null, ex);
-        };
-        
-    }
+      }
 
     private void setTextLabelHighScores() {
         EventQueue.invokeLater(() -> {
-        for(int i = 0; i < HIGHSCORES_NUMBER; i++){
-            String[] values = gameStatus.getHighscores().get(i).split(";");
+        for(int i = 0; i < IAmTheAntivirus.HIGHSCORES_NUMBER; i++){
+            String[] values = gameInstance.getHighscores().get(i).split(";");
             nameLabelList.get(i).setText(values[0]);
             scoreLabelList.get(i).setText(values[1]);
         }

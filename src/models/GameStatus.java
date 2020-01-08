@@ -26,7 +26,6 @@ public class GameStatus {
     private boolean inShop;
     private boolean inWaveTransition;
     private final List<Stat> stats = new ArrayList<>();
-    private final List<String> highscores = new ArrayList<>();
     
     // the number of the current wave
     private int currentWaveNumber;
@@ -41,7 +40,7 @@ public class GameStatus {
     private int bitcoins = 0;
 
     /**
-     * The multiplier increses when the player consecutively hits enemies, the
+     * The multiplier increases when the player consecutively hits enemies, the
      * maximum value reachable is MAX_MULTIPLIER. When the player misses a virus
      * the multiplier is reset to 1.
      */
@@ -92,9 +91,7 @@ public class GameStatus {
 
         this.stats.add(new Stat("attack", "Attack", "Next attack value: ", BASE_ATTACK, BASE_COST, VIRUS_HEALTH_MULTIPLIER, COST_MULTIPLIER));
         
-        for(int i = 0; i < 5; i++){
-            this.highscores.add("-----;000");
-        }
+        
     }
 
     public synchronized List<Stat> getStats() {
@@ -209,16 +206,6 @@ public class GameStatus {
         return BASE_MAX_HEALTH;
     }
 
-    public synchronized List<String> getHighscores() {
-        return highscores;
-    }
-
-    public synchronized void setHighscores(int i, String name, String score) {
-        this.highscores.set(i, name + ";" + score);
-    }
-
-
-    
     
     @Override
     public String toString() {

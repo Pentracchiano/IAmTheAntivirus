@@ -444,7 +444,7 @@ public class GameController extends Controller implements Runnable {
         IAmTheAntivirus appInstance = IAmTheAntivirus.getGameInstance();
         appInstance.setMusicOn(false);
 
-        if (Integer.parseInt(gameStatus.getHighscores().get(4).split(";", 0)[1]) < gameStatus.getScore()) {
+        if (Integer.parseInt(appInstance.getHighscores().get(4).split(";", 0)[1]) < gameStatus.getScore()) {
 
             appInstance.openSetHighScoresMenu();
 

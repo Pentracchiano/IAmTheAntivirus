@@ -31,7 +31,6 @@ public class SetHighScoresMenuViewController extends AbstractMenuViewController 
      * Creates new form SetHighScoresMenuViewController
      */
     
-    private static final String HIGHSCORES_FILE_PATH = "src/resources/highscores/highscores.txt";
     private String name;
     private int score;
     
@@ -104,6 +103,9 @@ public class SetHighScoresMenuViewController extends AbstractMenuViewController 
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 nameFieldKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                nameFieldKeyTyped(evt);
+            }
         });
 
         confirmButton.setText("OK");
@@ -170,8 +172,8 @@ public class SetHighScoresMenuViewController extends AbstractMenuViewController 
 
     private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmButtonActionPerformed
         EventQueue.invokeLater(() -> {
-            if(nameField.getText().isEmpty() || nameField.getText().startsWith(" ")){
-                this.name = "-----";
+            if(nameField.getText().isEmpty() || nameField.getText().startsWith(" ") || nameField.getText().contains(";")){
+                this.name = "---";
             }
             else{
                 this.name = nameField.getText();
@@ -204,6 +206,11 @@ public class SetHighScoresMenuViewController extends AbstractMenuViewController 
             this.confirmButtonActionPerformed(null);
     }//GEN-LAST:event_confirmButtonKeyPressed
 
+    private void nameFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyTyped
+        if (nameField.getText().length() >= 3 ) // limit textfield to 3 characters
+            evt.consume(); 
+    }//GEN-LAST:event_nameFieldKeyTyped
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private menu.RetroButton confirmButton;
@@ -217,21 +224,21 @@ public class SetHighScoresMenuViewController extends AbstractMenuViewController 
         
         int i = 0;
         boolean replaced = false;
-        
-        while(i < 5 && !replaced){
-            GameStatus status = GameStatus.getInstance();
-            if (Integer.parseInt(status.getHighscores().get(i).split(";")[1]) < this.score){
-                status.getHighscores().add(i, this.name + ";" + Integer.toString(this.score));
-                status.getHighscores().remove(5);
+        IAmTheAntivirus gameInstance = IAmTheAntivirus.getGameInstance();
+
+        while(i < IAmTheAntivirus.HIGHSCORES_NUMBER && !replaced){
+            if (Integer.parseInt(gameInstance.getHighscores().get(i).split(";")[1]) < this.score){
+                gameInstance.getHighscores().add(i, this.name + ";" + Integer.toString(this.score));
+                gameInstance.getHighscores().remove(5);
                 replaced = true;
             }else{
                 i++;
             }
         }
         try {
-                BufferedWriter out = new BufferedWriter(new FileWriter(HIGHSCORES_FILE_PATH));
+                BufferedWriter out = new BufferedWriter(new FileWriter(IAmTheAntivirus.HIGHSCORES_FILE_PATH));
                 for(int j = 0; j < 5; j++){
-                    out.write(GameStatus.getInstance().getHighscores().get(j).split(";")[0] + " " + GameStatus.getInstance().getHighscores().get(j).split(";")[1] + "\n");
+                    out.write(gameInstance.getHighscores().get(j).split(";")[0] + " " + gameInstance.getHighscores().get(j).split(";")[1] + "\n");
                 }
                 out.close();
             }
