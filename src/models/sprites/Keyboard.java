@@ -18,6 +18,7 @@ public class Keyboard extends Sprite {
         PRESSED, RELEASED
     }
 
+    private int SPACE_AMONG_KEYS = 12;
     private static final int DEFAULT_KEY_ATTACK = 10;
     private static final char CHARACTERS[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
     private static final String KEYBOARD_IMAGE_PATH = "src/resources/keyboard/keyboard4.png";
@@ -28,7 +29,7 @@ public class Keyboard extends Sprite {
         super(x, y, KEYBOARD_IMAGE_PATH);
         initKeyboard();
     }
- 
+
     private void initKeyboard() {
         keyboard = new HashMap<>();
         initKeys();
@@ -36,7 +37,6 @@ public class Keyboard extends Sprite {
 
     private void initKeys() {
 
-        int spaceAmongKeys = 12;
         int xKey = 104 + getX();
         int yKey = 30 + getY();
         char idKey;
@@ -45,28 +45,28 @@ public class Keyboard extends Sprite {
         for (int i = 0; i < CHARACTERS.length; i++) {
 
             idKey = CHARACTERS[i];
-            
-            switch(idKey) {
+
+            switch (idKey) {
                 case '1':
                     xKey = 104 + getX();
                     yKey = 30 + getY();
                     break;
                 case 'Q':
-                    xKey = 139+getX();
-                    yKey = 104+getY();
+                    xKey = 139 + getX();
+                    yKey = 104 + getY();
                     break;
                 case 'A':
-                    xKey = 154+getX();
-                    yKey = 182+getY();
+                    xKey = 154 + getX();
+                    yKey = 182 + getY();
                     break;
                 case 'Z':
-                    xKey = 178+getX();
-                    yKey = 256+getY();
+                    xKey = 178 + getX();
+                    yKey = 256 + getY();
                     break;
                 default:
-                    xKey = xKey + WIDTH_KEY + spaceAmongKeys;
+                    xKey = xKey + WIDTH_KEY + SPACE_AMONG_KEYS;
             }
-            
+
             key = new Key(xKey, yKey, idKey); //creo sprite tasto
             keyboard.put(idKey, key); //inserisco nella tabella           
 
@@ -82,29 +82,32 @@ public class Keyboard extends Sprite {
         return keyboard.values();
     }
 
-    public void press(char id) throws KeyNotFoundException{      
-        if(!keyboard.containsKey(id))
+    public void press(char id) throws KeyNotFoundException {
+        if (!keyboard.containsKey(id)) {
             throw new KeyNotFoundException();
-        
+        }
+
         Key key = keyboard.get(id);
         key.press();
-        
+
     }
-    
-    public Key getKey(char keyCode) throws KeyNotFoundException{
-        if(!keyboard.containsKey(keyCode))
+
+    public Key getKey(char keyCode) throws KeyNotFoundException {
+        if (!keyboard.containsKey(keyCode)) {
             throw new KeyNotFoundException();
+        }
         return keyboard.get(keyCode);
     }
 
-    public void release(char id) throws KeyNotFoundException{
-        
-        if(!keyboard.containsKey(id))
+    public void release(char id) throws KeyNotFoundException {
+
+        if (!keyboard.containsKey(id)) {
             throw new KeyNotFoundException();
-            
+        }
+
         Key key = keyboard.get(id);
         key.release();
-        
+
     }
 
     public class Key extends Sprite {
@@ -159,29 +162,28 @@ public class Keyboard extends Sprite {
             this.state = State.RELEASED;
             setImage(keyImages.get(state));
         }
-        
+
     }
-    
+
     @Override
     public Rectangle getBounds() throws NullBoundsException {
-        
+
         int leftLimit = this.getX();
         int rightLimit = this.getWidth();
-        
+
         try {
             leftLimit = this.getKey('1').getX();
         } catch (KeyNotFoundException ex) {
             Logger.getLogger(Keyboard.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         try {
-            rightLimit = this.getKey('P').getX() + this.getKey('P').getWidth()-leftLimit;
+            rightLimit = this.getKey('P').getX() + this.getKey('P').getWidth() - leftLimit;
         } catch (KeyNotFoundException ex) {
             Logger.getLogger(Keyboard.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return new Rectangle(leftLimit, this.getY(), rightLimit, this.getHeight());
-        
-        
+
     }
 }

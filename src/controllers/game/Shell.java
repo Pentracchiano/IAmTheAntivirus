@@ -5,7 +5,6 @@
  */
 package controllers.game;
 
-
 import java.awt.Component;
 import models.GameStatus;
 import models.sprites.behaviors.Command;
@@ -14,71 +13,62 @@ import models.sprites.behaviors.Command;
  *
  * @author Gerardo
  */
-public class Shell extends Component{
-    private String digitedCommand="";
-    private final String DEFAULT_STRING= "c:\\" ;
+public class Shell extends Component {
+
+    private String digitedCommand = "";
+    private final String DEFAULT_STRING = "c:\\";
     private GameStatus gamestatus;
+    private final int BACKSPACE_KEYCODE = 8;
+    private final int DELETE_KEYCODE = 127;
 
     public Shell() {
         this.setFocusable(false);
-        this.setText(DEFAULT_STRING);
-        this.gamestatus = GameStatus.getInstance() ;    
+        this.setDefault();
+        this.gamestatus = GameStatus.getInstance();
     }
-    
+
     /**
-     * This method looks if the string digited in the
-     * shell is a command, if yes it launch it.
-     * Then set the default string
+     * This method looks if the string digited in the shell is a command, if yes
+     * it launch it. Then set the default string
      */
-    
-    public synchronized void launchCommand(){
+    public synchronized void launchCommand() {
         /*
         if digitedCommand
-        */
-        for(Command c : gamestatus.getCommands()){
-            
-            if(this.getDigitedCommand().equals(c.getName())){
+         */
+        for (Command c : gamestatus.getCommands()) {
+
+            if (this.getDigitedCommand().equals(c.getName())) {
                 c.launch();
                 setDefault();
                 return;
             }
         }
-        setDefault();   
+        setDefault();
     }
-    
-    private synchronized void setDefault(){
-        this.digitedCommand = "";
-        this.setText(DEFAULT_STRING);
-        
+
+    private synchronized void setDefault() {
+        this.digitedCommand = DEFAULT_STRING;
+
     }
-    
-    
+
     public synchronized String getDigitedCommand() {
         return this.digitedCommand.substring(this.DEFAULT_STRING.length());
     }
 
-
-    public synchronized void digitcommands(char c){
-        if((int)c == 8 || (int)c==127){
-            if(this.digitedCommand.length() > this.DEFAULT_STRING.length()){
-            this.digitedCommand=this.digitedCommand.substring(0, this.digitedCommand.length()-1);  
+    public synchronized void digitcommands(char c) {
+        if ((int) c == BACKSPACE_KEYCODE || (int) c == DELETE_KEYCODE) {
+            if (this.digitedCommand.length() > this.DEFAULT_STRING.length()) {
+                this.digitedCommand = this.digitedCommand.substring(0, this.digitedCommand.length() - 1);
             } else {
                 return;
             }
+        } else {
+            this.digitedCommand += c;
         }
-        else
-            this.digitedCommand+=c;
-        //System.out.println((int)c+" "+c);
-        
-        //this.setText(DEFAULT_STRING + digitedCommand);
     }
-    
-    public synchronized void setText(String command){
-        this.digitedCommand += command;
-    } 
-    
-    public synchronized String getText(){
+
+    public synchronized String getText() {
         return this.digitedCommand;
     }
-   
+
 }

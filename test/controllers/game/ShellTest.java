@@ -33,7 +33,7 @@ public class ShellTest {
      */
     @Test
     public void testLaunchCommand() {
-        shell.setText("FIREWALL");
+        shell.digitcommands('C');
         shell.launchCommand();
         assertEquals("The shell is not empty", shell.getText(), "c:\\");
     }
@@ -56,8 +56,9 @@ public class ShellTest {
      */
     @Test
     public void testSetText() {
-       String s = new String("Try");
-       shell.setText(s);
+       shell.digitcommands('T');
+       shell.digitcommands('r');
+       shell.digitcommands('y');
        assertEquals("The shell is not empty",shell.getText(), "c:\\Try");
     }
 

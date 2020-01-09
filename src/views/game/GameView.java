@@ -133,7 +133,7 @@ public class GameView extends View {
         synchronized (base) {
             drawBase(g);
         }
-
+        
         if (currentWave != null) {
             if (!gameStatus.isInWaveTransition()) {
                 synchronized (currentWave) {
@@ -195,8 +195,7 @@ public class GameView extends View {
         int waveSize;
         final int ENEMY_X_SPAN = base.getX() + 710;
         final int ENEMY_Y_SPAN = base.getY() + 15;
-        
-        
+
         if (currentWave == null) {
             aliveSpawnedVirusesSize = 0;
             waveSize = 0;
@@ -270,11 +269,8 @@ public class GameView extends View {
     private void drawBase(Graphics g) {
         final int BASE_SPAN_X = base.getX() + 200;
         final int BASE_SPAN_Y = base.getY() + 15;
-
         final int HEART_SPAN_X = heartImage.getWidth(this) + 10;
-
         final int HEALTH_SPAN_X = healthBordersImage.getWidth(this) + 10;
-
         final int BITCOIN_SPAN_X = bitcoinImage.getWidth(this) + 10;
 
         g.drawImage(base.getImage(), base.getX(), base.getY(), this);
@@ -291,8 +287,11 @@ public class GameView extends View {
         drawFormattedString(g, this.shell.getText(), base.getX() + 200, base.getY() + 130, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
 
         String multiplier = "x" + gameStatus.getMultiplier();
+        
         drawFormattedString(g, multiplier, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X - 10, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT.deriveFont((float) 18));
+        
         String bitcoins = String.valueOf(gameStatus.getBitcoins());
+        
         drawFormattedString(g, bitcoins, BASE_SPAN_X + HEART_SPAN_X + HEALTH_SPAN_X + BITCOIN_SPAN_X + 15, BASE_SPAN_Y + 25, COLOR_TERMINAL_GREEN, DEFAULT_FONT);
         if (!firewall.isInCoolDown()) {
             g.drawImage(flame, 850, 85, this);

@@ -31,17 +31,18 @@ public class GameController extends Controller implements Runnable {
     private final Keyboard keyboard;
     private final Base base;
     private final Firewall firewall;
-    private Shell shell;
+    private final Shell shell;
     private final Thread gameLoop;
     private final Thread graphicsUpdater;
 
     private final static int GAME_DELAY_MS = 20;
     private final static int GRAPHICS_DELAY_MS = 20;
     private final static int WAVE_DELAY_MS = 3000;
+    private final int IN_SHOP_SLEEP_DELAY = 1000;
     /*
     * The interval, in time counts, that passes between two subsequent attempts
     * to create a BaseHealer.
-    */
+     */
     //time counts, not milliseconds. 350*20 = 7000 ms = 7s
     private final static int HEALER_DELAY_TC = 350;
     private final BaseHealerManager baseHealerManager;
@@ -55,15 +56,17 @@ public class GameController extends Controller implements Runnable {
     * could be nullified inside the block, so on exiting the block, and then
     * releasing the lock, if the healer has been nullified, we could get an
     * exception.
-    */
+     */
     private final ReentrantLock baseHealerLock;
     private int maxWaveHealth;
+    private final char ESCAPE_CHARACTER = '\\';
+    private final int ENTER_KEY = 10;
 
     private final GameStatus gameStatus;
 
     private final WaveManager waveManager;
     private Wave wave;
-    
+
     private List<Stat> stats;
 
     public GameController(GameView view) throws KeyNotFoundException {
@@ -97,33 +100,28 @@ public class GameController extends Controller implements Runnable {
         IAmTheAntivirus.getGameInstance().setMusicOn(true);
 
         while (gameStatus.isInGame() && !Thread.currentThread().isInterrupted()) {
-            
-            
+
             timeCount = 0; // counts the number of cycles
-            
+
             /* 
             * Get the max health of the base for the current wave, needed for
             * the creation of the BaseHealer.
-            */
+             */
             this.maxWaveHealth = base.getTotalHealth();
-            //System.out.println("health: " + this.maxWaveHealth); // DEBUG
 
-            // set wave
             gameStatus.setCurrentWaveNumber(gameStatus.getCurrentWaveNumber() + 1);
             wave = waveManager.getWave(gameStatus.getCurrentWaveNumber());
-            
-            //
+
             for (int i = 1; i <= 100; i++) {
                 waveManager.getWave(i);
             }
-            
+
             GameView gameView = (GameView) view;
             gameView.setCurrentWave(wave);
 
             gameStatus.setInWave(true);
 
             while (gameStatus.isInGame() && gameStatus.isInWave() && !Thread.currentThread().isInterrupted()) {
-                // System.out.println("In wave");
 
                 beforeTime = System.currentTimeMillis();
 
@@ -131,7 +129,6 @@ public class GameController extends Controller implements Runnable {
                     gameStatus.setInWave(false);
                 }
 
-                // spawn and move
                 synchronized (wave) {
                     baseHealerLock.lock();
                     try {
@@ -146,7 +143,6 @@ public class GameController extends Controller implements Runnable {
                         return;
                     }
                 }
-
                 timeDiff = System.currentTimeMillis() - beforeTime;
                 sleep = GAME_DELAY_MS - timeDiff;
 
@@ -164,11 +160,6 @@ public class GameController extends Controller implements Runnable {
             // wave transition
             gameStatus.setInWaveTransition(true);
 
-            /*
-            * remove eventually spawned base healers that have neither been
-            * kill nor have reached the base (otherwise they will persist 
-            * through waves).
-            */
             baseHealer = null;
             nullifyHealerInView();
 
@@ -177,16 +168,8 @@ public class GameController extends Controller implements Runnable {
 
             IAmTheAntivirus.getGameInstance().openShopMenu();
 
-            /*
-            try {
-                this.wait();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-             */
-            // usare un altro metodo, wait e notify, oppure uccidere e riavviare il thread
             while (gameStatus.isInShop()) {
-                ThreadUtilities.sleep(1000);
+                ThreadUtilities.sleep(IN_SHOP_SLEEP_DELAY);
             }
             this.updateStats();
 
@@ -208,7 +191,6 @@ public class GameController extends Controller implements Runnable {
                     // is executed only after the wave is started (the inner while
                     // in the game loop)
                     baseHealer.setMaxHealth(this.maxWaveHealth);
-                    System.out.println("BaseHealer creato"); // DEBUG
                 }
                 nullifyHealerInView();
             }
@@ -217,7 +199,7 @@ public class GameController extends Controller implements Runnable {
             baseHealer.move(keyboard.getBounds());
         }
     }
-    
+
     // Nullifies the healer field in the GameView instance, in order to make
     // it disappear from the screen.
     private void nullifyHealerInView() {
@@ -263,12 +245,7 @@ public class GameController extends Controller implements Runnable {
             Rectangle virusBounds = virus.getBounds();
 
             if (checkCollision(baseBounds, virusBounds)) {
-                /*
-                We must define how to represent the condition of the virus that must 
-                disappear from the screen. 
-                An example is this:
-                enemy.setVisible(false);
-                 */
+
                 synchronized (base) {
                     base.damage(virus.getAttack());
                 }
@@ -287,11 +264,7 @@ public class GameController extends Controller implements Runnable {
         }
 
         if (base.isInfected()) {
-//            if (Integer.parseInt(gameStatus.getHighscores().get(4).split(";",0)[1]) > gameStatus.getScore()){
             this.gameEnded();
-//            }else{
-//                this.gameEndedWithHighscores();
-//            }
         }
     }
 
@@ -302,13 +275,13 @@ public class GameController extends Controller implements Runnable {
         }
         synchronized (this.wave) {
             Collection<Virus> aliveSpawnedViruses = wave.getAliveSpawnedViruses();
-            
+
             for (Virus virus : aliveSpawnedViruses) {
                 if (checkCollision(firewall.getBounds(), virus.getBounds())) {
 
                     virus.damage(virus.getCurrentHealth());
                     gameStatus.incrementConsecutiveHits();
-                   
+
                 }
             }
 
@@ -320,7 +293,7 @@ public class GameController extends Controller implements Runnable {
                 //it's been killed, so the base must be damaged
                 base.damage(baseHealer.getAttack());
                 baseHealer = null;
-               nullifyHealerInView();
+                nullifyHealerInView();
             }
         }
     }
@@ -386,12 +359,12 @@ public class GameController extends Controller implements Runnable {
             public void keyPressed(KeyEvent e) {
 
                 int keyCode = e.getKeyCode();
-                if ((char) keyCode == '\\' && gameStatus.isInWave()) {
+                if ((char) keyCode == ESCAPE_CHARACTER && gameStatus.isInWave()) {
                     shell.setFocusable(true);
                     return;
                 }
                 if (shell.isFocusable()) {
-                    if (keyCode == 10) {
+                    if (keyCode == ENTER_KEY) {
                         shell.setFocusable(false);
                         shell.launchCommand();
 
@@ -458,12 +431,5 @@ public class GameController extends Controller implements Runnable {
             keyboard.release(k.getId());
         }
     }
-//    private void gameEndedWithHighscores() {
-//        gameStatus.setInGame(false);
-//        graphicsUpdater.interrupt();
-//        gameLoop.interrupt();
-//        IAmTheAntivirus appInstance = IAmTheAntivirus.getGameInstance();
-//        appInstance.setMusicOn(false);
-//        
-//        IAmTheAntivirus.getGameInstance().displaySetHighScoresMenu();    }
+
 }
